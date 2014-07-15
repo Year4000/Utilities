@@ -1,5 +1,5 @@
 name: DuckTape
-version: ${pom.version}-git-${git.commit.id.abbrev}
+version: ${pom.version}-${git.commit.id.abbrev}
 author: Year4000
 main: net.year4000.ducktape.bukkit.DuckTape
 depend: [Utilities]
