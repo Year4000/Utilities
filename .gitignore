@@ -1,0 +1,16 @@
+# IntelliJ IDEA
+*.iml
+.idea
+
+# VIM
+*.swp
+*.swap
+*~
+
+# Maven
+target
+*/target
+*/src/main/resources/git.properties
+
+# Project
+dependency-reduced-pom.xml
