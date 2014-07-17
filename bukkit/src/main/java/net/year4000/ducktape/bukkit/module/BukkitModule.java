@@ -16,4 +16,20 @@ public class BukkitModule extends AbstractModule {
     public void registerCommand(Class<?> clazz) {
         DuckTape.get().registerCommand(clazz);
     }
+
+    public static void log(String message, Object... args) {
+        DuckTape.debug(message, args);
+    }
+
+    public static void debug(String message, Object... args) {
+        DuckTape.debug(message, args);
+    }
+
+    public static void debug(Exception e, boolean simple) {
+        DuckTape.debug(e, simple);
+    }
+
+    public static void log(Exception e, boolean simple) {
+        DuckTape.log(e, simple);
+    }
 }

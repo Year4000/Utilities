@@ -22,12 +22,13 @@ public class ModuleManager<T extends AbstractModule> {
     @Getter
     protected final Map<ModuleInfo, T> loadedClasses = new ConcurrentHashMap<>();
 
-    /** Guava's EventBus */
-    @Getter
-    protected final EventBus eventBus = new EventBus();
-
     /** LogUtil */
     protected final LogUtil log;
+
+    /** Guava's EventBus */
+    @Getter
+    protected final EventBus eventBus;
+
 
     /** Init LogUtil with its own logger */
     public ModuleManager() {
@@ -42,6 +43,7 @@ public class ModuleManager<T extends AbstractModule> {
     /** Init LogUtil with specific LogUtil */
     public ModuleManager(LogUtil log) {
         this.log = log;
+        this.eventBus = new EventBus(log.getLogger().getName());
     }
 
     /** Register an event */
@@ -133,7 +135,8 @@ public class ModuleManager<T extends AbstractModule> {
             module.setEnabled(false);
             module.disable();
 
-            eventBus.post(new ModuleDisableEvent(info, module));
+            // TODO Fix why its throwing an error
+            //eventBus.post(new ModuleDisableEvent(info, module));
 
             log.log(info.name() + " version " + info.version() + " disabled.");
         } catch (Exception e) {
