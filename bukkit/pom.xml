@@ -18,13 +18,6 @@
         <finalName>DuckTape</finalName>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/java/</directory>
-                <filtering>true</filtering>
-                <!--<includes>
-                    <include>**/DuckTapeModule.java</include>
-                </includes>-->
-            </resource>
-            <resource>
                 <directory>${basedir}/src/main/resources/</directory>
                 <filtering>true</filtering>
             </resource>
@@ -91,17 +84,13 @@
             <id>overcast</id>
             <url>https://repo.oc.tc/content/repositories/public</url>
         </repository>
-        <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>LATEST</version>
+            <groupId>tc.oc</groupId>
+            <artifactId>sportbukkit-api</artifactId>
+            <version>1.7.9-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.ewized.utilities</groupId>

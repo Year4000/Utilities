@@ -6,10 +6,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public abstract class AbstractModule {
     /** Run when the Module is loaded */
-    public void loaded() {}
+    public void load() {}
 
     /** Run when the Module is enabled */
-    public void enabled() {}
+    public void enable() {}
 
     /** Run when the Module is disabled */
     public void disable() {}

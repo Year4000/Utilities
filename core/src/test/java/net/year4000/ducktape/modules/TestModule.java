@@ -16,12 +16,12 @@ import java.io.File;
 @Log
 public class TestModule extends TesterModule {
     @Override
-    public void loaded() {
+    public void load() {
         log.info("Loaded");
     }
 
     @Override
-    public void enabled() {
+    public void enable() {
         log.info("Enabled");
     }
 

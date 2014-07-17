@@ -3,7 +3,9 @@ package net.year4000.ducktape.bukkit;
 import com.ewized.utilities.bukkit.BukkitPlugin;
 import lombok.Getter;
 import net.year4000.ducktape.bukkit.module.BukkitModule;
+import net.year4000.ducktape.core.loader.ClassFolderModuleLoader;
 import net.year4000.ducktape.core.loader.ClassModuleLoader;
+import net.year4000.ducktape.core.loader.JarFileModuleLoader;
 import net.year4000.ducktape.core.module.ModuleManager;
 
 public class DuckTape extends BukkitPlugin {
@@ -16,8 +18,13 @@ public class DuckTape extends BukkitPlugin {
         inst = this;
 
         // register internals
-        new ClassModuleLoader(modules)
-            .add(DuckTapeModule.class);
+        new ClassModuleLoader(modules).add(DuckTapeModule.class);
+
+        // register jar files
+        new JarFileModuleLoader(modules).load(Settings.get().getModulesFolder());
+
+        // register class files
+        new ClassFolderModuleLoader(modules).load(Settings.get().getModulesFolder());
 
         // register modules
         modules.loadModules();
@@ -31,6 +38,7 @@ public class DuckTape extends BukkitPlugin {
 
     @Override
     public void onDisable() {
+        // disable modules
         modules.disableModules();
     }
 

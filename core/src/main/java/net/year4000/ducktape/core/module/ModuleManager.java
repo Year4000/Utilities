@@ -51,11 +51,13 @@ public class ModuleManager<T extends AbstractModule> {
 
     /** Add a class to the module */
     public synchronized void add(Class<? extends T> clazz) {
+        log.debug("Adding: " + clazz.getName());
         classes.add(clazz);
     }
 
     /** Remove a class to the module */
     public synchronized void remove(Class<? extends T> clazz) {
+        log.debug("Removing: " + clazz.getName());
         classes.remove(clazz);
     }
 
@@ -63,20 +65,22 @@ public class ModuleManager<T extends AbstractModule> {
     public void loadModules() {
         classes.forEach(clazz -> {
             try {
+                //log.log(clazz.toString());
                 InitModule init = initModule(clazz);
 
-                T module = init.getModule();
+                T module = (T) init.getModule();
                 ModuleInfo info = init.getInfo();
+                //log.log(info.toString());
 
-                module.loaded();
+                module.load();
 
                 loadedClasses.put(info, module);
 
                 eventBus.post(new ModuleLoadEvent(info, module));
 
                 log.log(info.name() + " version " + info.version() + " loaded.");
-            } catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
-                new RuntimeException(e);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
             }
         });
     }
@@ -84,7 +88,7 @@ public class ModuleManager<T extends AbstractModule> {
     /** Enable each module */
     public void enableModules() {
         loadedClasses.forEach((info, module) -> {
-            module.enabled();
+            module.enable();
 
             eventBus.post(new ModuleEnableEvent(info, module));
 
@@ -109,9 +113,9 @@ public class ModuleManager<T extends AbstractModule> {
 
     /** Init the instance */
     @SuppressWarnings("unchecked")
-    protected InitModule initModule(Class<? extends T> clazz) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
-        if (!clazz.isAnnotationPresent(ModuleInfo.class)) {
-            throw new IllegalArgumentException(clazz.getName() + ": No ModuleInfo found.");
+    protected InitModule initModule(Class<? extends T> clazz) throws Throwable {
+        if (!isModuleClass(clazz)) {
+            throw new IllegalArgumentException(clazz.getName() + ": Not A Module Class");
         }
 
         return new InitModule(clazz.getAnnotation(ModuleInfo.class), clazz.newInstance());

@@ -1,6 +1,7 @@
-package net.year4000.ducktape.bukkit;
+package net.year4000.ducktape.bungee;
 
-import com.ewized.utilities.bukkit.util.MessageUtil;
+import com.ewized.utilities.bungee.BungeePlugin;
+import com.ewized.utilities.bungee.util.MessageUtil;
 import com.google.common.base.Joiner;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
@@ -9,13 +10,16 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Setter;
-import net.year4000.ducktape.bukkit.module.BukkitModule;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
+import net.year4000.ducktape.bungee.module.BungeeModule;
 import net.year4000.ducktape.core.module.ModuleInfo;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @ModuleInfo(
     name = "DuckTape",
@@ -23,7 +27,7 @@ import java.util.*;
     description = "DuckTape Core Module handles everything internal.",
     authors = {"Year4000"}
 )
-public final class DuckTapeModule extends BukkitModule {
+public final class DuckTapeModule extends BungeeModule {
     private static final Joiner joiner = Joiner.on("&7, ");
 
     public void enable() {
@@ -31,7 +35,7 @@ public final class DuckTapeModule extends BukkitModule {
     }
 
     @Command(
-        aliases = {"plugins", "pl", "comp", "components", "modules"},
+        aliases = {"gplugins", "gpl", "gcomp", "gcomponents", "gmodules"},
         desc = "Show all loaded modules and plugins"
     )
     public static void modules(CommandContext args, CommandSender sender) throws CommandException {
@@ -40,22 +44,16 @@ public final class DuckTapeModule extends BukkitModule {
         String plugins = joiner.join(plugins().stream().map(plugin -> (plugin.isEnabled() ? "&a" : "&4") + plugin.getName()).toArray());
         String modules = joiner.join(modules().stream().map(module -> (module.isEnabled() ? "&b" : "&3") + module.getName()).toArray());
 
-        sender.sendMessage(MessageUtil.message(text + (modules().size() == 0 ? plugins: joiner.join(plugins, modules))));
+        sender.sendMessage(MessageUtil.makeMessage(text + (modules().size() == 0 ? plugins : joiner.join(plugins, modules))));
     }
 
     private static Set<SimpleAddon> plugins() {
-        Set<SimpleAddon> newList = new HashSet<>();
-
-        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            newList.add(new SimpleAddon(
-                plugin.isEnabled(),
-                plugin.getName(),
-                plugin.getDescription().getVersion(),
-                plugin.getDescription().getAuthors()
-            ));
-        }
-
-        return newList;
+        return ProxyServer.getInstance().getPluginManager().getPlugins().stream().map(plugin -> new SimpleAddon(
+            true,
+            plugin.getDescription().getName(),
+            plugin.getDescription().getVersion(),
+            Arrays.asList(plugin.getDescription().getAuthor())
+        )).collect(Collectors.toSet());
     }
 
     private static Set<SimpleAddon> modules() {

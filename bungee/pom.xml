@@ -102,9 +102,9 @@
             <version>1.2-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.ewized.utilities</groupId>
+            <groupId>net.year4000.ducktape</groupId>
             <artifactId>core</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

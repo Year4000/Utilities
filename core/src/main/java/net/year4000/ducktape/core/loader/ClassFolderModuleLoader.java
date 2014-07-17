@@ -1,5 +1,6 @@
 package net.year4000.ducktape.core.loader;
 
+import net.year4000.ducktape.core.module.AbstractModule;
 import net.year4000.ducktape.core.module.ModuleManager;
 
 import java.io.File;
@@ -52,7 +53,7 @@ public class ClassFolderModuleLoader extends AbstractModuleLoader<ClassFolderMod
                 e.printStackTrace();
             }
 
-            if (ModuleManager.isModuleClass(clazz)) continue;
+            if (!ModuleManager.isModuleClass(clazz)) continue;
 
             add(clazz);
         }
@@ -74,6 +75,8 @@ public class ClassFolderModuleLoader extends AbstractModuleLoader<ClassFolderMod
                 classNames.add(parentName + formatPath(file.getName()));
             }
         }
+        System.out.println(classNames);
+
         return classNames;
     }
 }

@@ -11,12 +11,10 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class GlobalSettings extends Config {
+    public GlobalSettings() {
+        CONFIG_HEADER = new String[] {"DuckTape Settings"};
+    }
 
     @Comment("The path were the modules are stored.")
     private String modulesPath = "modules";
-
-    @Comment("The modules that should be enabled by default")
-    List<String> enabledModules = new ArrayList<String>() {{
-
-    }};
 }
