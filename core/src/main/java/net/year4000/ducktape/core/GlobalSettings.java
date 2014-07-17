@@ -5,9 +5,6 @@ import lombok.EqualsAndHashCode;
 import net.cubespace.Yamler.Config.Comment;
 import net.cubespace.Yamler.Config.Config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class GlobalSettings extends Config {

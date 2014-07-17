@@ -5,11 +5,12 @@ import com.google.common.eventbus.EventBus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import net.year4000.ducktape.api.events.ModuleDisableEvent;
 import net.year4000.ducktape.api.events.ModuleEnableEvent;
 import net.year4000.ducktape.api.events.ModuleLoadEvent;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;

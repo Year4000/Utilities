@@ -12,7 +12,6 @@ import lombok.Setter;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.year4000.ducktape.bungee.module.BungeeModule;
-import net.year4000.ducktape.core.module.AbstractModule;
 import net.year4000.ducktape.core.module.ModuleInfo;
 
 import java.util.Arrays;

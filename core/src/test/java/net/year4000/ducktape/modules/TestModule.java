@@ -2,10 +2,7 @@ package net.year4000.ducktape.modules;
 
 import lombok.extern.java.Log;
 import net.year4000.ducktape.TesterModule;
-import net.year4000.ducktape.core.module.AbstractModule;
 import net.year4000.ducktape.core.module.ModuleInfo;
-
-import java.io.File;
 
 @ModuleInfo(
     name = "Test Module",

@@ -9,7 +9,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class ModuleManagerListener {
     private Map<AbstractModule, Set<Listener>> listeners = new HashMap<>();
