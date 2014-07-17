@@ -1,10 +1,19 @@
 package net.year4000.ducktape.core.loader;
 
+import lombok.Getter;
 import net.year4000.ducktape.core.module.ModuleManager;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class AbstractModuleLoader<T extends AbstractModuleLoader> {
     /** The module manager to load the classes into */
-    protected ModuleManager manager;
+    protected final ModuleManager manager;
+
+    /** The classes that were added in this loader's instance */
+    @Getter
+    protected final Set<Class<?>> classes = new HashSet<>();
 
     public AbstractModuleLoader(ModuleManager manager) {
         this.manager = manager;

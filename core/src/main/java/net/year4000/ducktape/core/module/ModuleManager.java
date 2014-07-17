@@ -9,21 +9,21 @@ import net.year4000.ducktape.api.events.ModuleDisableEvent;
 import net.year4000.ducktape.api.events.ModuleEnableEvent;
 import net.year4000.ducktape.api.events.ModuleLoadEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ModuleManager<T extends AbstractModule> {
     /** Raw Class Files */
-    protected final List<Class<? extends T>> classes = new ArrayList<>();
+    protected final Set<Class<? extends T>> classes = new HashSet<>();
 
     /** Enabled Modules */
     @Getter
     protected final Map<ModuleInfo, T> loadedClasses = new ConcurrentHashMap<>();
 
     /** Guava's EventBus */
+    @Getter
     protected final EventBus eventBus = new EventBus();
 
     /** LogUtil */
@@ -61,50 +61,106 @@ public class ModuleManager<T extends AbstractModule> {
         classes.remove(clazz);
     }
 
+    /** Load each module from a set of classes */
+    public Set<T> loadModules(Set<Class<?>> classes) {
+        return classes.stream().map(this::loadModule).collect(Collectors.toSet());
+    }
+
     /** Load each module */
     public void loadModules() {
-        classes.forEach(clazz -> {
-            try {
-                //log.log(clazz.toString());
-                InitModule init = initModule(clazz);
+        classes.forEach(this::loadModule);
+    }
 
-                T module = (T) init.getModule();
-                ModuleInfo info = init.getInfo();
-                //log.log(info.toString());
+    /** Load a module's class */
+    public T loadModule(Class<?> clazz) {
+        T module;
 
-                module.load();
+        try {
+            //log.log(clazz.toString());
+            InitModule init = initModule(clazz);
 
-                loadedClasses.put(info, module);
+            module = init.getModule();
+            ModuleInfo info = init.getInfo();
+            //log.log(info.toString());
 
-                eventBus.post(new ModuleLoadEvent(info, module));
+            module.load();
 
-                log.log(info.name() + " version " + info.version() + " loaded.");
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        });
+            loadedClasses.put(info, module);
+
+            eventBus.post(new ModuleLoadEvent(info, module));
+
+            log.log(info.name() + " version " + info.version() + " loaded.");
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+
+        return module;
     }
 
     /** Enable each module */
     public void enableModules() {
-        loadedClasses.forEach((info, module) -> {
+        loadedClasses.forEach((info, module) -> enableModule(info.name()));
+    }
+
+    public void enableModule(String name) {
+        T module = getModule(name);
+        ModuleInfo info = getModuleInfo(name);
+
+        try {
+            module.setEnabled(true);
             module.enable();
 
             eventBus.post(new ModuleEnableEvent(info, module));
 
             log.log(info.name() + " version " + info.version() + " enabled.");
-        });
+        } catch (Exception e) {
+            log.log("There was an exception while enabling: " + info.name());
+            module.setEnabled(false);
+        }
     }
 
     /** Disable each module */
     public void disableModules() {
-        loadedClasses.forEach((info, module) -> {
+        loadedClasses.forEach((info, module) -> disableModule(info.name()));
+    }
+
+    /** Disable one module by its name */
+    public void disableModule(String name) {
+        T module = getModule(name);
+        ModuleInfo info = getModuleInfo(name);
+
+        try {
+            module.setEnabled(false);
             module.disable();
 
             eventBus.post(new ModuleDisableEvent(info, module));
 
             log.log(info.name() + " version " + info.version() + " disabled.");
-        });
+        } catch (Exception e) {
+            log.log("There was an exception while disabling: " + info.name());
+        }
+    }
+
+    /** Get module info by its name */
+    public ModuleInfo getModuleInfo(String name) {
+        for (ModuleInfo info : loadedClasses.keySet()) {
+            if (info.name().equalsIgnoreCase(name)) {
+                return info;
+            }
+        }
+
+        return null;
+    }
+
+    /** Get a module by its name */
+    public T getModule(String name) {
+        for (ModuleInfo info : loadedClasses.keySet()) {
+            if (info.name().equalsIgnoreCase(name)) {
+                return loadedClasses.get(info);
+            }
+        }
+
+        return null;
     }
 
     public static boolean isModuleClass(Class<?> clazz) {
@@ -113,12 +169,12 @@ public class ModuleManager<T extends AbstractModule> {
 
     /** Init the instance */
     @SuppressWarnings("unchecked")
-    protected InitModule initModule(Class<? extends T> clazz) throws Throwable {
+    protected InitModule initModule(Class<?> clazz) throws Throwable {
         if (!isModuleClass(clazz)) {
             throw new IllegalArgumentException(clazz.getName() + ": Not A Module Class");
         }
 
-        return new InitModule(clazz.getAnnotation(ModuleInfo.class), clazz.newInstance());
+        return new InitModule(clazz.getAnnotation(ModuleInfo.class), (T) clazz.newInstance());
     }
 
     @Data

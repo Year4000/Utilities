@@ -17,7 +17,6 @@ public class DuckTape extends BungeePlugin {
     public void onLoad() {
         inst = this;
 
-        Settings.get();
         // register internals
         new ClassModuleLoader(modules).add(DuckTapeModule.class);
 

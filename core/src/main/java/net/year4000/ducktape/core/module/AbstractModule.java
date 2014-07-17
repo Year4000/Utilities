@@ -1,10 +1,16 @@
 package net.year4000.ducktape.core.module;
 
+import lombok.Data;
+
 import java.io.File;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+@Data
 public abstract class AbstractModule {
+    /** Is the module enabled */
+    public boolean enabled;
+
     /** Run when the Module is loaded */
     public void load() {}
 

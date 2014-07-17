@@ -23,6 +23,7 @@ public class JarFileModuleLoader extends AbstractModuleLoader<JarFileModuleLoade
     @SuppressWarnings("unchecked")
     @Override
     public JarFileModuleLoader add(Class<?> clazz) {
+        classes.add(clazz);
         manager.add(clazz);
         return this;
     }
@@ -30,6 +31,7 @@ public class JarFileModuleLoader extends AbstractModuleLoader<JarFileModuleLoade
     @SuppressWarnings("unchecked")
     @Override
     public JarFileModuleLoader remove(Class<?> clazz) {
+        classes.remove(clazz);
         manager.remove(clazz);
         return this;
     }

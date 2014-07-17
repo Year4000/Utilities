@@ -10,6 +10,7 @@ public class ClassModuleLoader extends AbstractModuleLoader<ClassModuleLoader> {
     @SuppressWarnings("unchecked")
     @Override
     public ClassModuleLoader add(Class<?> clazz) {
+        classes.add(clazz);
         manager.add(clazz);
         return this;
     }
@@ -17,6 +18,7 @@ public class ClassModuleLoader extends AbstractModuleLoader<ClassModuleLoader> {
     @SuppressWarnings("unchecked")
     @Override
     public ClassModuleLoader remove(Class<?> clazz) {
+        classes.remove(clazz);
         manager.remove(clazz);
         return this;
     }

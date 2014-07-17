@@ -3,6 +3,7 @@ package net.year4000.ducktape.bukkit;
 import com.ewized.utilities.bukkit.BukkitPlugin;
 import lombok.Getter;
 import net.year4000.ducktape.bukkit.module.BukkitModule;
+import net.year4000.ducktape.bukkit.module.ModuleManagerListener;
 import net.year4000.ducktape.core.loader.ClassFolderModuleLoader;
 import net.year4000.ducktape.core.loader.ClassModuleLoader;
 import net.year4000.ducktape.core.loader.JarFileModuleLoader;
@@ -16,6 +17,8 @@ public class DuckTape extends BukkitPlugin {
     @Override
     public void onLoad() {
         inst = this;
+
+        modules.getEventBus().register(new ModuleManagerListener());
 
         // register internals
         new ClassModuleLoader(modules).add(DuckTapeModule.class);

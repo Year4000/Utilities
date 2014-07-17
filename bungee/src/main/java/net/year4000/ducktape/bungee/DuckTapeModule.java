@@ -1,6 +1,5 @@
 package net.year4000.ducktape.bungee;
 
-import com.ewized.utilities.bungee.BungeePlugin;
 import com.ewized.utilities.bungee.util.MessageUtil;
 import com.google.common.base.Joiner;
 import com.sk89q.minecraft.util.commands.Command;
@@ -13,6 +12,7 @@ import lombok.Setter;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.year4000.ducktape.bungee.module.BungeeModule;
+import net.year4000.ducktape.core.module.AbstractModule;
 import net.year4000.ducktape.core.module.ModuleInfo;
 
 import java.util.Arrays;
@@ -28,7 +28,8 @@ import java.util.stream.Collectors;
     authors = {"Year4000"}
 )
 public final class DuckTapeModule extends BungeeModule {
-    private static final Joiner joiner = Joiner.on("&7, ");
+    private static final Joiner joiner = Joiner.on("&e, &7");
+    private static final Joiner pack = Joiner.on("&8.&7");
 
     public void enable() {
         registerCommand(DuckTapeModule.class);
@@ -41,10 +42,19 @@ public final class DuckTapeModule extends BungeeModule {
     public static void modules(CommandContext args, CommandSender sender) throws CommandException {
         String text = new Message(sender).get("ducktape.modules", plugins().size(), modules().size()) + " ";
 
-        String plugins = joiner.join(plugins().stream().map(plugin -> (plugin.isEnabled() ? "&a" : "&4") + plugin.getName()).toArray());
-        String modules = joiner.join(modules().stream().map(module -> (module.isEnabled() ? "&b" : "&3") + module.getName()).toArray());
+        String plugins = joiner.join(plugins().stream().map(plugin -> name(plugin, (plugin.isEnabled() ? "&a" : "&4"))).toArray());
+        String modules = joiner.join(modules().stream().map(module -> name(module, (module.isEnabled() ? "&b" : "&c"))).toArray());
 
         sender.sendMessage(MessageUtil.makeMessage(text + (modules().size() == 0 ? plugins : joiner.join(plugins, modules))));
+    }
+
+    private static String name(SimpleAddon info, String prefix) {
+        String name = info.getObject().getClass().getName();
+        String[] packages = name.split("\\.", name.split("\\.").length - 1);
+
+        String first = pack.join(Arrays.asList(packages).stream().map(p -> p.substring(0, 1)).collect(Collectors.toList()));
+
+        return pack.join(first, prefix) + info.getName();
     }
 
     private static Set<SimpleAddon> plugins() {
@@ -52,7 +62,8 @@ public final class DuckTapeModule extends BungeeModule {
             true,
             plugin.getDescription().getName(),
             plugin.getDescription().getVersion(),
-            Arrays.asList(plugin.getDescription().getAuthor())
+            Arrays.asList(plugin.getDescription().getAuthor()),
+            plugin
         )).collect(Collectors.toSet());
     }
 
@@ -65,7 +76,8 @@ public final class DuckTapeModule extends BungeeModule {
                     true,
                     info.name(),
                     info.version(),
-                    Arrays.asList(info.authors())
+                    Arrays.asList(info.authors()),
+                    DuckTape.get().getModules().getModule(info.name())
                 ));
             }
         });
@@ -81,5 +93,6 @@ public final class DuckTapeModule extends BungeeModule {
         private String name;
         private String version;
         private List<String> authors;
+        private Object object;
     }
 }
