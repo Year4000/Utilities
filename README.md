@@ -1,7 +1,8 @@
 DuckTape
 ======
 This plugin was made for the servers at [Year4000]. Its a module loading system
-to allow for quck plugin develepoment.
+to allow for quick plugin development and the ability to disable and enable modules
+at will, to save resources.
 
 License
 ------
