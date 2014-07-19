@@ -12,6 +12,9 @@ public class GlobalSettings extends Config {
         CONFIG_HEADER = new String[] {"DuckTape Settings"};
     }
 
+    @Comment("The URL to get the locale files from.")
+    private String url = "https://git.year4000.net/year4000/locales/raw/master/net/year4000/ducktape/locales/";
+
     @Comment("The path were the modules are stored.")
     private String modulesPath = "modules";
 }
