@@ -17,4 +17,7 @@ public class GlobalSettings extends Config {
 
     @Comment("The path were the modules are stored.")
     private String modulesPath = "modules";
+
+    @Comment("The path were the modules data folder is stored.")
+    private String modulesData = "data";
 }

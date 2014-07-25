@@ -24,10 +24,10 @@ public class DuckTape extends BungeePlugin {
         new ClassModuleLoader(modules).add(DuckTapeModule.class);
 
         // register jar files
-        new JarFileModuleLoader(modules).load(Settings.get().getModulesFolder());
+        new JarFileModuleLoader(modules).load(Settings.get().getModulesFolderPath());
 
         // register class files
-        new ClassFolderModuleLoader(modules).load(Settings.get().getModulesFolder());
+        new ClassFolderModuleLoader(modules).load(Settings.get().getModulesFolderPath());
 
         // load modules
         modules.loadModules();

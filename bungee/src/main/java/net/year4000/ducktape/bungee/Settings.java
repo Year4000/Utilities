@@ -24,9 +24,21 @@ public class Settings extends GlobalSettings {
         return inst;
     }
 
-    /** Get the folder for the modules */
+    /** Get the data folder for the modules */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public File getModulesFolder() {
+        File file = new File(DuckTape.get().getDataFolder(), getModulesData());
+
+        if (!file.exists()) {
+            file.mkdir();
+        }
+
+        return file;
+    }
+
+    /** Get the data folder for the modules */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public File getModulesFolderPath() {
         File file = new File(DuckTape.get().getDataFolder(), getModulesPath());
 
         if (!file.exists()) {

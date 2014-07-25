@@ -1,6 +1,7 @@
 package net.year4000.ducktape.bukkit;
 
 import com.ewized.utilities.bukkit.BukkitPlugin;
+import com.ewized.utilities.core.util.LogUtil;
 import lombok.Getter;
 import net.year4000.ducktape.bukkit.module.BukkitModule;
 import net.year4000.ducktape.bukkit.module.ModuleManagerListener;
@@ -17,6 +18,7 @@ public class DuckTape extends BukkitPlugin {
     @Override
     public void onLoad() {
         inst = this;
+        log = new LogUtil();
 
         modules.getEventBus().register(new ModuleManagerListener());
 
@@ -24,10 +26,10 @@ public class DuckTape extends BukkitPlugin {
         new ClassModuleLoader(modules).add(DuckTapeModule.class);
 
         // register jar files
-        new JarFileModuleLoader(modules).load(Settings.get().getModulesFolder());
+        new JarFileModuleLoader(modules).load(Settings.get().getModulesDataFolder());
 
         // register class files
-        new ClassFolderModuleLoader(modules).load(Settings.get().getModulesFolder());
+        new ClassFolderModuleLoader(modules).load(Settings.get().getModulesDataFolder());
 
         // register modules
         modules.loadModules();
@@ -35,6 +37,7 @@ public class DuckTape extends BukkitPlugin {
 
     @Override
     public void onEnable() {
+        log = new LogUtil(getLogger());
         // enable modules
         modules.enableModules();
     }

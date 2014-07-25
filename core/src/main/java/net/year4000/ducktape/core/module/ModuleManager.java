@@ -75,7 +75,7 @@ public class ModuleManager<T extends AbstractModule> {
     }
 
     /** Load a module's class */
-    public T loadModule(Class<?> clazz) {
+    public synchronized T loadModule(Class<?> clazz) {
         T module;
 
         try {
@@ -86,11 +86,11 @@ public class ModuleManager<T extends AbstractModule> {
             ModuleInfo info = init.getInfo();
             //log.log(info.toString());
 
+            eventBus.post(new ModuleLoadEvent(info, module));
+
             module.load();
 
             loadedClasses.put(info, module);
-
-            eventBus.post(new ModuleLoadEvent(info, module));
 
             log.log(info.name() + " version " + info.version() + " loaded.");
         } catch (Throwable e) {
@@ -105,15 +105,16 @@ public class ModuleManager<T extends AbstractModule> {
         loadedClasses.forEach((info, module) -> enableModule(info.name()));
     }
 
-    public void enableModule(String name) {
+    public synchronized void enableModule(String name) {
         T module = getModule(name);
         ModuleInfo info = getModuleInfo(name);
 
         try {
             module.setEnabled(true);
-            module.enable();
 
             eventBus.post(new ModuleEnableEvent(info, module));
+
+            module.enable();
 
             log.log(info.name() + " version " + info.version() + " enabled.");
         } catch (Exception e) {
@@ -128,7 +129,7 @@ public class ModuleManager<T extends AbstractModule> {
     }
 
     /** Disable one module by its name */
-    public void disableModule(String name) {
+    public synchronized void disableModule(String name) {
         T module = getModule(name);
         ModuleInfo info = getModuleInfo(name);
 
