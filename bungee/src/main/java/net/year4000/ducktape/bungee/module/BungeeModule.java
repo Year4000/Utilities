@@ -2,7 +2,7 @@ package net.year4000.ducktape.bungee.module;
 
 import net.year4000.ducktape.bungee.DuckTape;
 import net.year4000.ducktape.bungee.Settings;
-import net.year4000.ducktape.core.module.AbstractModule;
+import net.year4000.ducktape.module.AbstractModule;
 
 import java.io.File;
 

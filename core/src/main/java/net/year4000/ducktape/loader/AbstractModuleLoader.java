@@ -1,7 +1,7 @@
-package net.year4000.ducktape.core.loader;
+package net.year4000.ducktape.loader;
 
 import lombok.Getter;
-import net.year4000.ducktape.core.module.ModuleManager;
+import net.year4000.ducktape.module.ModuleManager;
 
 import java.util.HashSet;
 import java.util.Set;

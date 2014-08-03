@@ -4,9 +4,9 @@ import com.google.common.eventbus.Subscribe;
 import net.year4000.ducktape.api.events.ModuleDisableEvent;
 import net.year4000.ducktape.api.events.ModuleEnableEvent;
 import net.year4000.ducktape.api.events.ModuleLoadEvent;
-import net.year4000.ducktape.core.loader.ClassModuleLoader;
-import net.year4000.ducktape.core.module.AbstractModule;
-import net.year4000.ducktape.core.module.ModuleManager;
+import net.year4000.ducktape.loader.ClassModuleLoader;
+import net.year4000.ducktape.module.AbstractModule;
+import net.year4000.ducktape.module.ModuleManager;
 import net.year4000.ducktape.modules.TestModule;
 import org.junit.Test;
 

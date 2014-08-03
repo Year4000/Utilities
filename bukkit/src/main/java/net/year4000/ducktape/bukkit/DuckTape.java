@@ -5,10 +5,10 @@ import com.ewized.utilities.core.util.LogUtil;
 import lombok.Getter;
 import net.year4000.ducktape.bukkit.module.BukkitModule;
 import net.year4000.ducktape.bukkit.module.ModuleManagerListener;
-import net.year4000.ducktape.core.loader.ClassFolderModuleLoader;
-import net.year4000.ducktape.core.loader.ClassModuleLoader;
-import net.year4000.ducktape.core.loader.JarFileModuleLoader;
-import net.year4000.ducktape.core.module.ModuleManager;
+import net.year4000.ducktape.loader.ClassFolderModuleLoader;
+import net.year4000.ducktape.loader.ClassModuleLoader;
+import net.year4000.ducktape.loader.JarFileModuleLoader;
+import net.year4000.ducktape.module.ModuleManager;
 
 public class DuckTape extends BukkitPlugin {
     private static DuckTape inst;

@@ -1,6 +1,6 @@
 package net.year4000.ducktape;
 
-import net.year4000.ducktape.core.module.AbstractModule;
+import net.year4000.ducktape.module.AbstractModule;
 
 import java.io.File;
 

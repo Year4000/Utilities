@@ -1,4 +1,4 @@
-package net.year4000.ducktape.core.module;
+package net.year4000.ducktape.module;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

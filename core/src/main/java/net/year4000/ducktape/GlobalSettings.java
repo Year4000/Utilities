@@ -1,4 +1,4 @@
-package net.year4000.ducktape.core;
+package net.year4000.ducktape;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

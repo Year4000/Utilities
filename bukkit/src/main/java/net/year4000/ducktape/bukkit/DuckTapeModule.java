@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Setter;
 import net.year4000.ducktape.bukkit.module.BukkitModule;
-import net.year4000.ducktape.core.module.ModuleInfo;
+import net.year4000.ducktape.module.ModuleInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;

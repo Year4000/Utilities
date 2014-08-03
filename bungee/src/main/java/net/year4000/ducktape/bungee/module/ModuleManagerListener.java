@@ -6,7 +6,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.year4000.ducktape.api.events.ModuleDisableEvent;
 import net.year4000.ducktape.api.events.ModuleEnableEvent;
 import net.year4000.ducktape.bungee.DuckTape;
-import net.year4000.ducktape.core.module.AbstractModule;
+import net.year4000.ducktape.module.AbstractModule;
 
 import java.util.HashMap;
 import java.util.HashSet;

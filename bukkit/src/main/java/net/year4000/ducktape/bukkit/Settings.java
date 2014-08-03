@@ -1,7 +1,7 @@
 package net.year4000.ducktape.bukkit;
 
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
-import net.year4000.ducktape.core.GlobalSettings;
+import net.year4000.ducktape.GlobalSettings;
 
 import java.io.File;
 
