@@ -46,8 +46,8 @@ public final class SchedulerUtil {
         return scheduler.runTaskTimer(plugin, task, delay, toTicks(period, unit));
     }
     /** Schedule a repeating task async */
-    public static BukkitTask repeatAsync(Runnable task, long delay) {
-        return scheduler.runTaskTimerAsynchronously(plugin, task, 0, delay);
+    public static BukkitTask repeatAsync(Runnable task, long delay, TimeUnit unit) {
+        return scheduler.runTaskTimerAsynchronously(plugin, task, 0, toTicks(delay, unit));
     }
 
     /** Schedule a repeating task async with a delay */

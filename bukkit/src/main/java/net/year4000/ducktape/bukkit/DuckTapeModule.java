@@ -1,16 +1,16 @@
 package net.year4000.ducktape.bukkit;
 
-import com.ewized.utilities.bukkit.util.MessageUtil;
 import com.google.common.base.Joiner;
-import com.sk89q.minecraft.util.commands.Command;
-import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Setter;
 import net.year4000.ducktape.bukkit.module.BukkitModule;
 import net.year4000.ducktape.module.ModuleInfo;
+import net.year4000.utilities.bukkit.MessageUtil;
+import net.year4000.utilities.bukkit.commands.Command;
+import net.year4000.utilities.bukkit.commands.CommandContext;
+import net.year4000.utilities.bukkit.commands.CommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
     description = "DuckTape Core Module handles everything internal.",
     authors = {"Year4000"}
 )
+@SuppressWarnings("unused")
 public final class DuckTapeModule extends BukkitModule {
     private static final Joiner joiner = Joiner.on("&e, &7");
     private static final Joiner pack = Joiner.on("&8.&7");
@@ -45,7 +46,7 @@ public final class DuckTapeModule extends BukkitModule {
         String plugins = joiner.join(plugins().stream().map(plugin -> name(plugin, (plugin.isEnabled() ? "&a" : "&4"))).toArray());
         String modules = joiner.join(modules().stream().map(module -> name(module, (module.isEnabled() ? "&b" : "&c"))).toArray());
 
-        sender.sendMessage(MessageUtil.message(text + (modules().size() == 0 ? plugins: joiner.join(plugins, modules))));
+        sender.sendMessage(MessageUtil.message(text + (modules().size() == 0 ? plugins : joiner.join(plugins, modules))));
     }
 
     private static String name(SimpleAddon info, String prefix) {

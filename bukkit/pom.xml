@@ -7,7 +7,7 @@
     <parent>
         <artifactId>ducktape</artifactId>
         <groupId>net.year4000</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
 
     <groupId>net.year4000.ducktape</groupId>
@@ -93,9 +93,9 @@
             <version>1.7.9-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.ewized.utilities</groupId>
+            <groupId>net.year4000.utilities</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>1.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.year4000.ducktape</groupId>

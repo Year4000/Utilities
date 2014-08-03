@@ -1,7 +1,7 @@
 package net.year4000.ducktape.bukkit;
 
-import com.ewized.utilities.bukkit.util.BukkitLocale;
-import com.ewized.utilities.core.util.locale.LocaleUtil;
+import net.year4000.utilities.bukkit.BukkitLocale;
+import net.year4000.utilities.locale.LocaleUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

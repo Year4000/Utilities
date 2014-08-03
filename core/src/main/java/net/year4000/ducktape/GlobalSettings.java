@@ -2,8 +2,8 @@ package net.year4000.ducktape;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.cubespace.Yamler.Config.Comment;
-import net.cubespace.Yamler.Config.Config;
+import net.year4000.utilities.config.Comment;
+import net.year4000.utilities.config.Config;
 
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -1,6 +1,6 @@
 package net.year4000.ducktape.bungee;
 
-import com.ewized.utilities.core.util.locale.URLLocaleManager;
+import net.year4000.utilities.locale.URLLocaleManager;
 
 public class MessageManager extends URLLocaleManager {
     private static MessageManager inst = null;

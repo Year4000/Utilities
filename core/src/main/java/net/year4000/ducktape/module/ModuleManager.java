@@ -1,12 +1,12 @@
 package net.year4000.ducktape.module;
 
-import com.ewized.utilities.core.util.LogUtil;
 import com.google.common.eventbus.EventBus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import net.year4000.ducktape.api.events.ModuleEnableEvent;
 import net.year4000.ducktape.api.events.ModuleLoadEvent;
+import net.year4000.utilities.LogUtil;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class ModuleManager<T extends AbstractModule> {
     /** Raw Class Files */
     protected final Set<Class<? extends T>> classes = new HashSet<>();
@@ -29,7 +30,6 @@ public class ModuleManager<T extends AbstractModule> {
     /** Guava's EventBus */
     @Getter
     protected final EventBus eventBus;
-
 
     /** Init LogUtil with its own logger */
     public ModuleManager() {
@@ -92,7 +92,7 @@ public class ModuleManager<T extends AbstractModule> {
 
             loadedClasses.put(info, module);
 
-            log.log(info.name() + " version " + info.version() + " loaded.");
+            log.log("Module " + info.name() + " version " + info.version() + " loaded.");
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

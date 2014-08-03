@@ -1,7 +1,7 @@
 package net.year4000.ducktape.bungee;
 
-import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.year4000.ducktape.GlobalSettings;
+import net.year4000.utilities.config.InvalidConfigurationException;
 
 import java.io.File;
 
