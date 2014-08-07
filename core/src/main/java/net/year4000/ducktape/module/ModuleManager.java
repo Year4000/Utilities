@@ -92,7 +92,12 @@ public class ModuleManager<T extends AbstractModule> {
 
             loadedClasses.put(info, module);
 
-            log.log("Module " + info.name() + " version " + info.version() + " loaded.");
+            if (info.version().equals("internal")) {
+                log.log("Module " + info.name() + " loaded.");
+            }
+            else {
+                log.log("Module " + info.name() + " version " + info.version() + " loaded.");
+            }
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
@@ -116,7 +121,12 @@ public class ModuleManager<T extends AbstractModule> {
 
             module.enable();
 
-            log.log(info.name() + " version " + info.version() + " enabled.");
+            if (info.version().equals("internal")) {
+                log.log("Module " + info.name() + " enabled.");
+            }
+            else {
+                log.log("Module " + info.name() + " version " + info.version() + " enabled.");
+            }
         } catch (Exception e) {
             log.log("There was an exception while enabling: " + info.name());
             module.setEnabled(false);
@@ -140,7 +150,12 @@ public class ModuleManager<T extends AbstractModule> {
             // TODO Fix why its throwing an error
             //eventBus.post(new ModuleDisableEvent(info, module));
 
-            log.log(info.name() + " version " + info.version() + " disabled.");
+            if (info.version().equals("internal")) {
+                log.log("Module " + info.name() + " disabled.");
+            }
+            else {
+                log.log("Module " + info.name() + " version " + info.version() + " disabled.");
+            }
         } catch (Exception e) {
             log.log("There was an exception while disabling: " + info.name());
         }
