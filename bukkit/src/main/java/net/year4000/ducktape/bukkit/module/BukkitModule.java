@@ -3,6 +3,7 @@ package net.year4000.ducktape.bukkit.module;
 import net.year4000.ducktape.bukkit.DuckTape;
 import net.year4000.ducktape.bukkit.Settings;
 import net.year4000.ducktape.module.AbstractModule;
+import net.year4000.utilities.LogUtil;
 
 import java.io.File;
 
@@ -17,8 +18,12 @@ public class BukkitModule extends AbstractModule {
         DuckTape.get().registerCommand(clazz);
     }
 
+    public static LogUtil getLog() {
+        return DuckTape.get().getLog();
+    }
+
     public static void log(String message, Object... args) {
-        DuckTape.debug(message, args);
+        DuckTape.log(message, args);
     }
 
     public static void debug(String message, Object... args) {
