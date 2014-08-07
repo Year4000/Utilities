@@ -2,7 +2,7 @@ Utilities
 ---------
 
 The original [Utilities] created by ewized is ported over for [Year4000].
-The code in this project is not private but the source should not be exposed.
+The code in this project is not private but the source should not be released.
 
 Shaded Projects
 ---------------
