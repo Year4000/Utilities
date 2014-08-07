@@ -48,6 +48,7 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
+                                    <include>net.year4000.utilities:core</include>
                                     <include>com.ewized.utilities:bungee</include>
                                 </includes>
                             </artifactSet>
@@ -59,6 +60,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>net.year4000.utilities</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>com.ewized.utilities</groupId>
             <artifactId>bungee</artifactId>
