@@ -1,13 +1,17 @@
 package net.year4000.utilities.bukkit.bossbar;
 
 import com.ewized.utilities.bukkit.Utilities;
+import com.google.common.collect.Iterables;
 import net.year4000.utilities.bukkit.bossbar.nms.FakeDragon;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BlockIterator;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 /** Allows plugins to safely set a health bar message. */
 @SuppressWarnings("unused")
@@ -306,7 +310,7 @@ public class BossBar {
 
     private static void sendDragon(FakeDragon dragon, Player player) {
         BarUtil.sendPacket(player, dragon.getMetaPacket(dragon.getWatcher()));
-        BarUtil.sendPacket(player, dragon.getTeleportPacket(player.getLocation().add(0, -300, 0)));
+        BarUtil.sendPacket(player, dragon.getTeleportPacket(looking(player)));
     }
 
     private static FakeDragon getDragon(Player player, String message) {
@@ -317,7 +321,7 @@ public class BossBar {
     }
 
     private static FakeDragon addDragon(Player player, String message) {
-        FakeDragon dragon = BarUtil.newDragon(message, player.getLocation().add(0, -300, 0));
+        FakeDragon dragon = BarUtil.newDragon(message, looking(player));
 
         BarUtil.sendPacket(player, dragon.getSpawnPacket());
 
@@ -327,12 +331,23 @@ public class BossBar {
     }
 
     private static FakeDragon addDragon(Player player, Location loc, String message) {
-        FakeDragon dragon = BarUtil.newDragon(message, loc.add(0, -300, 0));
+        FakeDragon dragon = BarUtil.newDragon(message, looking(player));
 
         BarUtil.sendPacket(player, dragon.getSpawnPacket());
 
         players.put(player.getName(), dragon);
 
         return dragon;
+    }
+
+    private static Location looking(Player player) {
+        Iterator<Block> itr = new BlockIterator(player, 200);
+        Location last = null;
+
+        while (itr.hasNext()) {
+            last = itr.next().getLocation();
+        }
+
+        return last == null ? player.getLocation() : last;
     }
 }

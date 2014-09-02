@@ -2,6 +2,9 @@ package net.year4000.utilities.bukkit.bossbar.nms;
 
 import net.year4000.utilities.bukkit.bossbar.BarUtil;
 import org.bukkit.Location;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -47,10 +50,10 @@ public class v1_7 extends FakeDragon {
             Field motX = BarUtil.getField(Entity, "motX");
             motX.set(dragon, getXvel());
 
-            Field motY = BarUtil.getField(Entity, "motX");
+            Field motY = BarUtil.getField(Entity, "motY");
             motY.set(dragon, getYvel());
 
-            Field motZ = BarUtil.getField(Entity, "motX");
+            Field motZ = BarUtil.getField(Entity, "motZ");
             motZ.set(dragon, getZvel());
 
             Method getId = BarUtil.getMethod(EntityEnderDragon, "getId", new Class<?>[]{});
@@ -134,7 +137,7 @@ public class v1_7 extends FakeDragon {
         Object packet = null;
 
         try {
-            packet = PacketPlayOutEntityTeleport.getConstructor(new Class<?>[] { int.class, int.class, int.class, int.class, byte.class, byte.class }).newInstance(this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
+            packet = PacketPlayOutEntityTeleport.getConstructor(new Class<?>[] { int.class, int.class, int.class, int.class, byte.class, byte.class, boolean.class }).newInstance(this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360), true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (SecurityException e) {
