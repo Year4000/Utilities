@@ -6,7 +6,7 @@ import org.bukkit.Location;
 
 @Data
 public abstract class FakeDragon {
-    public static final float MAX_HEALTH = 300;
+    public static final float MAX_HEALTH = 200;
     private int x;
     private int y;
     private int z;
@@ -47,8 +47,6 @@ public abstract class FakeDragon {
     }
 
     public abstract Object getSpawnPacket();
-
-    public abstract Object getEffectPacket();
 
     public abstract Object getDestroyPacket();
 

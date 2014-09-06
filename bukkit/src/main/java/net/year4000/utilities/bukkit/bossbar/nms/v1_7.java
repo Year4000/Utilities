@@ -1,6 +1,5 @@
 package net.year4000.utilities.bukkit.bossbar.nms;
 
-import net.minecraft.server.v1_7_R4.MobEffect;
 import net.year4000.utilities.bukkit.bossbar.BarUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.EnderDragon;
@@ -31,7 +30,7 @@ public class v1_7 extends FakeDragon {
     public Object getSpawnPacket() {
         Class<?> Entity = BarUtil.getCraftClass("Entity");
         Class<?> EntityLiving = BarUtil.getCraftClass("EntityLiving");
-        Class<?> EntityEnderDragon = BarUtil.getCraftClass("EntityWither");
+        Class<?> EntityEnderDragon = BarUtil.getCraftClass("EntityEnderDragon");
         Object packet = null;
         try {
             dragon = EntityEnderDragon.getConstructor(BarUtil.getCraftClass("World")).newInstance(getWorld());
@@ -152,33 +151,6 @@ public class v1_7 extends FakeDragon {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-
-        return packet;
-    }
-
-    @Override
-    public Object getEffectPacket() {
-        Class<?> PacketPlayOutEntityEffect = BarUtil.getCraftClass("PacketPlayOutEntityEffect");
-        Object packet = null;
-
-        try{
-            // invisibility
-            MobEffect me = new MobEffect(14, 200000);
-            packet = PacketPlayOutEntityEffect.getConstructor(new Class<?>[] { int.class, MobEffect.class }).newInstance(this.id,  me);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-
 
         return packet;
     }
