@@ -311,6 +311,7 @@ public class BossBar {
     private static void sendDragon(FakeDragon dragon, Player player) {
         BarUtil.sendPacket(player, dragon.getMetaPacket(dragon.getWatcher()));
         BarUtil.sendPacket(player, dragon.getTeleportPacket(looking(player)));
+        BarUtil.sendPacket(player, dragon.getEffectPacket());
     }
 
     private static FakeDragon getDragon(Player player, String message) {
@@ -324,6 +325,7 @@ public class BossBar {
         FakeDragon dragon = BarUtil.newDragon(message, looking(player));
 
         BarUtil.sendPacket(player, dragon.getSpawnPacket());
+        BarUtil.sendPacket(player, dragon.getEffectPacket());
 
         players.put(player.getName(), dragon);
 
@@ -334,6 +336,7 @@ public class BossBar {
         FakeDragon dragon = BarUtil.newDragon(message, looking(player));
 
         BarUtil.sendPacket(player, dragon.getSpawnPacket());
+        BarUtil.sendPacket(player, dragon.getEffectPacket());
 
         players.put(player.getName(), dragon);
 
@@ -341,13 +344,14 @@ public class BossBar {
     }
 
     private static Location looking(Player player) {
-        Iterator<Block> itr = new BlockIterator(player, 200);
+        /*Iterator<Block> itr = new BlockIterator(player, 200);
         Location last = null;
 
         while (itr.hasNext()) {
             last = itr.next().getLocation();
         }
 
-        return last == null ? player.getLocation() : last;
+        return last == null ? player.getLocation() : last;*/
+        return player.getLocation().add(player.getEyeLocation().getDirection().multiply(40));
     }
 }
