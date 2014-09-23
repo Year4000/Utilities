@@ -22,5 +22,6 @@ License
 This project is licensed under the [GNU General Public License][license], version 3.
 Copyright &copy; 2014 Year4000 [www.year4000.net][year4000]
 
+[license]: https://www.gnu.org/copyleft/gpl.html
 [utilities]: https://github.com/ewized/utilities/
 [year4000]: https://www.year4000.net/
