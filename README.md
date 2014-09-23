@@ -6,7 +6,7 @@ at will, to save resources.
 
 License
 ------
-This script is licensed under the [GNU General Public License][license], version 3.
+This project is licensed under the [GNU General Public License][license], version 3.
 Copyright &copy; 2014 Year4000 [www.year4000.net][year4000]
 
 [license]: https://www.gnu.org/copyleft/gpl.html
