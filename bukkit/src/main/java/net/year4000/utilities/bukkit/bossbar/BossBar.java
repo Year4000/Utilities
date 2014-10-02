@@ -341,13 +341,20 @@ public class BossBar {
     }
 
     private static Location looking(Player player) {
-        Iterator<Block> itr = new BlockIterator(player, 200);
         Location last = null;
 
-        while (itr.hasNext()) {
-            last = itr.next().getLocation();
+        // If iterator is throws an exception default to player's loc at 64y
+        try {
+            Iterator<Block> itr = new BlockIterator(player, 200);
+
+            while (itr.hasNext()) {
+                last = itr.next().getLocation();
+            }
+        } catch (IllegalStateException e) {
+            last = player.getLocation().clone();
+            last.setY(64.0);
         }
 
-        return last == null ? player.getLocation() : last;
+        return last;
     }
 }
