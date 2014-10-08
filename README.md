@@ -1,4 +1,4 @@
-Utilities
+Utilities [![Build Status](https://travis-ci.org/Year4000/Utilities.svg)](https://travis-ci.org/Year4000/Utilities)
 ---------
 
 The original [Utilities] created by ewized is ported over for [Year4000].
