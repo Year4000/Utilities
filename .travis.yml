@@ -3,3 +3,5 @@ jdk:
   - oraclejdk8
 notifications:
   email: false
+before_install:
+  - git submodule update --init --recursive
