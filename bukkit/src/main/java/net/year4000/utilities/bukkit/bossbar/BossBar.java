@@ -7,6 +7,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
@@ -341,20 +342,36 @@ public class BossBar {
     }
 
     private static Location looking(Player player) {
-        Location last = null;
+        Location loc = player.getLocation();
+        float pitch = loc.getPitch();
 
-        // If iterator is throws an exception default to player's loc at 64y
-        try {
-            Iterator<Block> itr = new BlockIterator(player, 200);
-
-            while (itr.hasNext()) {
-                last = itr.next().getLocation();
-            }
-        } catch (IllegalStateException e) {
-            last = player.getLocation().clone();
-            last.setY(64.0);
+        if (pitch >= 55) {
+            loc.add(0, -300, 0);
+        } else if (pitch <= -55) {
+            loc.add(0, 300, 0);
+        } else {
+            loc = loc.getBlock().getRelative(getDirection(loc), player.getServer().getViewDistance() * 16).getLocation();
         }
 
-        return last;
+        return loc;
+    }
+
+    private static BlockFace getDirection(Location loc) {
+        float dir = Math.round(loc.getYaw() / 90);
+
+        if (dir == -4 || dir == 0 || dir == 4) {
+            return BlockFace.SOUTH;
+        }
+        if (dir == -1 || dir == 3) {
+            return BlockFace.EAST;
+        }
+        if (dir == -2 || dir == 2) {
+            return BlockFace.NORTH;
+        }
+        if (dir == -3 || dir == 1) {
+            return BlockFace.WEST;
+        }
+
+        return null;
     }
 }
