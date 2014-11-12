@@ -350,7 +350,7 @@ public class BossBar {
         } else if (pitch <= -55) {
             loc.add(0, 300, 0);
         } else {
-            loc = loc.getBlock().getRelative(getDirection(loc), player.getServer().getViewDistance() * 16).getLocation();
+            loc = loc.getBlock().getRelative(getDirection(loc), 300).getLocation();
         }
 
         return loc;
