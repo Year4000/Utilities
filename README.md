@@ -1,4 +1,4 @@
-Utilities
+Utilities [![Build Status](https://travis-ci.org/Year4000/Utilities.svg)](https://travis-ci.org/Year4000/Utilities)
 ---------
 
 The original [Utilities] created by ewized is ported over for [Year4000].
@@ -20,6 +20,7 @@ This project contains other projects that has been shaded in are bellow.
 License
 -------
 This project is licensed under the [GNU General Public License][license], version 3.
+
 Copyright &copy; 2014 Year4000 [www.year4000.net][year4000]
 
 [license]: https://www.gnu.org/copyleft/gpl.html

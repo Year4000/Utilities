@@ -20,12 +20,13 @@
     </organization>
 
     <modules>
+        <module>utilities</module>
         <module>core</module>
         <module>bukkit</module>
         <module>bungee</module>
     </modules>
 
-    <distributionManagement>
+    <!--<distributionManagement>
         <repository>
             <id>year4000-deployment</id>
             <url>https://repo.year4000.net/content/repositories/releases/</url>
@@ -34,7 +35,7 @@
             <id>year4000-deployment</id>
             <url>https://repo.year4000.net/content/repositories/snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <build>
         <defaultGoal>install</defaultGoal>
