@@ -60,22 +60,10 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>overcast-repo</id>
-            <url>https://repo.oc.tc/content/groups/public/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
-            <groupId>tc.oc</groupId>
-            <artifactId>sportbukkit</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>tc.oc</groupId>
-            <artifactId>sportbukkit-api</artifactId>
+            <groupId>net.year4000</groupId>
+            <artifactId>firecast</artifactId>
             <version>1.7.10-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
