@@ -1,6 +1,6 @@
 package net.year4000.utilities.bukkit.bossbar;
 
-import com.ewized.utilities.bukkit.Utilities;
+import net.year4000.utilities.bukkit.Utilities;
 import com.google.common.collect.Iterables;
 import net.year4000.utilities.bukkit.bossbar.nms.FakeDragon;
 import org.apache.commons.lang.Validate;

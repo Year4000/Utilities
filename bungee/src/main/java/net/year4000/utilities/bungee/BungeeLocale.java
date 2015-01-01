@@ -1,13 +1,13 @@
-package net.year4000.utilities.bukkit;
+package net.year4000.utilities.bungee;
 
 import net.year4000.utilities.locale.LocaleWrapper;
-import org.bukkit.entity.Player;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 @SuppressWarnings("unused")
-public abstract class BukkitLocale extends LocaleWrapper {
+public abstract class BungeeLocale extends LocaleWrapper {
     /** Start creating locales for the specific player's locale */
-    public BukkitLocale(Player player) {
-        this.locale = player == null ? DEFAULT_LOCALE : player.getLocale();
+    public BungeeLocale(ProxiedPlayer player) {
+        this.locale = player == null ? DEFAULT_LOCALE : player.getLocale().toString();
     }
 
     /** Translate to the specific locale with formatting */
