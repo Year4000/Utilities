@@ -1,17 +1,15 @@
 package net.year4000.utilities.bungee;
 
-import net.year4000.utilities.*;
-import org.bukkit.entity.Player;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.year4000.utilities.AbstractBadgeManager;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public final class BadgeManager extends AbstractBadgeManager<Player> {
-    public static final int MAX_RANK = Badges.values().length;
-
+public final class BadgeManager extends AbstractBadgeManager<ProxiedPlayer> {
     /** Find the badge the player should have */
-    public Badges findBadge(Player player) {
+    public Badges findBadge(ProxiedPlayer player) {
         List<Badges> ranks = Arrays.asList(Badges.values());
         Collections.reverse(ranks);
 
@@ -25,8 +23,8 @@ public final class BadgeManager extends AbstractBadgeManager<Player> {
     }
 
     /** Get the badge in bracket form */
-    public String getBadge(Player player) {
+    public String getBadge(ProxiedPlayer player) {
         Badges badge = findBadge(player);
-        return net.year4000.utilities.MessageUtil.replaceColors("&f[" + badge + "&f]");
+        return MessageUtil.replaceColors("&f[" + badge + "&f]");
     }
 }

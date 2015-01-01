@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.util.AbstractMap;
@@ -22,12 +21,13 @@ import java.util.concurrent.ConcurrentMap;
 public final class MessagingChannel implements PluginMessageListener {
     private static final String CHANNEL = "BungeeCord";
     private static final String FORWARD = "Forward";
+    private static final String FORWARD_TO_PLAYER = "ForwardToPlayer";
     private final Deque<AbstractMap.Entry<String, Callback<ByteArrayDataInput>>> requests = new ArrayDeque<>();
     private final ConcurrentMap<String, Callback<ByteArrayDataInput>> custom = new ConcurrentHashMap<>();
-    private Plugin plugin = null;
+    private BukkitPlugin plugin = null;
 
-    private Plugin getPlugin() {
-        return plugin == null ? getPlugin() : plugin;
+    private BukkitPlugin getPlugin() {
+        return plugin == null ? Utilities.getInst() : plugin;
     }
 
     /** Register plugin channels */
@@ -83,7 +83,7 @@ public final class MessagingChannel implements PluginMessageListener {
         ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
         String subChannel = in.readUTF();
 
-        if (subChannel.equals(FORWARD)) {
+        if (subChannel.equals(FORWARD) || subChannel.equals(FORWARD_TO_PLAYER)) {
             String customChannel = in.readUTF();
 
             if (custom.containsKey(customChannel)) {
