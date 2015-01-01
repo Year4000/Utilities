@@ -3,6 +3,7 @@ package net.year4000.utilities.bukkit;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
@@ -16,24 +17,28 @@ import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MessagingChannel implements PluginMessageListener {
+    private static MessagingChannel inst;
     private static final String CHANNEL = "BungeeCord";
     private static final String FORWARD = "Forward";
     private static final String FORWARD_TO_PLAYER = "ForwardToPlayer";
     private final Deque<AbstractMap.Entry<String, Callback<ByteArrayDataInput>>> requests = new ArrayDeque<>();
     private final ConcurrentMap<String, Callback<ByteArrayDataInput>> custom = new ConcurrentHashMap<>();
-    private BukkitPlugin plugin = null;
 
-    private BukkitPlugin getPlugin() {
-        return plugin == null ? Utilities.getInst() : plugin;
+    /** Get the messaging channel instance */
+    public static MessagingChannel get() {
+        if (inst == null) {
+            inst = new MessagingChannel();
+            inst.register();
+        }
+        return inst;
     }
 
     /** Register plugin channels */
-    public void register() {
-        Bukkit.getMessenger().registerOutgoingPluginChannel(getPlugin(), CHANNEL);
-        Bukkit.getMessenger().registerIncomingPluginChannel(getPlugin(), CHANNEL, this);
+    private void register() {
+        Bukkit.getMessenger().registerOutgoingPluginChannel(Utilities.getInst(), CHANNEL);
+        Bukkit.getMessenger().registerIncomingPluginChannel(Utilities.getInst(), CHANNEL, this);
     }
 
     /** Add custom callbacks for forwarded channels */
@@ -60,7 +65,7 @@ public final class MessagingChannel implements PluginMessageListener {
             out.writeUTF(line);
         }
 
-        player.sendPluginMessage(getPlugin(), CHANNEL, out.toByteArray());
+        player.sendPluginMessage(Utilities.getInst(), CHANNEL, out.toByteArray());
         requests.add(new AbstractMap.SimpleImmutableEntry<>(data[0], back));
     }
 
@@ -83,7 +88,7 @@ public final class MessagingChannel implements PluginMessageListener {
             out.writeUTF(line);
         }
 
-        player.sendPluginMessage(getPlugin(), CHANNEL, out.toByteArray());
+        player.sendPluginMessage(Utilities.getInst(), CHANNEL, out.toByteArray());
     }
 
     @Override
@@ -92,15 +97,21 @@ public final class MessagingChannel implements PluginMessageListener {
 
         ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
         String subChannel = in.readUTF();
+        Utilities.debug("INCOMING CHANNEL: " + subChannel);
 
         if (subChannel.equals(FORWARD) || subChannel.equals(FORWARD_TO_PLAYER)) {
             String customChannel = in.readUTF();
+            Utilities.debug("FORWARD CHANNEL: " + customChannel);
+            Utilities.debug("FORWARD DATA: " + in);
 
             if (custom.containsKey(customChannel)) {
                 custom.get(customChannel).callback(in);
             }
         }
         else {
+            Utilities.debug("SUB REQUESTS: " + requests.size());
+            Utilities.debug("SUB DATA: " + in);
+
             if (requests.size() > 0 && subChannel.equals(requests.peek().getKey())) {
                 requests.poll().getValue().callback(in);
             }
