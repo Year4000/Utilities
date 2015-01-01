@@ -48,13 +48,18 @@ public final class MessagingChannel implements PluginMessageListener {
             return;
         }
 
+        Player player = Bukkit.getOnlinePlayers().iterator().next();
+        sendToPlayer(player, data, back);
+    }
+
+    /** Send data to a player and return a callback */
+    public void sendToPlayer(Player player, String[] data, Callback<ByteArrayDataInput> back) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
         for (String line : data) {
             out.writeUTF(line);
         }
 
-        Player player = Bukkit.getOnlinePlayers().iterator().next();
         player.sendPluginMessage(getPlugin(), CHANNEL, out.toByteArray());
         requests.add(new AbstractMap.SimpleImmutableEntry<>(data[0], back));
     }
@@ -66,13 +71,18 @@ public final class MessagingChannel implements PluginMessageListener {
             return;
         }
 
+        Player player = Bukkit.getOnlinePlayers().iterator().next();
+        sendToPlayer(player, data);
+    }
+
+    /** Send data to a player with out needing an response */
+    public void sendToPlayer(Player player, String[] data) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
         for (String line : data) {
             out.writeUTF(line);
         }
 
-        Player player = Bukkit.getOnlinePlayers().iterator().next();
         player.sendPluginMessage(getPlugin(), CHANNEL, out.toByteArray());
     }
 
