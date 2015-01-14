@@ -111,7 +111,7 @@ public final class Pinger {
             long pingtime = dataInputStream.readLong(); //read response
 
             StatusResponse response = gson.fromJson(json, StatusResponse.class);
-            response.setTime((int) (pingtime));
+            response.setTime((int) pingtime);
 
             return response;
         } catch (IllegalStateException e) {
@@ -126,14 +126,14 @@ public final class Pinger {
         private Players players;
         private Version version;
         private String favicon;
-        private int time;
+        private Integer time;
     }
 
     @Data
     @AllArgsConstructor
     public class Players {
-        private int max;
-        private int online;
+        private Integer max;
+        private Integer online;
         private List<Player> sample;
     }
 
