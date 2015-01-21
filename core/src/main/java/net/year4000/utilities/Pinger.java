@@ -130,33 +130,72 @@ public final class Pinger {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public class StatusResponse {
         private String description;
         private Players players;
         private Version version;
         private String favicon;
         private Integer time;
+
+        public Pinger.StatusResponse copy() {
+            Pinger.StatusResponse copy = new StatusResponse();
+
+            copy.setDescription(description);
+            copy.setFavicon(favicon);
+            copy.setTime(time);
+            copy.setPlayers(players.copy());
+            copy.setVersion(version.copy());
+
+            return copy;
+        }
     }
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public class Players {
         private Integer max;
         private Integer online;
         private List<Player> sample;
+
+        public Pinger.Players copy() {
+            Players copy = new Players();
+
+            copy.setMax(max);
+            copy.setOnline(online);
+
+            if (sample != null) {
+                List<Player> samples = new ArrayList<>();
+                sample.forEach(player -> samples.add(player.copy()));
+                copy.setSample(samples);
+            }
+
+            return copy;
+        }
     }
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public class Player {
         private String name;
         private String id;
+
+        public Pinger.Player copy() {
+            return new Player(name, id);
+        }
     }
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public class Version {
         private String name;
         private String protocol;
+
+        public Pinger.Version copy() {
+            return new Version(name, protocol);
+        }
     }
 }
