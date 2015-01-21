@@ -8,14 +8,15 @@ import lombok.NoArgsConstructor;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * @author zh32 <zh32 at zh32.de> modify by ewized to add lombok support
- * and update the code to latest java standards.
+ * @author zh32 <zh32 at zh32.de> modify by ewized to add lombok support,
+ * update the code to latest java standards, and various tweaks.
  */
 @Data
 @AllArgsConstructor
@@ -48,6 +49,14 @@ public final class Pinger {
 
             out.writeByte(paramInt & 0x7F | 0x80);
             paramInt >>>= 7;
+        }
+    }
+
+    public void fetchDataAsync(Callback<Pinger.StatusResponse> callback) {
+        try {
+            callback.callback(fetchData(), null);
+        } catch (Exception e) {
+            callback.callback(null, e);
         }
     }
 
