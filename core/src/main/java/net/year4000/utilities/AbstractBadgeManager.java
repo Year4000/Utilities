@@ -31,7 +31,7 @@ public abstract class AbstractBadgeManager<P> {
 
         @Override
         public String toString() {
-            return net.year4000.utilities.MessageUtil.replaceColors(color + badge);
+            return MessageUtil.replaceColors(color + badge);
         }
     }
 }
