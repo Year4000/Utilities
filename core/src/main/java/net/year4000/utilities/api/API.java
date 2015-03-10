@@ -8,14 +8,31 @@ import net.year4000.utilities.api.routes.accounts.AccountRoute;
 
 public final class API {
     public static final String BASE_URL = "https://api.year4000.net/";
+    private String key = null;
 
     /** The base url builder for creating API urls */
-    private static URLBuilder api() {
-        return URLBuilder.builder(BASE_URL);
+    private URLBuilder api() {
+        URLBuilder api = URLBuilder.builder(BASE_URL);
+
+        if (key != null) {
+            api.addQuery("key", key);
+        }
+
+        return api;
+    }
+
+    /** Set this instances api key */
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    /** Remove this instances api key */
+    public void removeKey() {
+        setKey(null);
     }
 
     /** Get the account with the id of the user */
-    public static AccountRoute getAccount(String id) {
+    public AccountRoute getAccount(String id) {
         try {
             URLBuilder url = api().addPath("accounts").addPath(id);
             JsonObject response = HttpFetcher.get(url.build(), JsonObject.class);
@@ -27,7 +44,7 @@ public final class API {
     }
 
     /** Get the account with the id of the user */
-    public static void getAccountAsync(String id, Callback<AccountRoute> callback) {
+    public void getAccountAsync(String id, Callback<AccountRoute> callback) {
         JsonObject response = null;
         Throwable error = null;
 
