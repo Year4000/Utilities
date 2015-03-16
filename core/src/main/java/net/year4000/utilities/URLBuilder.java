@@ -21,6 +21,16 @@ public final class URLBuilder {
         return builder;
     }
 
+    /** Copy a url builder */
+    public static URLBuilder builder(URLBuilder builder) {
+        URLBuilder copy = new URLBuilder();
+        copy.url = builder.url;
+        copy.paths = new LinkedList<>(builder.paths);
+        copy.queries = new LinkedHashMap<>(builder.queries);
+
+        return copy;
+    }
+
     /** Add a path to the base url */
     public URLBuilder addPath(String path) {
         this.paths.addAll(Arrays.asList(path.split("/")));
