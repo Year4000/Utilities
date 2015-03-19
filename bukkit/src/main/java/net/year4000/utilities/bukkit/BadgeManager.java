@@ -1,6 +1,7 @@
 package net.year4000.utilities.bukkit;
 
 import net.year4000.utilities.AbstractBadgeManager;
+import net.year4000.utilities.AccountBadgeManager;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -8,18 +9,11 @@ import java.util.Collections;
 import java.util.List;
 
 public final class BadgeManager extends AbstractBadgeManager<Player> {
+    private final AccountBadgeManager manager = new AccountBadgeManager();
+
     /** Find the badge the player should have */
     public Badges findBadge(Player player) {
-        List<Badges> ranks = Arrays.asList(Badges.values());
-        Collections.reverse(ranks);
-
-        for (Badges badge : ranks) {
-            if (player.hasPermission(badge.getPermission())) {
-                return badge;
-            }
-        }
-
-        return Badges.ALPHA;
+        return manager.findBadge(player.getUniqueId().toString());
     }
 
     /** Get the badge in bracket form */
