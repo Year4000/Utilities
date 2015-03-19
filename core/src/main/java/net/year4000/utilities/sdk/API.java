@@ -8,6 +8,7 @@ import net.year4000.utilities.Callback;
 import net.year4000.utilities.URLBuilder;
 import net.year4000.utilities.sdk.routes.Route;
 import net.year4000.utilities.sdk.routes.accounts.AccountRoute;
+import net.year4000.utilities.sdk.routes.players.PlayerCountJson;
 import net.year4000.utilities.sdk.routes.players.PlayerCountRoute;
 import net.year4000.utilities.sdk.routes.servers.ServerJson;
 import net.year4000.utilities.sdk.routes.servers.ServersRoute;
@@ -92,7 +93,7 @@ public final class API {
     public PlayerCountRoute getPlayerCount() {
         try {
             URLBuilder url = api().addPath(PLAYER_COUNT_PATH);
-            PlayerCountRoute response = HttpFetcher.get(url.build(), PlayerCountRoute.class);
+            PlayerCountRoute response = HttpFetcher.get(url.build(), PlayerCountJson.class);
             return Route.generate(PlayerCountRoute.class, response);
         }
         catch (Exception e) {
@@ -103,7 +104,7 @@ public final class API {
     /** Get the player count async */
     public void getPlayerCountAsync(Callback<PlayerCountRoute> callback) {
         URLBuilder url = api().addPath(PLAYER_COUNT_PATH);
-        HttpFetcher.get(url.build(), PlayerCountRoute.class, (response, error) -> {
+        HttpFetcher.get(url.build(), PlayerCountJson.class, (response, error) -> {
             PlayerCountRoute route = error != null ? null : Route.generate(PlayerCountRoute.class, response);
             callback.callback(route, error);
         });
