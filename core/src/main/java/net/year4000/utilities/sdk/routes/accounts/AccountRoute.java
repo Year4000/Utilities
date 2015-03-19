@@ -8,6 +8,16 @@ import net.year4000.utilities.sdk.routes.Route;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountRoute extends Route<JsonObject> {
     /** Get the username of this account */
+    public String getRank() {
+        return response.get("rank").getAsString();
+    }
+
+    /** Get the username of this account */
+    public int getCredits() {
+        return response.get("credits").getAsInt();
+    }
+
+    /** Get the username of this account */
     public String getUsername() {
         return response.get("minecraft").getAsJsonObject().get("username").getAsString();
     }
