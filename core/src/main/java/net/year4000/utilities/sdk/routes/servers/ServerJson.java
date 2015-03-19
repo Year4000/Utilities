@@ -1,4 +1,4 @@
-package net.year4000.utilities.api.routes.servers;
+package net.year4000.utilities.sdk.routes.servers;
 
 import lombok.Value;
 import net.year4000.utilities.Pinger;

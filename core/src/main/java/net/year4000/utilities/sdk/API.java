@@ -1,4 +1,4 @@
-package net.year4000.utilities.api;
+package net.year4000.utilities.sdk;
 
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
 import net.year4000.utilities.URLBuilder;
-import net.year4000.utilities.api.routes.Route;
-import net.year4000.utilities.api.routes.accounts.AccountRoute;
-import net.year4000.utilities.api.routes.players.PlayerCountRoute;
-import net.year4000.utilities.api.routes.servers.ServerJson;
-import net.year4000.utilities.api.routes.servers.ServersRoute;
+import net.year4000.utilities.sdk.routes.Route;
+import net.year4000.utilities.sdk.routes.accounts.AccountRoute;
+import net.year4000.utilities.sdk.routes.players.PlayerCountRoute;
+import net.year4000.utilities.sdk.routes.servers.ServerJson;
+import net.year4000.utilities.sdk.routes.servers.ServersRoute;
 
 import java.lang.reflect.Type;
 import java.util.Map;

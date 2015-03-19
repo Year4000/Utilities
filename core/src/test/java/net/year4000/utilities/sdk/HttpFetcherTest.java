@@ -1,8 +1,9 @@
-package net.year4000.utilities.api;
+package net.year4000.utilities.sdk;
 
 import com.google.gson.JsonObject;
 import junit.framework.Assert;
 import lombok.extern.java.Log;
+import net.year4000.utilities.sdk.HttpFetcher;
 import org.junit.Test;
 
 @Log

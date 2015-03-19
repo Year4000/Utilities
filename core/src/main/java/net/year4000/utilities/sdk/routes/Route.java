@@ -1,4 +1,4 @@
-package net.year4000.utilities.api.routes;
+package net.year4000.utilities.sdk.routes;
 
 import com.google.gson.Gson;
 

@@ -1,8 +1,9 @@
-package net.year4000.utilities.api;
+package net.year4000.utilities.sdk;
 
 import junit.framework.Assert;
 import lombok.extern.java.Log;
-import net.year4000.utilities.api.routes.accounts.AccountRoute;
+import net.year4000.utilities.sdk.API;
+import net.year4000.utilities.sdk.routes.accounts.AccountRoute;
 import org.junit.Test;
 
 @Log

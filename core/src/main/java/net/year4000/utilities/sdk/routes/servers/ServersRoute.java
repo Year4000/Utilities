@@ -1,4 +1,4 @@
-package net.year4000.utilities.api.routes.servers;
+package net.year4000.utilities.sdk.routes.servers;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import net.year4000.utilities.api.routes.Route;
+import net.year4000.utilities.sdk.routes.Route;
 
 import java.util.Map;
 

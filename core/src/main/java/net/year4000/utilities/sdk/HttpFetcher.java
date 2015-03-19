@@ -1,4 +1,4 @@
-package net.year4000.utilities.api;
+package net.year4000.utilities.sdk;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

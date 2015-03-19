@@ -1,4 +1,4 @@
-package net.year4000.utilities.api.routes.players;
+package net.year4000.utilities.sdk.routes.players;
 
 import lombok.Value;
 
