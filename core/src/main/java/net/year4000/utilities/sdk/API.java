@@ -93,7 +93,7 @@ public final class API {
     public PlayerCountRoute getPlayerCount() {
         try {
             URLBuilder url = api().addPath(PLAYER_COUNT_PATH);
-            PlayerCountRoute response = HttpFetcher.get(url.build(), PlayerCountJson.class);
+            PlayerCountJson response = HttpFetcher.get(url.build(), PlayerCountJson.class);
             return Route.generate(PlayerCountRoute.class, response);
         }
         catch (Exception e) {
