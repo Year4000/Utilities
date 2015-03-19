@@ -2,6 +2,9 @@ package net.year4000.utilities.api.routes;
 
 import com.google.gson.Gson;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 public abstract class Route<T> {
     private static final Gson GSON = new Gson();
     protected T response;
@@ -9,11 +12,14 @@ public abstract class Route<T> {
     /** Generate the route based on its correct type */
     public static <R extends Route, T> R generate(Class<R> route, T response) {
         try {
-            R reply = route.newInstance();
+            // Give us access to the default constructor
+            Constructor<R> constructor = route.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            R reply = constructor.newInstance();
             reply.response = response;
             return reply;
         }
-        catch (InstantiationException | IllegalAccessException e) {
+        catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
