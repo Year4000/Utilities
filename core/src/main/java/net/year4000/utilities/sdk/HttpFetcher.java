@@ -169,7 +169,7 @@ public class HttpFetcher {
             Throwable error = null;
 
             try {
-                response = post(url, data, clazz);
+                response = put(url, data, clazz);
             }
             catch (Exception e) {
                 error = e;
@@ -187,7 +187,7 @@ public class HttpFetcher {
             Throwable error = null;
 
             try {
-                response = post(url, data, type);
+                response = put(url, data, type);
             }
             catch (Exception e) {
                 error = e;
@@ -219,7 +219,7 @@ public class HttpFetcher {
             Throwable error = null;
 
             try {
-                response = post(url, data, clazz);
+                response = delete(url, data, clazz);
             }
             catch (Exception e) {
                 error = e;
@@ -237,7 +237,7 @@ public class HttpFetcher {
             Throwable error = null;
 
             try {
-                response = post(url, data, type);
+                response = delete(url, data, type);
             }
             catch (Exception e) {
                 error = e;
