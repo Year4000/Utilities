@@ -18,7 +18,7 @@ import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public final class API {
+public class API {
     public static final String BASE_URL = "https://api.year4000.net/";
     public static final String ACCOUNTS_PATH = "accounts";
     public static final String SERVERS_PATH = "servers";
@@ -27,7 +27,7 @@ public final class API {
     private String key = null;
 
     /** The base url builder for creating API urls */
-    private URLBuilder api() {
+    protected URLBuilder api() {
         URLBuilder api = URLBuilder.builder(BASE_URL);
 
         if (key != null) {
