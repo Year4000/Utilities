@@ -9,6 +9,7 @@ import org.junit.Test;
 @Log
 public class HttpFetcherTest {
     private static final String URL = "https://api.year4000.net";
+    private static final String OFFLINE = "502 Bad Gateway";
 
     @Test
     public void getTest() {
@@ -17,7 +18,9 @@ public class HttpFetcherTest {
             Assert.assertEquals(response.get("name").getAsString(), "Year4000-API");
         }
         catch (Exception e) {
-            log.info("The API could be down: " + e.getMessage());
+            if (!e.getMessage().equals(OFFLINE)) {
+                log.info("The API could be down: " + e.getMessage());
+            }
         }
     }
 
@@ -27,7 +30,9 @@ public class HttpFetcherTest {
            HttpFetcher.post(URL, null, JsonObject.class);
         }
         catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "405 Method Not Allowed");
+            if (!e.getMessage().equals(OFFLINE)) {
+                Assert.assertEquals(e.getMessage(), "405 Method Not Allowed");
+            }
         }
     }
 
@@ -37,7 +42,9 @@ public class HttpFetcherTest {
             HttpFetcher.put(URL, null, JsonObject.class);
         }
         catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "405 Method Not Allowed");
+            if (!e.getMessage().equals(OFFLINE)) {
+                Assert.assertEquals(e.getMessage(), "405 Method Not Allowed");
+            }
         }
     }
 
@@ -47,7 +54,9 @@ public class HttpFetcherTest {
             HttpFetcher.delete(URL, null, JsonObject.class);
         }
         catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "405 Method Not Allowed");
+            if (!e.getMessage().equals(OFFLINE)) {
+                Assert.assertEquals(e.getMessage(), "405 Method Not Allowed");
+            }
         }
     }
 }
