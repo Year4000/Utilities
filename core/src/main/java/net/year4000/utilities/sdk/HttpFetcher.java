@@ -31,7 +31,7 @@ public class HttpFetcher {
         int responseCode;
 
         // Get Response
-        if ((responseCode = connection.getResponseCode()) != 200) {
+        if ((responseCode = connection.getResponseCode()) != HttpsURLConnection.HTTP_OK) {
             throw new IOException(responseCode + " " + connection.getResponseMessage());
         }
         else {
@@ -54,7 +54,7 @@ public class HttpFetcher {
         }
 
         // Get Response
-        if ((responseCode = connection.getResponseCode()) != 200) {
+        if ((responseCode = connection.getResponseCode()) != HttpsURLConnection.HTTP_OK) {
             throw new IOException(responseCode + " " + connection.getResponseMessage());
         }
         else {
