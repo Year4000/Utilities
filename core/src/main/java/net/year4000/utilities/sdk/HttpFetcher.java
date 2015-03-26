@@ -18,6 +18,7 @@ import java.net.URL;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpFetcher {
+    private static final int TIMEOUT = 5000;
     private static final String USER_AGENT = "Year4000 Utilities API Interface";
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     private static final SchedulerManager SCHEDULER = new SchedulerManager();
@@ -28,6 +29,8 @@ public class HttpFetcher {
         HttpsURLConnection connection = (HttpsURLConnection) new URL(uri).openConnection();
         connection.setRequestMethod(method.name());
         connection.setRequestProperty("User-Agent", USER_AGENT);
+        connection.setConnectTimeout(TIMEOUT);
+        connection.setReadTimeout(TIMEOUT);
         int responseCode;
 
         // Get Response
@@ -45,6 +48,8 @@ public class HttpFetcher {
         connection.setRequestMethod(method.name());
         connection.setRequestProperty("Content-Type", "application/json; charset=utf8");
         connection.setRequestProperty("User-Agent", USER_AGENT);
+        connection.setConnectTimeout(TIMEOUT);
+        connection.setReadTimeout(TIMEOUT);
         connection.setDoOutput(true);
         int responseCode;
 
