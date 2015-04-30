@@ -122,8 +122,29 @@ public class API {
         }
     }
 
+    /** Get a custom route */
+    public <R extends Route, T> R getRoute(Class<R> route, Type type, String path) {
+        try {
+            URLBuilder url = api().addPath(path);
+            T response = HttpFetcher.get(url.build(), type);
+            return Route.generate(route, response);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /** Get a custom route async */
     public <R extends Route,T> void getRouteAsync(Class<R> route, Class<T> type, String path, Callback<R> callback) {
+        URLBuilder url = api().addPath(path);
+        HttpFetcher.get(url.build(), type, (response, error) -> {
+            R routeObject = error != null ? null : Route.generate(route, response);
+            callback.callback(routeObject, error);
+        });
+    }
+
+    /** Get a custom route async */
+    public <R extends Route, T> void getRouteAsync(Class<R> route, Type type, String path, Callback<R> callback) {
         URLBuilder url = api().addPath(path);
         HttpFetcher.get(url.build(), type, (response, error) -> {
             R routeObject = error != null ? null : Route.generate(route, response);
