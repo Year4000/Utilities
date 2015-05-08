@@ -51,10 +51,10 @@ public class HttpConnection {
 
     /** Response with http */
     public static Reader responseHttp(HttpURLConnection connection) throws IOException {
-        int responseCode;
+        int responseCode = connection.getResponseCode();
 
         // Get Response
-        if ((responseCode = connection.getResponseCode()) != HttpURLConnection.HTTP_OK) {
+        if (responseCode >= HttpURLConnection.HTTP_OK && responseCode <= HttpURLConnection.HTTP_PARTIAL) {
             throw new IOException(responseCode + " " + connection.getResponseMessage());
         }
         else {
@@ -64,10 +64,10 @@ public class HttpConnection {
 
     /** Response with https */
     public static Reader responseHttps(HttpsURLConnection connection) throws IOException {
-        int responseCode;
+        int responseCode = connection.getResponseCode();
 
         // Get Response
-        if ((responseCode = connection.getResponseCode()) != HttpsURLConnection.HTTP_OK) {
+        if (responseCode >= HttpsURLConnection.HTTP_OK && responseCode <= HttpsURLConnection.HTTP_PARTIAL) {
             throw new IOException(responseCode + " " + connection.getResponseMessage());
         }
         else {
