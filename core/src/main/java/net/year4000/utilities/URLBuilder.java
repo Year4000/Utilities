@@ -31,6 +31,39 @@ public final class URLBuilder {
         return copy;
     }
 
+    /** Create a URL Builder instance from url */
+    public static URLBuilder fromURL(String url) {
+        String[] uri = url.startsWith("http://") || url.startsWith("https://") ? url.split("://") : new String[] {"http", url};
+        String[] paths = uri[1].contains("/") ? uri[1].split("/") : new String[]{uri[1]};
+        URLBuilder copy = URLBuilder.builder(uri[0] + "://" + paths[0]);
+        copy.paths = new LinkedList<>();
+        copy.queries = new LinkedHashMap<>();
+
+        for (int i = 1; i < paths.length; i++) {
+            // Does the path contains a query string
+            if (i == paths.length - 1 && paths[i].contains("?")) {
+                String[] split = paths[i].split("[\\?&]");
+                copy.paths.add(split[0]);
+
+                // Add all the queries to the url
+                for (int j = 1; j < split.length; j++) {
+                    if (split[j].contains("=")) {
+                        String[] entry = split[j].split("=");
+                        copy.queries.put(entry[0], entry[1]);
+                    }
+                    else {
+                        copy.queries.put(split[j], "");
+                    }
+                }
+            }
+            else {
+                copy.paths.add(paths[i]);
+            }
+        }
+
+        return copy;
+    }
+
     /** Add a path to the base url */
     public URLBuilder addPath(String path) {
         this.paths.addAll(Arrays.asList(path.split("/")));
