@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
+import net.year4000.utilities.URLBuilder;
 import net.year4000.utilities.scheduler.SchedulerManager;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -14,7 +15,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpFetcher {
@@ -26,7 +29,7 @@ public class HttpFetcher {
 
     /** Normal data request method that only return data */
     private static Reader request(Methods method, String uri) throws IOException {
-        HttpsURLConnection connection = (HttpsURLConnection) new URL(uri).openConnection();
+        HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
         connection.setRequestMethod(method.name());
         connection.setRequestProperty("User-Agent", USER_AGENT);
         connection.setConnectTimeout(TIMEOUT);
