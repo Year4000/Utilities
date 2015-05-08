@@ -64,6 +64,11 @@ public final class URLBuilder {
         return copy;
     }
 
+    /** Is the url builder an instance of a secured url */
+    public boolean isSecured() {
+        return url.startsWith("https");
+    }
+
     /** Add a path to the base url */
     public URLBuilder addPath(String path) {
         this.paths.addAll(Arrays.asList(path.split("/")));
