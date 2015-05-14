@@ -42,6 +42,9 @@ public class HttpFetcherTest {
             if (!e.getMessage().equals(OFFLINE)) {
                 log.info("The API could be down: " + e.getMessage());
             }
+            else {
+                throw new RuntimeException(e);
+            }
         }
     }
 
