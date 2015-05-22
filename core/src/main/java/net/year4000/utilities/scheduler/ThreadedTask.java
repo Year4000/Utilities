@@ -45,8 +45,14 @@ public class ThreadedTask implements Runnable {
     @Override
     public void run() {
         do {
-            execute();
-            sleep();
+            if (repeat) {
+                execute();
+                sleep();
+            }
+            else {
+                sleep();
+                execute();
+            }
         } while (repeat);
     }
 }
