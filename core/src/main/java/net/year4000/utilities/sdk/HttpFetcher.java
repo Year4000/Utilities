@@ -57,7 +57,7 @@ public class HttpFetcher {
         connection.setRequestProperty("Content-Type", "application/json; charset=utf8");
         connection.setDoOutput(true);
 
-        HttpConnection.responseHttp(connection);
+        HttpConnection.requestHttp(connection, object);
 
         return HttpConnection.responseHttp(connection);
     }
