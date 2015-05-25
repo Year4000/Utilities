@@ -55,10 +55,10 @@ public class HttpConnection {
 
         // Get Response
         if (responseCode >= HttpURLConnection.HTTP_OK && responseCode <= HttpURLConnection.HTTP_PARTIAL) {
-            throw new IOException(responseCode + " " + connection.getResponseMessage());
+            return new InputStreamReader(connection.getInputStream());
         }
         else {
-            return new InputStreamReader(connection.getInputStream());
+            throw new IOException(responseCode + " " + connection.getResponseMessage());
         }
     }
 
@@ -68,10 +68,10 @@ public class HttpConnection {
 
         // Get Response
         if (responseCode >= HttpsURLConnection.HTTP_OK && responseCode <= HttpsURLConnection.HTTP_PARTIAL) {
-            throw new IOException(responseCode + " " + connection.getResponseMessage());
+            return new InputStreamReader(connection.getInputStream());
         }
         else {
-            return new InputStreamReader(connection.getInputStream());
+            throw new IOException(responseCode + " " + connection.getResponseMessage());
         }
     }
 
