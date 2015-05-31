@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import junit.framework.Assert;
 import lombok.extern.java.Log;
 import net.year4000.utilities.URLBuilder;
-import net.year4000.utilities.sdk.HttpFetcher;
 import org.junit.Test;
 
 @Log
@@ -16,21 +15,21 @@ public class HttpFetcherTest {
     private void test(Methods method) {
         try {
             String code = String.valueOf(System.currentTimeMillis());
-            URLBuilder.builder(URL).addPath("test").addQuery("code", code);
+            String url = URLBuilder.builder(URL).addPath("test").addQuery("code", code).toString();
             JsonObject response;
 
             switch (method) {
                 case GET:
-                    response = HttpFetcher.get(URL, JsonObject.class);
+                    response = HttpFetcher.get(url, JsonObject.class);
                     break;
                 case POST:
-                    response = HttpFetcher.post(URL, null, JsonObject.class);
+                    response = HttpFetcher.post(url, null, JsonObject.class);
                     break;
                 case PUT:
-                    response = HttpFetcher.put(URL, null, JsonObject.class);
+                    response = HttpFetcher.put(url, null, JsonObject.class);
                     break;
                 case DELETE:
-                    response = HttpFetcher.delete(URL, null, JsonObject.class);
+                    response = HttpFetcher.delete(url, null, JsonObject.class);
                     break;
                 default:
                     throw new EnumConstantNotPresentException(Methods.class, method.toString());
