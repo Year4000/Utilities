@@ -112,8 +112,13 @@ public class API {
 
     /** Get a custom route */
     public <R extends Route, T> R getRoute(Class<R> route, Class<T> type, String path) {
+        URLBuilder url = api().addPath(path);
+        return getRoute(route, type, url);
+    }
+
+    /** Get a custom route */
+    public <R extends Route, T> R getRoute(Class<R> route, Class<T> type, URLBuilder url) {
         try {
-            URLBuilder url = api().addPath(path);
             T response = HttpFetcher.get(url.build(), type);
             return Route.generate(route, response);
         }
@@ -123,9 +128,14 @@ public class API {
     }
 
     /** Get a custom route */
-    public <R extends Route, T> R getRoute(Class<R> route, Type type, String path) {
+    public <R extends Route> R getRoute(Class<R> route, Type type, String path) {
+        URLBuilder url = api().addPath(path);
+        return getRoute(route, type, url);
+    }
+
+    /** Get a custom route */
+    public <R extends Route, T> R getRoute(Class<R> route, Type type, URLBuilder url) {
         try {
-            URLBuilder url = api().addPath(path);
             T response = HttpFetcher.get(url.build(), type);
             return Route.generate(route, response);
         }
@@ -137,6 +147,11 @@ public class API {
     /** Get a custom route async */
     public <R extends Route, T> void getRouteAsync(Class<R> route, Class<T> type, String path, Callback<R> callback) {
         URLBuilder url = api().addPath(path);
+        getRouteAsync(route, type, url, callback);
+    }
+
+    /** Get a custom route async */
+    public <R extends Route, T> void getRouteAsync(Class<R> route, Class<T> type, URLBuilder url, Callback<R> callback) {
         HttpFetcher.get(url.build(), type, (response, error) -> {
             R routeObject = error != null ? null : Route.generate(route, response);
             callback.callback(routeObject, error);
@@ -144,8 +159,13 @@ public class API {
     }
 
     /** Get a custom route async */
-    public <R extends Route, T> void getRouteAsync(Class<R> route, Type type, String path, Callback<R> callback) {
+    public <R extends Route> void getRouteAsync(Class<R> route, Type type, String path, Callback<R> callback) {
         URLBuilder url = api().addPath(path);
+        getRouteAsync(route, type, url, callback);
+    }
+
+    /** Get a custom route async */
+    public <R extends Route> void getRouteAsync(Class<R> route, Type type, URLBuilder url, Callback<R> callback) {
         HttpFetcher.get(url.build(), type, (response, error) -> {
             R routeObject = error != null ? null : Route.generate(route, response);
             callback.callback(routeObject, error);
