@@ -27,7 +27,7 @@ public class API {
     private String key = null;
 
     /** The base url builder for creating API urls */
-    protected URLBuilder api() {
+    public URLBuilder api() {
         URLBuilder api = URLBuilder.builder(BASE_URL);
 
         if (key != null) {
