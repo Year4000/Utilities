@@ -103,13 +103,18 @@
             <id>oc-tc</id>
             <url>https://repo.oc.tc/content/repositories/public</url>
         </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <!-- Spigot Server -->
         <dependency>
-            <groupId>net.year4000</groupId>
-            <artifactId>firecast</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8.7-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>
