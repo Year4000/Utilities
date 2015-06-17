@@ -3,7 +3,10 @@ package net.year4000.utilities.sdk;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.year4000.utilities.URLBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -29,13 +32,24 @@ public class HttpConnection {
     private Map<String, String> headers = new LinkedHashMap<>();
     private String userAgent = null;
     private int timeout = -1;
+    // Connection
+    private transient HttpURLConnection urlConnection;
 
     public HttpConnection(String url) {
         urlBuilder = URLBuilder.fromURL(url);
     }
 
+    /** Get or create new connection */
+    public <T extends HttpURLConnection> T getConnection() throws IOException {
+        if (urlConnection == null) {
+            urlConnection = newConnection();
+        }
+
+        return (T) urlConnection;
+    }
+
     /** Create a new HTTPURLConnection from this class */
-    public <T extends HttpURLConnection> T newConnection() throws IOException {
+    private <T extends HttpURLConnection> T newConnection() throws IOException {
         T connection = (T) (new URL(urlBuilder.build())).openConnection();
 
         // Add headers

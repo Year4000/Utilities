@@ -24,14 +24,14 @@ public class HttpFetcher {
     private static Reader request(Methods method, HttpConnection uri) throws IOException {
         // Use secured https if url is https
         if (uri.getUrlBuilder().isSecured()) {
-            HttpsURLConnection connection = uri.newConnection();
+            HttpsURLConnection connection = uri.getConnection();
             connection.setRequestMethod(method.name());
 
             // Get Response
             return HttpConnection.responseHttps(connection);
         }
 
-        HttpURLConnection connection = uri.newConnection();
+        HttpURLConnection connection = uri.getConnection();
         connection.setRequestMethod(method.name());
 
         // Get Response
@@ -42,7 +42,7 @@ public class HttpFetcher {
     private static Reader request(Methods method, JsonObject object, HttpConnection uri) throws IOException {
         // Use secured https if url is https
         if (uri.getUrlBuilder().isSecured()) {
-            HttpsURLConnection connection = uri.newConnection();
+            HttpsURLConnection connection = uri.getConnection();
             connection.setRequestMethod(method.name());
             connection.setRequestProperty("Content-Type", "application/json; charset=utf8");
             connection.setDoOutput(true);
@@ -52,7 +52,7 @@ public class HttpFetcher {
             return HttpConnection.responseHttps(connection);
         }
 
-        HttpURLConnection connection = uri.newConnection();
+        HttpURLConnection connection = uri.getConnection();
         connection.setRequestMethod(method.name());
         connection.setRequestProperty("Content-Type", "application/json; charset=utf8");
         connection.setDoOutput(true);
