@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import net.year4000.utilities.URLBuilder;
+import org.eclipse.jetty.io.RuntimeIOException;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -33,16 +34,28 @@ public class HttpConnection {
     private String userAgent = null;
     private int timeout = -1;
     // Connection
-    private transient HttpURLConnection urlConnection;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private HttpURLConnection urlConnection;
 
     public HttpConnection(String url) {
         urlBuilder = URLBuilder.fromURL(url);
     }
 
+    /** Get or create new connection that only throws RuntimeIOException */
+    public <T extends HttpURLConnection> T getSuppressedConnection() {
+        try {
+            return getConnection();
+        }
+        catch (IOException e) {
+            throw new RuntimeIOException(e);
+        }
+    }
+
     /** Get or create new connection */
     public <T extends HttpURLConnection> T getConnection() throws IOException {
         if (urlConnection == null) {
-            urlConnection = newConnection();
+            urlConnection = this.<T>newConnection();
         }
 
         return (T) urlConnection;
