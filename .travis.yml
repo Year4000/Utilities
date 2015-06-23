@@ -3,6 +3,3 @@ jdk:
   - oraclejdk8
 notifications:
   email: false
-before_install:
-  - chmod +x ./before.sh
-  - ./before.sh
