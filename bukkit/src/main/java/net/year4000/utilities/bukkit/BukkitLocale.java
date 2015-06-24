@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 public abstract class BukkitLocale extends LocaleWrapper {
     /** Start creating locales for the specific player's locale */
     public BukkitLocale(Player player) {
-        this.locale = player == null ? DEFAULT_LOCALE : player.getLocale();
+        this.locale = player == null ? DEFAULT_LOCALE : player.spigot().getLocale();
     }
 
     /** Translate to the specific locale with formatting */
