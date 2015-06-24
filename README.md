@@ -14,13 +14,14 @@ This project contains other projects that has been shaded in are bellow.
 - zip4j [github.com/dmp/zip4j](https://github.com/dmp/zip4j)
 - Google's Guava [code.google.com/p/guava-libraries](https://code.google.com/p/guava-libraries/)
 - Google's Gson [code.google.com/p/google-gson](https://code.google.com/p/google-gson/)
-- CubeSpace's Yamler (Modified) [github.com/Cube-Space/Yamler](https://github.com/Cube-Space/Yamler/)
+- CubeSpace's Yamler (Modified) [github.com/Cube-Space/Yamler](https://github.com/Cube-Space/Yamler)
+- Intake [github.com/sk89q/Intake](https://github.com/sk89q/Intake)
 
 License
 -------
 This project is licensed under the [GNU General Public License][license], version 3.
 
-Copyright &copy; 2014 Year4000 [www.year4000.net][year4000]
+Copyright &copy; 2015 Year4000 [www.year4000.net][year4000]
 
 [license]: https://www.gnu.org/copyleft/gpl.html
 [utilities]: https://github.com/ewized/utilities/
