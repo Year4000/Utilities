@@ -80,7 +80,8 @@ public abstract class AbstractLocaleManager {
             file.load(new InputStreamReader(locale, Charsets.UTF_8));
             locales.put(new Locale(key), file);
             checkNotNull(log).debug("LocaleManager Added: " + key);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             checkNotNull(log).log(e, false);
         }
     }

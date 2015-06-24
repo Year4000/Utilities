@@ -1,6 +1,5 @@
 package net.year4000.utilities.bukkit;
 
-import net.year4000.utilities.bukkit.BukkitPlugin;
 import lombok.Getter;
 import net.year4000.utilities.bukkit.bossbar.BarAPIListener;
 import net.year4000.utilities.bukkit.bossbar.BossBar;

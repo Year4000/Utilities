@@ -37,7 +37,8 @@ public final class FileUtil {
 
         if (source.isDirectory()) {
             copyDirectory(source, destination);
-        } else {
+        }
+        else {
             copyFile(source, destination);
         }
     }

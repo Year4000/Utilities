@@ -50,7 +50,8 @@ public class FileLocaleManager extends AbstractLocaleManager {
                 File file = new File(path, code + EXTENSION);
 
                 loadLocale(code, new FileInputStream(file));
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 //log.log(e.getMessage());
                 e.printStackTrace();
             }

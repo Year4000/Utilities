@@ -54,7 +54,8 @@ public class ClassLocaleManager extends AbstractLocaleManager {
             for (String locale : codes) {
                 loadLocale(locale, clazz.getResourceAsStream(path + locale + EXTENSION));
             }
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             log.log(e, true);
         }
     }

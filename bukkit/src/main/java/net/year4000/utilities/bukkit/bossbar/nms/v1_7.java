@@ -2,9 +2,6 @@ package net.year4000.utilities.bukkit.bossbar.nms;
 
 import net.year4000.utilities.bukkit.bossbar.BarUtil;
 import org.bukkit.Location;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

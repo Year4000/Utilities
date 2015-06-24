@@ -13,11 +13,12 @@ public class MySQLDatabase {
     private MySQLDatabase(String database, String username, String password) {
         try {
             connection = DriverManager.getConnection(
-                    database,
-                    username,
-                    password
+                database,
+                username,
+                password
             );
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -30,6 +31,7 @@ public class MySQLDatabase {
         if (inst == null) {
             inst = new MySQLDatabase(database, username, password);
         }
+
         return inst;
     }
 
@@ -71,9 +73,11 @@ public class MySQLDatabase {
         try {
             Statement statement = connection.createStatement();
             results = statement.executeQuery(sql);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
+
         return results;
     }
 
@@ -98,7 +102,8 @@ public class MySQLDatabase {
             Statement statement = connection.createStatement();
             statement.execute(sql);
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return false;
         }

@@ -1,18 +1,14 @@
 package net.year4000.utilities.bukkit.bossbar;
 
 import net.year4000.utilities.bukkit.Utilities;
-import com.google.common.collect.Iterables;
 import net.year4000.utilities.bukkit.bossbar.nms.FakeDragon;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.util.BlockIterator;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 /** Allows plugins to safely set a health bar message. */
 @SuppressWarnings("unused")

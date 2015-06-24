@@ -11,7 +11,7 @@ public abstract class AbstractBadgeManager<P> {
     public abstract String getBadge(P player);
 
     @AllArgsConstructor
-    public static enum Badges {
+    public enum Badges {
         ALPHA(ChatColor.DARK_AQUA, "α", "alpha", 1),
         THETA(ChatColor.GRAY, "Θ", "theta", 2),
         MU(ChatColor.YELLOW, "μ", "mu", 3),

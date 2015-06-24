@@ -31,12 +31,14 @@ public final class Pinger {
     public int readVarInt(DataInputStream in) throws IOException {
         int i = 0;
         int j = 0;
+
         while (true) {
             int k = in.readByte();
             i |= (k & 0x7F) << j++ * 7;
             if (j > 5) throw new RuntimeException("VarInt too big");
             if ((k & 0x80) != 128) break;
         }
+
         return i;
     }
 
@@ -55,7 +57,8 @@ public final class Pinger {
     public void fetchDataAsync(Callback<Pinger.StatusResponse> callback) {
         try {
             callback.callback(fetchData(), null);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             callback.callback(null, e);
         }
     }
@@ -123,7 +126,8 @@ public final class Pinger {
             response.setTime((int) pingtime);
 
             return response;
-        } catch (IllegalStateException e) {
+        }
+        catch (IllegalStateException e) {
             throw new IOException(e.getMessage());
         }
     }

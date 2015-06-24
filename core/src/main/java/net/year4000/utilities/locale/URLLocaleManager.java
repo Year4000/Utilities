@@ -59,7 +59,8 @@ public class URLLocaleManager extends AbstractLocaleManager {
                 url.connect();
 
                 loadLocale(code, url.getInputStream());
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 log.log(e, true);
             }
         }
@@ -77,7 +78,8 @@ public class URLLocaleManager extends AbstractLocaleManager {
             con.connect();
 
             return gson.fromJson(new InputStreamReader(con.getInputStream()), String[].class);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             return new String[] {DEFAULT_LOCALE};
         }
     }

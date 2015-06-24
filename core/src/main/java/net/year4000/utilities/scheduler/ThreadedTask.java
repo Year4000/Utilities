@@ -15,7 +15,6 @@ public class ThreadedTask implements Runnable {
     @NonFinal
     private boolean repeat;
 
-
     /** Stop the task if the task was assigned to be repeated */
     public void stop() {
         repeat = false;
@@ -27,7 +26,8 @@ public class ThreadedTask implements Runnable {
         if (delay > 0 && unit != null) {
             try {
                 unit.sleep(delay);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
@@ -37,7 +37,8 @@ public class ThreadedTask implements Runnable {
     private void execute() {
         try {
             task.run();
-        } catch (Exception t) {
+        }
+        catch (Exception t) {
             manager.log.log(t, false);
         }
     }
