@@ -3,3 +3,5 @@ jdk:
   - oraclejdk8
 notifications:
   email: false
+after_success:
+  - ./deploy_maven.py
