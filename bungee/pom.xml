@@ -98,8 +98,8 @@
             <url>https://repo.oc.tc/content/repositories/public</url>
         </repository>
         <repository>
-            <id>dev-cmc</id>
-            <url>http://repo.craftminecraft.net/content/groups/public/</url>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
 
