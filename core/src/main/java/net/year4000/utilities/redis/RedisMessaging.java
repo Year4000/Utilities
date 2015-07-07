@@ -19,7 +19,6 @@ package net.year4000.utilities.redis;
 
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
-import net.year4000.utilities.scheduler.SchedulerManager;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
@@ -28,23 +27,35 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkArgument;
 
 @AllArgsConstructor
 public class RedisMessaging {
     private static final String CHANNELS = "*";
-    private SchedulerManager scheduler;
     private JedisPool jedisPool;
     private final ConcurrentMap<String, Consumer<String>> listeners = Maps.newConcurrentMap();
+    private boolean init = false;
 
-    /** Init the Redis messaging thread and return self */
+    /** Init the Redis messaging in current thread and return self */
     public RedisMessaging init() {
-        scheduler.run(() -> {
+        checkArgument(!init, "init");
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.psubscribe(new PubSub(), CHANNELS);
+        }
+
+        return this;
+    }
+
+    /** Init the Redis messaging in current thread and return self */
+    public Runnable run() {
+        checkArgument(!init, "init");
+
+        return () -> {
             try (Jedis jedis = jedisPool.getResource()) {
                 jedis.psubscribe(new PubSub(), CHANNELS);
             }
-        });
-
-        return this;
+        };
     }
 
     /** Unregister a listener from the Redis channel */
