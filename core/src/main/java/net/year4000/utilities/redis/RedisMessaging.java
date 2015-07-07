@@ -18,6 +18,8 @@
 package net.year4000.utilities.redis;
 
 import com.google.common.collect.Maps;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
@@ -28,6 +30,8 @@ import java.util.function.Consumer;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkArgument;
 
+@ToString
+@EqualsAndHashCode
 public class RedisMessaging {
     private static final String CHANNELS = "*";
     private final ConcurrentMap<String, Consumer<String>> listeners = Maps.newConcurrentMap();
