@@ -17,14 +17,14 @@
 
 package net.year4000.utilities.redis;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
 
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @EqualsAndHashCode
 public class RedisMessaging {
     private static final String CHANNELS = "*";
-    private final ConcurrentMap<String, Consumer<String>> listeners = Maps.newConcurrentMap();
+    private final Multimap<String, Consumer<String>> listeners = ArrayListMultimap.create();
     private transient boolean init = false;
     private JedisPool jedisPool;
 
@@ -65,17 +65,23 @@ public class RedisMessaging {
         };
     }
 
-    /** Unregister a listener from the Redis channel */
+    /** Unregister all listeners from the Redis channel */
     public void unsubscribe(String channel) {
         checkNotNull(channel);
-        listeners.remove(channel);
+
+        synchronized (listeners) {
+            listeners.removeAll(channel);
+        }
     }
 
     /** Register a listener on the Redis channel */
     public void subscribe(String channel, Consumer<String> data) {
         checkNotNull(channel);
         checkNotNull(data);
-        listeners.put(channel, data);
+
+        synchronized (listeners) {
+            listeners.put(channel, data);
+        }
     }
 
     /** Publish a message on the channel */
@@ -92,8 +98,10 @@ public class RedisMessaging {
     public class PubSub extends JedisPubSub {
         @Override
         public void onPMessage(String pattern, String channel, String message) {
-            if (listeners.containsKey(channel)) {
-                listeners.get(channel).accept(message);
+            synchronized (listeners) {
+                if (listeners.containsKey(channel)) {
+                    listeners.get(channel).forEach(consumer -> consumer.accept(channel));
+                }
             }
         }
     }
