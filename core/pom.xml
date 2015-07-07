@@ -37,6 +37,7 @@
                                     <include>org.eclipse.jetty:*</include>
                                     <include>javax.servlet:javax.servlet-api</include>
                                     <include>redis.clients:jedis</include>
+                                    <include>org.apache.commons:commons-pool2</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
