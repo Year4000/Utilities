@@ -18,7 +18,6 @@
 package net.year4000.utilities.redis;
 
 import com.google.common.collect.Maps;
-import lombok.AllArgsConstructor;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
@@ -29,12 +28,16 @@ import java.util.function.Consumer;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkArgument;
 
-@AllArgsConstructor
 public class RedisMessaging {
     private static final String CHANNELS = "*";
-    private JedisPool jedisPool;
     private final ConcurrentMap<String, Consumer<String>> listeners = Maps.newConcurrentMap();
-    private boolean init = false;
+    private transient boolean init = false;
+    private JedisPool jedisPool;
+
+    /** Construct this instance with null checks */
+    public RedisMessaging(JedisPool pool) {
+        jedisPool = checkNotNull(pool, "pool");
+    }
 
     /** Init the Redis messaging in current thread and return self */
     public RedisMessaging init() {
