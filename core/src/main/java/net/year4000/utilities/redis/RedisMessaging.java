@@ -46,6 +46,7 @@ public class RedisMessaging {
     /** Init the Redis messaging in current thread and return self */
     public RedisMessaging init() {
         checkArgument(!init, "init");
+        init = true;
 
         try (Jedis jedis = jedisPool.getResource()) {
             jedis.psubscribe(new PubSub(), CHANNELS);
@@ -58,11 +59,7 @@ public class RedisMessaging {
     public Runnable run() {
         checkArgument(!init, "init");
 
-        return () -> {
-            try (Jedis jedis = jedisPool.getResource()) {
-                jedis.psubscribe(new PubSub(), CHANNELS);
-            }
-        };
+        return this::init;
     }
 
     /** Unregister all listeners from the Redis channel */
