@@ -90,7 +90,7 @@ public class RedisMessaging {
         public void onPMessage(String pattern, String channel, String message) {
             synchronized (listeners) {
                 if (listeners.containsKey(channel)) {
-                    listeners.get(channel).forEach(consumer -> consumer.accept(channel));
+                    listeners.get(channel).forEach(consumer -> consumer.accept(message));
                 }
             }
         }
