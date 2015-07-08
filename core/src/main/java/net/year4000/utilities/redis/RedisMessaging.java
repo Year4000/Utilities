@@ -55,13 +55,6 @@ public class RedisMessaging {
         return this;
     }
 
-    /** Init the Redis messaging in current thread and return self */
-    public Runnable run() {
-        checkArgument(!init, "init");
-
-        return this::init;
-    }
-
     /** Unregister all listeners from the Redis channel */
     public void unsubscribe(String channel) {
         checkNotNull(channel);
