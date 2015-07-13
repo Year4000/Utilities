@@ -24,6 +24,7 @@ import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -181,6 +182,13 @@ public final class ItemUtil {
 
         // Set the item's unbreakable tag
         itemMeta.spigot().setUnbreakable(nbt.isUnbreakable());
+
+        // Set hide flags
+        if (nbt.getHideFlags().length > 0) {
+            for (String id : nbt.getHideFlags()) {
+                itemMeta.addItemFlags(ItemFlag.valueOf(id.toUpperCase()));
+            }
+        }
 
         return itemMeta;
     }

@@ -38,6 +38,9 @@ public class NBT {
     /** Is this item unbreakable */
     private boolean unbreakable = false;
 
+    @SerializedName("hide_flags")
+    private String[] hideFlags = new String[0];
+
     /** The enchants the item will have. */
     private Enchantments[] enchantments;
 
