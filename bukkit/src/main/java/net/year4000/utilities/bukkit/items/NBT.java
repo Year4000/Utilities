@@ -17,6 +17,7 @@
 
 package net.year4000.utilities.bukkit.items;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,6 +34,9 @@ public class NBT {
 
     /** Each array is a page in a book. */
     private String[] pages;
+
+    /** Is this item unbreakable */
+    private boolean unbreakable = false;
 
     /** The enchants the item will have. */
     private Enchantments[] enchantments;

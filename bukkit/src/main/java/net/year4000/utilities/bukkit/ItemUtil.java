@@ -179,6 +179,9 @@ public final class ItemUtil {
             }
         }
 
+        // Set the item's unbreakable tag
+        itemMeta.spigot().setUnbreakable(nbt.isUnbreakable());
+
         return itemMeta;
     }
 }
