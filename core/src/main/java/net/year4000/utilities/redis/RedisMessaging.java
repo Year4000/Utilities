@@ -25,6 +25,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
 
+import java.io.Closeable;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,11 +33,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 @ToString
 @EqualsAndHashCode
-public class RedisMessaging {
+public class RedisMessaging implements Closeable {
     private static final String CHANNELS = "*";
     private final Multimap<String, Consumer<String>> listeners = ArrayListMultimap.create();
     private transient boolean init = false;
     private JedisPool jedisPool;
+    private PubSub pubsub = new PubSub();
 
     /** Construct this instance with null checks */
     public RedisMessaging(JedisPool pool) {
@@ -49,7 +51,7 @@ public class RedisMessaging {
         init = true;
 
         try (Jedis jedis = jedisPool.getResource()) {
-            jedis.psubscribe(new PubSub(), CHANNELS);
+            jedis.psubscribe(pubsub, CHANNELS);
         }
 
         return this;
@@ -82,6 +84,13 @@ public class RedisMessaging {
         try (Jedis jedis = jedisPool.getResource()) {
             jedis.publish(channel, message);
         }
+    }
+
+    /** Close this RedisMessaging listener thread */
+    @Override
+    public void close() {
+        listeners.keySet().forEach(this::unsubscribe);
+        pubsub.unsubscribe();
     }
 
     /** Handle the message from Redis */
