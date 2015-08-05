@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class RedisCallback implements Closeable {
     private final SchedulerManager scheduler = new SchedulerManager();
-    private String listen;
     private RedisMessaging messaging;
     private long timeout;
     private String response = null;
@@ -21,7 +20,6 @@ public class RedisCallback implements Closeable {
         checkNotNull(listen, "listen");
         checkNotNull(timeUnit, "timeUnit");
 
-        this.listen = listen;
         this.timeout = System.currentTimeMillis() + timeUnit.toMillis(timeout);
         messaging = new RedisMessaging(pool);
         scheduler.run(messaging::init);
