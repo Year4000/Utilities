@@ -62,7 +62,7 @@ public class RedisCallback implements Closeable {
 
     @Override
     public void close() {
-        messaging.unsubscribe(listen);
+        messaging.close();
         scheduler.endAll();
     }
 }
