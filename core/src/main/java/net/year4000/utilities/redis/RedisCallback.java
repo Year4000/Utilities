@@ -38,15 +38,15 @@ public class RedisCallback implements Closeable {
         messaging.publish(channel, data);
 
         while (System.currentTimeMillis() <= timeout) {
+            if (response != null) {
+                return response;
+            }
+
             try {
                 Thread.sleep(250);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-
-            if (response != null) {
-                return response;
             }
         }
 
