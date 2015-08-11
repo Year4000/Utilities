@@ -97,10 +97,8 @@ public class RedisMessaging implements Closeable {
     public class PubSub extends JedisPubSub {
         @Override
         public void onPMessage(String pattern, String channel, String message) {
-            synchronized (listeners) {
-                if (listeners.containsKey(channel)) {
-                    listeners.get(channel).forEach(consumer -> consumer.accept(message));
-                }
+            if (listeners.containsKey(channel)) {
+                listeners.get(channel).forEach(consumer -> consumer.accept(message));
             }
         }
     }
