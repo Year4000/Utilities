@@ -24,7 +24,7 @@ public class PingerTest {
             logutil.debug(gson.toJson(ping.fetchData(), Pinger.StatusResponse.class));
         }
         catch (IOException e) {
-            if (e.getMessage().contains("connect timed out")) {
+            if (e.getMessage().contains("connect timed out") || e.getMessage().contains("Connection refused")) {
                 logutil.log("Could not contact Year4000, skipping test.");
             }
             else {
