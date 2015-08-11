@@ -27,7 +27,7 @@ public class RedisCallback implements Closeable {
     }
 
     public RedisCallback(JedisPool pool, String listen) {
-        this(pool, listen, 2, TimeUnit.SECONDS);
+        this(pool, listen, 5, TimeUnit.SECONDS);
     }
 
     /** Send and wait for the response */
