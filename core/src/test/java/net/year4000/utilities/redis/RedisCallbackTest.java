@@ -18,6 +18,7 @@ public class RedisCallbackTest {
     @Test
     public void test() throws Exception {
         try (RedisCallback callback = new RedisCallback(pool, listen)) {
+            Thread.sleep(250);
             String response = callback.send(listen, string);
             Assert.assertEquals(string, response);
         }
