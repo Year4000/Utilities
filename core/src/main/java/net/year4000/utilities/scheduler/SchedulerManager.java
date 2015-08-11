@@ -46,6 +46,7 @@ public final class SchedulerManager {
     /** End all pending tasks */
     public void endAll() {
         tasks.values().forEach(ThreadedTask::stop);
+        EXECUTOR.shutdown();
     }
 
     /** Run a task in its own thread */
