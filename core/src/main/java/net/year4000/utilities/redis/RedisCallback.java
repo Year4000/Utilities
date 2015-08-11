@@ -22,8 +22,8 @@ public class RedisCallback implements Closeable {
 
         this.timeout = System.currentTimeMillis() + timeUnit.toMillis(timeout);
         messaging = new RedisMessaging(pool);
-        scheduler.run(messaging::init);
         messaging.subscribe(listen, this::setResponse);
+        scheduler.run(messaging::init);
     }
 
     public RedisCallback(JedisPool pool, String listen) {
