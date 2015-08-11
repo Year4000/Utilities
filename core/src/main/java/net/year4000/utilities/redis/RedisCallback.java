@@ -35,6 +35,7 @@ public class RedisCallback implements Closeable {
         checkNotNull(channel, "channel");
         checkNotNull(data, "data");
 
+        response = null;
         messaging.publish(channel, data);
 
         while (System.currentTimeMillis() <= timeout) {
@@ -55,7 +56,9 @@ public class RedisCallback implements Closeable {
 
     /** This is a hack to avoid finals in lambda functions */
     private void setResponse(String data) {
-        response = data;
+        if (response == null) {
+            response = data;
+        }
     }
 
     @Override
