@@ -13,12 +13,13 @@ public class RedisCallback implements Closeable {
     private final SchedulerManager scheduler = new SchedulerManager();
     private RedisMessaging messaging;
     private long timeout;
-    private String response = null;
+    private String listening;
+    private String response;
 
     public RedisCallback(JedisPool pool, String listen, long timeout, TimeUnit timeUnit) {
         checkNotNull(pool, "pool");
-        checkNotNull(listen, "listen");
         checkNotNull(timeUnit, "timeUnit");
+        listening = checkNotNull(listen, "listen");
 
         this.timeout = System.currentTimeMillis() + timeUnit.toMillis(timeout);
         messaging = new RedisMessaging(pool);
@@ -51,7 +52,7 @@ public class RedisCallback implements Closeable {
             }
         }
 
-        throw new TimeoutException("Timeout on response");
+        throw new TimeoutException("Timeout on response channel " + listening);
     }
 
     /** This is a hack to avoid finals in lambda functions */
