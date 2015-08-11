@@ -1,8 +1,5 @@
 package net.year4000.utilities.redis;
 
-import net.year4000.utilities.scheduler.SchedulerManager;
-import redis.clients.jedis.JedisPool;
-
 import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -10,25 +7,23 @@ import java.util.concurrent.TimeoutException;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class RedisCallback implements Closeable {
-    private final SchedulerManager scheduler = new SchedulerManager();
     private RedisMessaging messaging;
     private long timeout;
     private String listening;
     private String response;
 
-    public RedisCallback(JedisPool pool, String listen, long timeout, TimeUnit timeUnit) {
-        checkNotNull(pool, "pool");
+
+    public RedisCallback(RedisMessaging redis, String listen, long timeout, TimeUnit timeUnit) {
         checkNotNull(timeUnit, "timeUnit");
+        messaging = checkNotNull(redis, "redis");
         listening = checkNotNull(listen, "listen");
 
         this.timeout = System.currentTimeMillis() + timeUnit.toMillis(timeout);
-        messaging = new RedisMessaging(pool);
         messaging.subscribe(listen, this::setResponse);
-        scheduler.run(messaging::init);
     }
 
-    public RedisCallback(JedisPool pool, String listen) {
-        this(pool, listen, 5, TimeUnit.SECONDS);
+    public RedisCallback(RedisMessaging messaging, String listen) {
+        this(messaging, listen, 5, TimeUnit.SECONDS);
     }
 
     /** Send and wait for the response */
@@ -64,7 +59,6 @@ public class RedisCallback implements Closeable {
 
     @Override
     public void close() {
-        messaging.close();
-        scheduler.endAll();
+        messaging.unsubscribe(listening);
     }
 }

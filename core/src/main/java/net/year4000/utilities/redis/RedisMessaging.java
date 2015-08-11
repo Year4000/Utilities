@@ -24,6 +24,7 @@ import lombok.ToString;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.io.Closeable;
 import java.util.function.Consumer;
