@@ -56,6 +56,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.sk89q:command-framework-bukkit</include>
+                                    <include>com.comphenix.packetwrapper:PacketWrapper</include>
                                     <include>net.year4000.utilities:core</include>
                                 </includes>
                             </artifactSet>
@@ -126,6 +127,13 @@
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>3.6.4-SNAPSHOT</version>
+        </dependency>
+
+        <!-- ProtocolLib PacketWrapper -->
+        <dependency>
+            <groupId>com.comphenix.packetwrapper</groupId>
+            <artifactId>PacketWrapper</artifactId>
+            <version>1.8.7-R0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
