@@ -178,9 +178,27 @@ public final class JsonBuilder {
         return add(Type.OBJECT, Optional.of(key));
     }
 
+    /** Add JsonObject to Object */
+    public JsonBuilder addJsonObject(String key, JsonObject object) {
+        checkState(type == Type.OBJECT, "Must be of type Object");
+
+        element.getAsJsonObject().add(key, object);
+
+        return add(Type.OBJECT, Optional.empty());
+    }
+
     /** Add JsonObject to Array */
     public JsonBuilder addJsonObject() {
         checkState(type == Type.ARRAY, "Must be of type Array");
+
+        return add(Type.OBJECT, Optional.empty());
+    }
+
+    /** Add JsonObject to Array */
+    public JsonBuilder addJsonObject(JsonObject object) {
+        checkState(type == Type.ARRAY, "Must be of type Array");
+
+        element.getAsJsonArray().add(object);
 
         return add(Type.OBJECT, Optional.empty());
     }
