@@ -184,7 +184,7 @@ public final class JsonBuilder {
 
         element.getAsJsonObject().add(key, object);
 
-        return add(Type.OBJECT, Optional.empty());
+        return this;
     }
 
     /** Add JsonObject to Array */
@@ -200,7 +200,7 @@ public final class JsonBuilder {
 
         element.getAsJsonArray().add(object);
 
-        return add(Type.OBJECT, Optional.empty());
+        return this;
     }
 
     public JsonBuilder parent() {
