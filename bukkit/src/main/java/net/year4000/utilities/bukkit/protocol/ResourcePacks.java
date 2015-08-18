@@ -29,7 +29,7 @@ public class ResourcePacks implements Closeable {
     private final ProtocolManager manager;
     private final Plugin plugin;
     private final PackAdapter adapter;
-    private Map<UUID, PackWrapper> packs = Maps.newConcurrentMap();
+    private static Map<UUID, PackWrapper> packs = Maps.newHashMap();
 
     /** Create an instance of ResourePacks */
     public ResourcePacks(ProtocolManager manager, Plugin plugin) {
@@ -85,7 +85,7 @@ public class ResourcePacks implements Closeable {
     }
 
     @EqualsAndHashCode(callSuper = false)
-    public class PackAdapter extends PacketAdapter {
+    public static class PackAdapter extends PacketAdapter {
         private final String code; // Used for equals and hashCode
 
         public PackAdapter(ResourcePacks packs) {
@@ -103,11 +103,7 @@ public class ResourcePacks implements Closeable {
                 .filter(packWrapper -> packWrapper.hash.equals(resource.getHash()))
                 .findFirst();
 
-            wrapper.ifPresent(packWrapper -> {
-                Player player = packWrapper.player;
-                packWrapper.consumer.accept(player, resource.getResult());
-                packs.remove(player.getUniqueId());
-            });
+            wrapper.ifPresent(packWrapper -> packWrapper.consumer.accept(event.getPlayer(), resource.getResult()));
         }
     }
 
