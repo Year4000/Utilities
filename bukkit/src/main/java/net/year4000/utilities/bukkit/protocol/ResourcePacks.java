@@ -1,9 +1,11 @@
 package net.year4000.utilities.bukkit.protocol;
 
+import com.comphenix.packetwrapper.WrapperPlayClientResourcePackStatus;
 import com.comphenix.packetwrapper.WrapperPlayServerResourcePackSend;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.*;
+import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -38,7 +40,7 @@ public class ResourcePacks implements Closeable {
     }
 
     /** Sends the resource pack to the player */
-    public void sendResourcePack(Player player, String url, BiConsumer<Player, Status> results) {
+    public void sendResourcePack(Player player, String url, BiConsumer<Player, EnumWrappers.ResourcePackStatus> results) {
         checkNotNull(player, "player");
         checkNotNull(url, "url");
         checkNotNull(results, "results");
@@ -95,41 +97,17 @@ public class ResourcePacks implements Closeable {
         public void onPacketReceiving(PacketEvent event) {
             if (event.getPacketType() != PacketType.Play.Client.RESOURCE_PACK_STATUS) return;
 
-            String hash = event.getPacket().getStrings().read(0);
-            int result = event.getPacket().getIntegers().read(0);
+            WrapperPlayClientResourcePackStatus resource = new WrapperPlayClientResourcePackStatus(event.getPacket());
 
             Optional<PackWrapper> wrapper = packs.values().stream()
-                .filter(packWrapper -> packWrapper.hash.equals(hash))
+                .filter(packWrapper -> packWrapper.hash.equals(resource.getHash()))
                 .findFirst();
 
             wrapper.ifPresent(packWrapper -> {
                 Player player = packWrapper.player;
-                Status status = Status.getById(result);
-                packWrapper.consumer.accept(player, status);
+                packWrapper.consumer.accept(player, resource.getResult());
                 packs.remove(player.getUniqueId());
             });
-        }
-    }
-
-    /** The status of the sent resource pack */
-    @AllArgsConstructor
-    public enum Status {
-        LOADED(0),
-        DECLINED(1),
-        FAILED(2),
-        ACCEPTED(3),
-        ;
-
-        private int status;
-
-        /** Get the status by the id */
-        public static Status getById(int id) {
-            for (Status status : Status.values()) {
-                if (status.status == id) {
-                    return status;
-                }
-            }
-            throw new IllegalArgumentException();
         }
     }
 
@@ -141,6 +119,6 @@ public class ResourcePacks implements Closeable {
         private Player player;
         private String url;
         private String hash;
-        private BiConsumer<Player, Status> consumer;
+        private BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer;
     }
 }
