@@ -62,8 +62,8 @@ public class ResourcePacks implements Closeable {
             return;
         }
 
-        URLBuilder builder = URLBuilder.fromURL(url).addQuery("hash", hash);
-        PackWrapper wrapper = new PackWrapper(player, builder.build(), hash, results);
+        url = URLBuilder.fromURL(url).addQuery("hash", hash).build();
+        PackWrapper wrapper = new PackWrapper(player, url, hash, results);
         packs.put(player.getUniqueId(), wrapper);
         WrapperPlayServerResourcePackSend pack = new WrapperPlayServerResourcePackSend();
         pack.setUrl(url);
