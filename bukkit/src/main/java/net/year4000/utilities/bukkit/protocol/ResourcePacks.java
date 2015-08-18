@@ -78,6 +78,12 @@ public class ResourcePacks implements Closeable {
         }
     }
 
+    /** Remove listener for the selected player */
+    public void removePlayerListener(Player player) {
+        checkNotNull(player, "player");
+        packs.remove(player.getUniqueId());
+    }
+
     /** Remove the packet listener */
     @Override
     public void close() {
