@@ -31,7 +31,7 @@ public class ResourcePacks implements Closeable {
     private final PackAdapter adapter;
     private static Map<UUID, PackWrapper> packs = Maps.newHashMap();
 
-    /** Create an instance of ResourePacks */
+    /** Create an instance of ResourcePacks */
     public ResourcePacks(ProtocolManager manager, Plugin plugin) {
         this.manager = checkNotNull(manager, "manager");
         this.plugin = checkNotNull(plugin, "plugin");
