@@ -50,7 +50,8 @@ public class JarFileModuleLoader extends AbstractModuleLoader<JarFileModuleLoade
                 loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                     public ClassLoader run() {
                         try {
-                            return new URLClassLoader(new URL[]{file.toURI().toURL()}, getClass().getClassLoader());
+                            ClassLoader classLoader = getClass().getClassLoader();
+                            return new URLClassLoader(new URL[]{file.toURI().toURL()}, classLoader.getParent() == null ? classLoader : classLoader.getParent());
                         } catch (MalformedURLException e) {
                             throw new RuntimeException(e);
                         }
