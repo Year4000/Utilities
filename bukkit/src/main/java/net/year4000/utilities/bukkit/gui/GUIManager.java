@@ -17,7 +17,7 @@
 
 package net.year4000.utilities.bukkit.gui;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,8 +27,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @ToString
 @EqualsAndHashCode
 public class GUIManager implements Listener {
-    private List<AbstractGUI> menus = Lists.newArrayList();
+    private Set<AbstractGUI> menus = Sets.newHashSet();
     @Setter
     private Function<Player, Locale> locale = (player) -> Locale.US;
 
@@ -45,6 +45,18 @@ public class GUIManager implements Listener {
     public void registerMenu(AbstractGUI gui) {
         checkArgument(!menus.contains(gui));
         menus.add(checkNotNull(gui, "gui"));
+    }
+
+    /** Remove a menu to the GUIManger to be listen by an action */
+    public void unregisterMenu(AbstractGUI gui) {
+        checkArgument(menus.contains(gui));
+        menus.remove(checkNotNull(gui, "gui"));
+    }
+
+    /** Remove a menu to the GUIManger to be listen by an action */
+    public void unregisterMenus() {
+        Sets.newHashSet(menus).forEach(this::unregisterMenu);
+        menus = Sets.newHashSet();
     }
 
     @EventHandler
@@ -74,6 +86,7 @@ public class GUIManager implements Listener {
 
                 gui.processAction(player, rows, cols);
                 event.setCancelled(true);
+                return;
             }
         }
     }

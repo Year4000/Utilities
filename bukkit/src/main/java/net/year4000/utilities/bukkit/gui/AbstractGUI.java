@@ -26,7 +26,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class AbstractGUI implements Runnable {
@@ -55,19 +55,20 @@ public abstract class AbstractGUI implements Runnable {
     /** Open the inventory that matches the player locale */
     public void openInventory(Player player) {
         Locale locale = getLocale(player);
-        Locale english = Locale.US;
-        InventoryGUI gui = menus.getOrDefault(locale, menus.get(english));
+        InventoryGUI gui = menus.getOrDefault(locale, menus.get(Locale.US));
         player.openInventory(gui.getInventory());
     }
 
     /** Process the action for the given IconView */
     public void processAction(Player player, int row, int col) {
         try {
-            Locale locale = getLocale(player);
-            locale = last.containsKey(locale) ? locale : Locale.US;
-            IconView[][] views = last.get(locale);
-            IconView view = views[row][col];
-            view.action(locale, player, menus.get(locale));
+            final Locale locale = getLocale(player);
+            IconView[][] views = last.get(last.containsKey(locale) ? locale : Locale.US);
+
+            if (views != null && row > 0 && views.length >= row && col > 0 && views[row].length >= col) {
+                Optional<IconView> view = Optional.ofNullable(views[row][col]);
+                view.ifPresent(icon -> icon.action(locale, player, menus.get(locale)));
+            }
         }
         catch (Exception e) {
             Utilities.debug("AbstractGUI processAction(): ");
@@ -82,7 +83,7 @@ public abstract class AbstractGUI implements Runnable {
     }
 
     /** Handle the preProcess of the menu */
-    public abstract void preProcess() throws Exception;
+    public void preProcess() throws Exception {}
 
     /** Generate the 2d array for the menu */
     public abstract IconView[][] generate(Locale locale);
