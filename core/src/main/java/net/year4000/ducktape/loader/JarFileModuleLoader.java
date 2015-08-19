@@ -70,7 +70,7 @@ public class JarFileModuleLoader extends AbstractModuleLoader<JarFileModuleLoade
                 Class<?> clazz = null;
                 try {
                     clazz = Class.forName(formatPath(next.getName()), true, loader);
-                } catch (Exception e) {
+                } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
 
