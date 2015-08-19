@@ -21,6 +21,11 @@ import groovy.lang.GroovyClassLoader;
 import net.year4000.ducktape.module.ModuleManager;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -51,8 +56,23 @@ public class GroovyModuleLoader extends AbstractModuleLoader<GroovyModuleLoader>
             if (!file.getName().endsWith(".groovy")) continue;
 
             try {
-                GroovyClassLoader loader = new GroovyClassLoader();
+                ClassLoader parent = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
+                        try {
+                            return new URLClassLoader(new URL[]{file.toURI().toURL()}, getClass().getClassLoader());
+                        }
+                        catch (MalformedURLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+                GroovyClassLoader loader = new GroovyClassLoader(parent);
+                loader.addURL(getClass().getResource("/"));
+                loader.addURL(file.toURI().toURL());
                 Class clazz = loader.parseClass(file);
+
+                if (!ModuleManager.isModuleClass(clazz)) continue;
+
                 add(clazz);
             }
             catch (Exception error) {
