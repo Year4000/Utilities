@@ -14,21 +14,21 @@ import org.eclipse.jetty.io.RuntimeIOException;
  */
 @EqualsAndHashCode
 public abstract class JsonConfig {
-    private LoadingCache<Class<? extends Config>, Config> cache;
+    private LoadingCache<Class<? extends JsonConfig>, JsonConfig> cache;
 
     /** Get the class object */
-    public static <T extends Config> T getInstance(Config self) {
+    public static <T extends JsonConfig> T getInstance(JsonConfig self) {
         final ConfigURL url = Preconditions.checkNotNull(self.getClass().getAnnotation(ConfigURL.class));
 
         if (self.cache == null) {
-            self.cache = CacheBuilder.<Class<? extends Config>, Config>newBuilder()
+            self.cache = CacheBuilder.<Class<? extends JsonConfig>, JsonConfig>newBuilder()
                 .expireAfterWrite(
                     url.expire(),
                     url.unit()
                 )
-                .build(new CacheLoader<Class<? extends Config>, Config>() {
+                .build(new CacheLoader<Class<? extends JsonConfig>, JsonConfig>() {
                     @Override
-                    public Config load(Class<? extends Config> clazz) throws Exception {
+                    public JsonConfig load(Class<? extends JsonConfig> clazz) throws Exception {
                         HttpConnection connection = new HttpConnection(url.value());
 
                         try {
