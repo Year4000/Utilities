@@ -5,6 +5,7 @@ import net.year4000.ducktape.bungee.module.BungeeModule;
 import net.year4000.ducktape.bungee.module.ModuleManagerListener;
 import net.year4000.ducktape.loader.ClassFolderModuleLoader;
 import net.year4000.ducktape.loader.ClassModuleLoader;
+import net.year4000.ducktape.loader.GroovyModuleLoader;
 import net.year4000.ducktape.loader.JarFileModuleLoader;
 import net.year4000.ducktape.module.ModuleManager;
 import net.year4000.utilities.bungee.BungeePlugin;
@@ -21,13 +22,36 @@ public class DuckTape extends BungeePlugin {
         modules.getEventBus().register(new ModuleManagerListener());
 
         // register internals
-        new ClassModuleLoader(modules).add(DuckTapeModule.class);
+        try {
+            new ClassModuleLoader(modules).add(DuckTapeModule.class);
+        }
+        catch (Exception error) {
+            log(error, false);
+        }
 
         // register jar files
-        new JarFileModuleLoader(modules).load(Settings.get().getModulesFolderPath());
+        try {
+            new JarFileModuleLoader(modules).load(Settings.get().getModulesFolderPath());
+        }
+        catch (Exception error) {
+            log(error, false);
+        }
 
         // register class files
-        new ClassFolderModuleLoader(modules).load(Settings.get().getModulesFolderPath());
+        try {
+            new ClassFolderModuleLoader(modules).load(Settings.get().getModulesFolderPath());
+        }
+        catch (Exception error) {
+            log(error, false);
+        }
+
+        // register groovy script files
+        try {
+            new GroovyModuleLoader(modules).load(Settings.get().getModulesFolderPath());
+        }
+        catch (Exception error) {
+            log(error, false);
+        }
 
         // load modules
         modules.loadModules();
