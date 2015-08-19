@@ -4,6 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import net.year4000.ducktape.api.events.ModuleDisableEvent;
 import net.year4000.ducktape.api.events.ModuleEnableEvent;
 import net.year4000.ducktape.bukkit.DuckTape;
+import net.year4000.ducktape.module.AbstractModule;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -16,7 +17,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ModuleManagerListener {
-    private Map<BukkitModule, Set<Listener>> listeners = new ConcurrentHashMap<>();
+    private Map<AbstractModule, Set<Listener>> listeners = new ConcurrentHashMap<>();
 
     @Subscribe
     public void onEnable(ModuleEnableEvent event) {
@@ -37,9 +38,9 @@ public class ModuleManagerListener {
                     DuckTape.debug(e, true);
                 }
             }
-
-            this.listeners.put((BukkitModule) event.getModule(), listenerClasses);
         }
+
+        this.listeners.put(event.getModule(), listenerClasses);
     }
 
     @Subscribe

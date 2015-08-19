@@ -4,6 +4,7 @@ import com.google.common.eventbus.EventBus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import net.year4000.ducktape.api.events.ModuleDisableEvent;
 import net.year4000.ducktape.api.events.ModuleEnableEvent;
 import net.year4000.ducktape.api.events.ModuleLoadEvent;
 import net.year4000.utilities.LogUtil;
@@ -145,10 +146,10 @@ public class ModuleManager<T extends AbstractModule> {
 
         try {
             module.setEnabled(false);
-            module.disable();
 
-            // TODO Fix why its throwing an error
-            //eventBus.post(new ModuleDisableEvent(info, module));
+            eventBus.post(new ModuleDisableEvent(info, module));
+
+            module.disable();
 
             if (info.version().equals("internal")) {
                 log.log("Module " + info.name() + " disabled.");

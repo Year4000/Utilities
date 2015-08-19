@@ -32,9 +32,9 @@ public class ModuleManagerListener {
                     DuckTape.debug(e, true);
                 }
             }
-
-            this.listeners.put(event.getModule(), listenerClasses);
         }
+
+        this.listeners.put(event.getModule(), listenerClasses);
     }
 
     @Subscribe

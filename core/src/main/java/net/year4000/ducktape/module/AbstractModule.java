@@ -1,12 +1,21 @@
 package net.year4000.ducktape.module;
 
-import lombok.Data;
+import com.google.common.base.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@Data
+@ModuleInfo(
+    name = "AbstractModule",
+    version = "internal",
+    description = "Used for toString(), equals(), and hashCode()",
+    authors = {"Year4000"}
+)
+@Getter
+@Setter
 public abstract class AbstractModule {
     /** Is the module enabled */
     public boolean enabled;
@@ -30,4 +39,31 @@ public abstract class AbstractModule {
 
     /** Register a command class */
     public abstract void registerCommand(Class<?> clazz);
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        AbstractModule that = (AbstractModule) object;
+        ModuleInfo thisModule = getModuleInfo();
+        ModuleInfo thatModule = that.getModuleInfo();
+
+        return Objects.equal(thisModule.name(), thatModule.name()) && Objects.equal(thisModule.version(), thatModule.version());
+    }
+
+    @Override
+    public int hashCode() {
+        ModuleInfo module = getModuleInfo();
+        return Objects.hashCode(module.name(), module.version());
+    }
+
+    @Override
+    public String toString() {
+        ModuleInfo module = getModuleInfo();
+        return Objects.toStringHelper(this)
+            .add("name", module.name())
+            .add("version", module.version())
+            .add("enabled", enabled)
+            .toString();
+    }
 }
