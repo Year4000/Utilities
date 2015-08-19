@@ -28,25 +28,24 @@ import org.eclipse.jetty.io.RuntimeIOException;
 
 /**
  * Make it simple for a class to constructor the object from a JSON web page.
- * @param <T> The class that is being used from the config.
  */
 @EqualsAndHashCode
-public abstract class Config<T> {
-    private LoadingCache<Class<T>, T> cache;
+public abstract class Config {
+    private LoadingCache<Class<? extends Config>, Config> cache;
 
     /** Get the class object */
-    protected T getInstance(Config self) {
+    public static <T extends Config> T getInstance(Config self) {
         final ConfigURL url = Preconditions.checkNotNull(self.getClass().getAnnotation(ConfigURL.class));
 
-        if (cache == null) {
-            cache = CacheBuilder.<Class<T>, T>newBuilder()
+        if (self.cache == null) {
+            self.cache = CacheBuilder.<Class<? extends Config>, Config>newBuilder()
                 .expireAfterWrite(
                     url.expire(),
                     url.unit()
                 )
-                .build(new CacheLoader<Class<T>, T>() {
+                .build(new CacheLoader<Class<? extends Config>, Config>() {
                     @Override
-                    public T load(Class<T> clazz) throws Exception {
+                    public Config load(Class<? extends Config> clazz) throws Exception {
                         HttpConnection connection = new HttpConnection(url.value());
 
                         try {
@@ -61,6 +60,6 @@ public abstract class Config<T> {
         }
 
         // Have to cast or wont compile right
-        return (T) cache.getUnchecked(url.config());
+        return (T) self.cache.getUnchecked(url.config());
     }
 }
