@@ -48,7 +48,7 @@ public final class LogUtil {
     }
 
     /** Logs a message to the console */
-    public void log(String message, Object... args) {
+    public synchronized void log(String message, Object... args) {
         logger.log(level, String.format(MessageUtil.stripColors(message), args));
     }
 
