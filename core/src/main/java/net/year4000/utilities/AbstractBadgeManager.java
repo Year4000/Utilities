@@ -35,8 +35,9 @@ public abstract class AbstractBadgeManager<P> {
         PI(ChatColor.AQUA, "π", "pi", 4),
         SIGMA(ChatColor.GOLD, "σ", "sigma", 5),
         PHI(ChatColor.LIGHT_PURPLE, "Φ", "phi", 6),
-        DELTA(ChatColor.BLUE, "δ", "delta", 7),
-        OMEGA(ChatColor.RED, "Ω", "omega", 8),
+        TAU(ChatColor.GREEN, "τ", "tau", 7),
+        DELTA(ChatColor.BLUE, "δ", "delta", 8),
+        OMEGA(ChatColor.RED, "Ω", "omega", 9),
         /* DIFF CHECKER */;
 
         @Getter
