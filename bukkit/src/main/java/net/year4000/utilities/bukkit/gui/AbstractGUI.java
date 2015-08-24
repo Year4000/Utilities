@@ -19,17 +19,21 @@ package net.year4000.utilities.bukkit.gui;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import net.year4000.utilities.bukkit.Utilities;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
+@ToString
+@EqualsAndHashCode(of = {"uuid"})
 public abstract class AbstractGUI implements Runnable {
+    /** A random uuid for the GUI */
+    private final UUID uuid = UUID.randomUUID();
+
     /** The locales for the menus */
     protected final Map<Locale, InventoryGUI> menus = Maps.newConcurrentMap();
     /** The last state of the generate method */

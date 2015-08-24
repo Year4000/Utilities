@@ -17,8 +17,9 @@
 
 package net.year4000.utilities.bukkit.gui;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -28,8 +29,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@Getter
-@ToString
+@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ActionMeta {
     private final Locale locale;
     private final ClickType clickType;

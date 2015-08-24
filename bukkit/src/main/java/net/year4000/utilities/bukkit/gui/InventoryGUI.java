@@ -18,7 +18,9 @@
 package net.year4000.utilities.bukkit.gui;
 
 import com.google.common.base.Ascii;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import net.year4000.utilities.MessageUtil;
 import net.year4000.utilities.bukkit.BukkitUtil;
 import net.year4000.utilities.bukkit.ItemUtil;
@@ -26,6 +28,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+@ToString
+@EqualsAndHashCode
 public final class InventoryGUI {
     public static final int COLS = 9;
     @Getter
