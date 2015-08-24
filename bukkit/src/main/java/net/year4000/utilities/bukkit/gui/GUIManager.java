@@ -84,7 +84,8 @@ public class GUIManager implements Listener {
                 int rows = slot / InventoryGUI.COLS;
                 int cols = slot % InventoryGUI.COLS;
 
-                gui.processAction(player, rows, cols);
+                ActionMeta meta = new ActionMeta(locale, event);
+                gui.processAction(player, meta, rows, cols);
                 event.setCancelled(true);
                 return;
             }

@@ -60,14 +60,14 @@ public abstract class AbstractGUI implements Runnable {
     }
 
     /** Process the action for the given IconView */
-    public void processAction(Player player, int row, int col) {
+    public void processAction(Player player, ActionMeta meta, int row, int col) {
         try {
             final Locale locale = getLocale(player);
             IconView[][] views = last.get(last.containsKey(locale) ? locale : Locale.US);
 
             if (views != null && row > 0 && views.length >= row && col > 0 && views[row].length >= col) {
                 Optional<IconView> view = Optional.ofNullable(views[row][col]);
-                view.ifPresent(icon -> icon.action(locale, player, menus.get(locale)));
+                view.ifPresent(icon -> icon.action(player, meta, menus.get(locale)));
             }
         }
         catch (Exception e) {

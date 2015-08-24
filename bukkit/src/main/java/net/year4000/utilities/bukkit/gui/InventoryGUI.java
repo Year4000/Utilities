@@ -26,7 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class InventoryGUI {
+public final class InventoryGUI {
     public static final int COLS = 9;
     @Getter
     private Inventory inventory;
