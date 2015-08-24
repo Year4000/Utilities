@@ -27,6 +27,31 @@ public abstract class AbstractBadgeManager<P> {
 
     public abstract String getBadge(P player);
 
+    /** Is the specific badge vip rank */
+    public static boolean isVIP(Badges badge) {
+        switch (badge) {
+            case THETA:
+            case MU:
+            case PI:
+            case SIGMA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /** Is the specific badge staff rank */
+    public static boolean isStaff(Badges badge) {
+        switch (badge) {
+            case TAU:
+            case DELTA:
+            case OMEGA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     @AllArgsConstructor
     public enum Badges {
         ALPHA(ChatColor.DARK_AQUA, "α", "alpha", 1),
