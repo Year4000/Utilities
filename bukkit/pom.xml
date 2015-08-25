@@ -79,12 +79,11 @@
         </plugins>
     </build>
 
-
     <dependencies>
         <dependency>
-            <groupId>net.year4000</groupId>
-            <artifactId>firecast</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.year4000.utilities</groupId>
