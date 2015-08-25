@@ -93,8 +93,8 @@ public abstract class AbstractLocaleManager {
     protected void loadLocale(String key, InputStream locale) {
         Properties file = new Properties();
 
-        try {
-            file.load(new InputStreamReader(locale, Charsets.UTF_8));
+        try (InputStreamReader reader = new InputStreamReader(locale, Charsets.UTF_8)) {
+            file.load(reader);
             locales.put(new Locale(key), file);
             checkNotNull(log).debug("LocaleManager Added: " + key);
         }
