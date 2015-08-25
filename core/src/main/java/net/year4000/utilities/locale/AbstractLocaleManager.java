@@ -105,11 +105,12 @@ public abstract class AbstractLocaleManager {
 
     /**
      * Check is the requested locale is loaded.
-     * @param locale The language code in string form.
+     * @param localeString The language code in string form.
      * @return true When the language is loaded.
      */
-    public boolean isLocale(String locale) {
-        return locales.containsKey(new Locale(locale));
+    public boolean isLocale(String localeString) {
+        Locale locale = new Locale(localeString);
+        return locales.containsKey(locale) || locales.containsKey(toLanguage(locale));
     }
 
     /**
@@ -118,6 +119,23 @@ public abstract class AbstractLocaleManager {
      * @return The properties for the locale.
      */
     public Properties getLocale(String locale) {
-        return checkNotNull(locales.get(new Locale(locale)));
+        Locale localeKey = new Locale(locale);
+        Locale backup = Locale.US;
+
+        for (Locale localeValue : locales.keySet()) {
+            // Language matches
+            if (localeValue.equals(toLanguage(localeKey))) {
+                backup = localeValue;
+                break;
+            }
+        }
+
+        return locales.getOrDefault(localeKey, locales.getOrDefault(backup, new Properties()));
+    }
+
+    /** Converts the locale to a string */
+    private Locale toLanguage(Locale locale) {
+        String localeString = locale.toString();
+        return new Locale(localeString.contains("_") ? localeString.split("_")[0] : localeString);
     }
 }
