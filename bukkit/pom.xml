@@ -126,7 +126,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>3.6.4-SNAPSHOT</version>
+            <version>3.6.5-SNAPSHOT</version>
         </dependency>
 
         <!-- ProtocolLib PacketWrapper -->
