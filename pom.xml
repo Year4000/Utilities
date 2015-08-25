@@ -25,12 +25,12 @@
         <module>bungee</module>
     </modules>
 
-    <distributionManagement>
+    <!--<distributionManagement>
         <snapshotRepository>
             <id>year4000</id>
             <url>http://repo.year4000.net/repository/snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <build>
         <defaultGoal>install</defaultGoal>
