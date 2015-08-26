@@ -25,9 +25,9 @@ public interface LocaleUtil {
     /** Translate to the specific locale with formatting */
     default String get(Enum<?> key, Object... args) {
         String formatted = key.name().toLowerCase()
-            .replace("__", "-") // Double underscore represent a dash
+            .replace("__", "--") // Double underscore represent a dash
             .replace("_", ".") // Underscore represents a dot
-            .replace("-", "_") // Dash represents an underscore
+            .replace("--", "_") // Dash represents an underscore
             ;
 
         return get(formatted, args);
