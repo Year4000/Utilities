@@ -22,6 +22,8 @@ import com.google.common.base.Joiner;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.util.MissingFormatArgumentException;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -49,7 +51,15 @@ public abstract class LocaleWrapper implements LocaleUtil {
             locale = DEFAULT_LOCALE;
         }
 
-        return MessageUtil.replaceColors(String.format(localeManager.getLocale(locale).getProperty(key, key + (args.length > 0 ? " " + Joiner.on(", ").join(args) : "")), args));
-    }
+        String formatted, missingKey = key + (args.length > 0 ? " " + Joiner.on(", ").join(args) : "");
 
+        try {
+            formatted = String.format(localeManager.getLocale(locale).getProperty(key, missingKey), args);
+        }
+        catch (MissingFormatArgumentException error) {
+            formatted = localeManager.getLocale(locale).getProperty(key, missingKey);
+        }
+
+        return MessageUtil.replaceColors(formatted);
+    }
 }
