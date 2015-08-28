@@ -51,7 +51,7 @@ public final class Variable<T> implements Accessor<T>, Mutator<T> {
 
     /** A static method to return an instance of Variable */
     public static <T> Variable<T> var(T var, Supplier<T> getter, Consumer<T> setter) {
-        Variable variable = new Variable<>(var);
+        Variable<T> variable = new Variable<>(var);
 
         if (getter != null) {
             variable.supplier = getter;

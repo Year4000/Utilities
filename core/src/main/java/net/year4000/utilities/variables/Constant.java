@@ -39,7 +39,7 @@ public final class Constant<T> implements Accessor<T> {
 
     /** A static method to return an instance of Variable */
     public static <T> Constant<T> var(T var, Supplier<T> getter) {
-        Constant constant = new Constant<>(var);
+        Constant<T> constant = new Constant<>(var);
 
         if (getter != null) {
             constant.supplier = getter;
