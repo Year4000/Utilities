@@ -32,7 +32,13 @@ public class AccountBadgeManager extends AbstractBadgeManager<String> {
         .build(new CacheLoader<String, Badges>() {
             @Override
             public Badges load(String account) throws Exception {
-                return Badges.valueOf(api.getAccount(account).getRank().toUpperCase());
+                try {
+                    return Badges.valueOf(api.getAccount(account).getRank().toUpperCase());
+                }
+                // SocketTimeoutException within runtime Exception
+                catch (RuntimeException error) {
+                    return Badges.MISSING;
+                }
             }
         });
 
