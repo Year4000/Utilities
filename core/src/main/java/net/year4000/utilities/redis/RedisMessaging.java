@@ -60,6 +60,7 @@ public class RedisMessaging implements Closeable {
     /** Unregister all listeners from the Redis channel */
     public void unsubscribe(String channel) {
         checkNotNull(channel);
+        checkInit();
 
         synchronized (listeners) {
             listeners.removeAll(channel);
@@ -70,6 +71,7 @@ public class RedisMessaging implements Closeable {
     public void subscribe(String channel, Consumer<String> data) {
         checkNotNull(channel);
         checkNotNull(data);
+        checkInit();
 
         synchronized (listeners) {
             listeners.put(channel, data);
@@ -83,6 +85,13 @@ public class RedisMessaging implements Closeable {
 
         try (Jedis jedis = jedisPool.getResource()) {
             jedis.publish(channel, message);
+        }
+    }
+
+    /** Let the developer know the init has not been ran yet */
+    private void checkInit() {
+        if (!init) {
+            System.err.println("Run RedisMessaging::init() to enable RedisMessaging::subscribe()");
         }
     }
 
