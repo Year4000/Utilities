@@ -33,50 +33,82 @@ import java.net.HttpURLConnection;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpFetcher {
+    private static final int MAX_TRIES = 3;
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     private static final SchedulerManager SCHEDULER = new SchedulerManager();
     private enum Methods {GET, POST, PUT, DELETE}
 
     /** Normal data request method that only return data */
+
     private static Reader request(Methods method, HttpConnection uri) throws IOException {
+        return request(method, uri, 1);
+    }
+
+    /** Normal data request method that only return data, try until max tries has been reached */
+    private static Reader request(Methods method, HttpConnection uri, int tries) throws IOException {
         // Use secured https if url is https
-        if (uri.getUrlBuilder().isSecured()) {
-            HttpsURLConnection connection = uri.getConnection();
+        try {
+            if (uri.getUrlBuilder().isSecured()) {
+                HttpsURLConnection connection = uri.getConnection();
+                connection.setRequestMethod(method.name());
+
+                // Get Response
+                return HttpConnection.responseHttps(connection);
+            }
+
+            HttpURLConnection connection = uri.getConnection();
             connection.setRequestMethod(method.name());
 
             // Get Response
-            return HttpConnection.responseHttps(connection);
+            return HttpConnection.responseHttp(connection);
         }
-
-        HttpURLConnection connection = uri.getConnection();
-        connection.setRequestMethod(method.name());
-
-        // Get Response
-        return HttpConnection.responseHttp(connection);
+        catch (IOException error) {
+            if (tries < MAX_TRIES) {
+                return request(method, uri, ++tries);
+            }
+            else {
+                throw error;
+            }
+        }
     }
 
     /** Data request method that give data and returns data */
     private static Reader request(Methods method, JsonObject object, HttpConnection uri) throws IOException {
-        // Use secured https if url is https
-        if (uri.getUrlBuilder().isSecured()) {
-            HttpsURLConnection connection = uri.getConnection();
+        return request(method, object, uri, 1);
+    }
+
+    /** Data request method that give data and returns data, try until max tries has been reached */
+    private static Reader request(Methods method, JsonObject object, HttpConnection uri, int tries) throws IOException {
+        try {
+            // Use secured https if url is https
+            if (uri.getUrlBuilder().isSecured()) {
+                HttpsURLConnection connection = uri.getConnection();
+                connection.setRequestMethod(method.name());
+                connection.setRequestProperty("Content-Type", "application/json; charset=utf8");
+                connection.setDoOutput(true);
+
+                HttpConnection.requestHttps(connection, object);
+
+                return HttpConnection.responseHttps(connection);
+            }
+
+            HttpURLConnection connection = uri.getConnection();
             connection.setRequestMethod(method.name());
             connection.setRequestProperty("Content-Type", "application/json; charset=utf8");
             connection.setDoOutput(true);
 
-            HttpConnection.requestHttps(connection, object);
+            HttpConnection.requestHttp(connection, object);
 
-            return HttpConnection.responseHttps(connection);
+            return HttpConnection.responseHttp(connection);
         }
-
-        HttpURLConnection connection = uri.getConnection();
-        connection.setRequestMethod(method.name());
-        connection.setRequestProperty("Content-Type", "application/json; charset=utf8");
-        connection.setDoOutput(true);
-
-        HttpConnection.requestHttp(connection, object);
-
-        return HttpConnection.responseHttp(connection);
+        catch (IOException error) {
+            if (tries < MAX_TRIES) {
+                return request(method, object, uri, ++tries);
+            }
+            else {
+                throw error;
+            }
+        }
     }
 
     /** HTTP get method with async request */
