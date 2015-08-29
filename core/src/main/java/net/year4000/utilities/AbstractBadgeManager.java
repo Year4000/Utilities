@@ -54,6 +54,7 @@ public abstract class AbstractBadgeManager<P> {
 
     @AllArgsConstructor
     public enum Badges {
+        MISSING(ChatColor.DARK_GRAY, "Γ", "missing", 0),
         ALPHA(ChatColor.DARK_AQUA, "α", "alpha", 1),
         THETA(ChatColor.GRAY, "Θ", "theta", 2),
         MU(ChatColor.YELLOW, "μ", "mu", 3),
