@@ -64,7 +64,7 @@ public class HttpFetcher {
         }
         catch (IOException error) {
             if (tries < MAX_TRIES) {
-                return request(method, uri, ++tries);
+                return request(method, uri.clone(), ++tries);
             }
             else {
                 throw error;
@@ -103,7 +103,7 @@ public class HttpFetcher {
         }
         catch (IOException error) {
             if (tries < MAX_TRIES) {
-                return request(method, object, uri, ++tries);
+                return request(method, object, uri.clone(), ++tries);
             }
             else {
                 throw error;
