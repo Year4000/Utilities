@@ -17,6 +17,7 @@
 
 package net.year4000.utilities.sdk;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -34,7 +35,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -47,7 +47,7 @@ public class HttpConnection implements Cloneable {
     private static final String USER_AGENT = "Year4000 Utilities API Interface";
     private final URLBuilder urlBuilder;
     // Connections
-    private Map<String, String> headers = new LinkedHashMap<>();
+    private Map<String, String> headers = Maps.newLinkedHashMap();
     private String userAgent = null;
     private int timeout = -1;
     // Connection
