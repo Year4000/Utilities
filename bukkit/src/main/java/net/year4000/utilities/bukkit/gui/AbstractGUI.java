@@ -28,6 +28,8 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 import java.util.function.Function;
 
+import static net.year4000.utilities.locale.AbstractLocaleManager.toLanguage;
+
 @ToString
 @EqualsAndHashCode(of = {"uuid"})
 public abstract class AbstractGUI implements Runnable {
@@ -59,8 +61,7 @@ public abstract class AbstractGUI implements Runnable {
     /** Open the inventory that matches the player locale */
     public void openInventory(Player player) {
         Locale locale = getLocale(player);
-        InventoryGUI gui = menus.getOrDefault(locale, menus.get(Locale.US));
-        player.openInventory(gui.getInventory());
+        player.openInventory(getInventory(locale));
     }
 
     /** Process the action for the given IconView */
@@ -82,7 +83,8 @@ public abstract class AbstractGUI implements Runnable {
 
     /** Get the inventory for the specific locale or english by default */
     public Inventory getInventory(Locale locale) {
-        locale = menus.containsKey(locale) ? locale : Locale.US;
+        Locale language = toLanguage(locale);
+        locale = menus.containsKey(locale) ? locale : menus.containsKey(language) ? language : Locale.US;
         return menus.get(locale).getInventory();
     }
 

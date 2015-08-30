@@ -134,7 +134,7 @@ public abstract class AbstractLocaleManager {
     }
 
     /** Converts the locale to a string */
-    private Locale toLanguage(Locale locale) {
+    public static Locale toLanguage(Locale locale) {
         String localeString = locale.toString();
         return new Locale(localeString.contains("_") ? localeString.split("_")[0] : localeString);
     }
