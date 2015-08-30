@@ -17,6 +17,11 @@ This project contains other projects that has been shaded in are bellow.
 - CubeSpace's Yamler (Modified) [github.com/Cube-Space/Yamler](https://github.com/Cube-Space/Yamler)
 - Intake [github.com/sk89q/Intake](https://github.com/sk89q/Intake)
 
+Issues
+------
+
+Report issues at our meta discussion, [Meta](https://github.com/Year4000/Meta).
+
 License
 -------
 This project is licensed under the [GNU General Public License][license], version 3.
