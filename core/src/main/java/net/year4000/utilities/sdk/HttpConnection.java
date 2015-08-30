@@ -41,7 +41,7 @@ import java.util.Map;
  * The connection used to use along side HttpFetcher.
  */
 @Data
-public class HttpConnection {
+public class HttpConnection implements Cloneable {
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     private static final int TIMEOUT = 5000;
     private static final String USER_AGENT = "Year4000 Utilities API Interface";
@@ -57,6 +57,14 @@ public class HttpConnection {
 
     public HttpConnection(String url) {
         urlBuilder = URLBuilder.fromURL(url);
+    }
+
+    /** Copy the supplied http connection */
+    private HttpConnection(HttpConnection connection) {
+        urlBuilder = connection.urlBuilder;
+        headers = connection.headers;
+        userAgent = connection.userAgent;
+        timeout = connection.timeout;
     }
 
     /** Get or create new connection that only throws RuntimeIOException */
@@ -133,5 +141,10 @@ public class HttpConnection {
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
             GSON.toJson(object, writer);
         }
+    }
+
+    /** Clone this object just runs the copy constructor */
+    public HttpConnection clone() {
+        return new HttpConnection(this);
     }
 }
