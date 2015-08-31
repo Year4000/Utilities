@@ -28,6 +28,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkState;
 import static net.year4000.utilities.locale.AbstractLocaleManager.toLanguage;
 
 @ToString
@@ -47,6 +48,9 @@ public abstract class AbstractGUI implements Runnable {
     /** Get the locale for the current player */
     public abstract Locale getLocale(Player player);
 
+    /** Has populateMenu() been ran */
+    private boolean populatedMenu = false;
+
     /** Populates the menus with known locales */
     public void populateMenu(Function<Locale, String> function, int rows) {
         Collection<Locale> locales = Lists.newArrayList(getLocales());
@@ -56,16 +60,21 @@ public abstract class AbstractGUI implements Runnable {
             InventoryGUI inventoryGUI = new InventoryGUI(title, rows);
             menus.put(locale, inventoryGUI);
         }
+
+        populatedMenu = true;
     }
 
     /** Open the inventory that matches the player locale */
     public void openInventory(Player player) {
+        checkState(populatedMenu, "Must run AbstractGUI::populateMenu() before AbstractGUI::openInventory()");
         Locale locale = getLocale(player);
         player.openInventory(getInventory(locale));
     }
 
     /** Process the action for the given IconView */
     public void processAction(Player player, ActionMeta meta, int row, int col) {
+        checkState(populatedMenu, "Must run AbstractGUI::populateMenu() before AbstractGUI::processAction()");
+
         try {
             final Locale locale = getLocale(player);
             IconView[][] views = last.get(last.containsKey(locale) ? locale : Locale.US);
@@ -83,6 +92,8 @@ public abstract class AbstractGUI implements Runnable {
 
     /** Get the inventory for the specific locale or english by default */
     public Inventory getInventory(Locale locale) {
+        checkState(populatedMenu, "Must run AbstractGUI::populateMenu() before AbstractGUI::getInventory()");
+
         Locale language = toLanguage(locale);
         locale = menus.containsKey(locale) ? locale : menus.containsKey(language) ? language : Locale.US;
         return menus.get(locale).getInventory();
