@@ -28,6 +28,8 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static net.year4000.utilities.locale.AbstractLocaleManager.toLanguage;
 
@@ -50,52 +52,63 @@ public abstract class AbstractGUI implements Runnable {
 
     /** Has populateMenu() been ran */
     private boolean populatedMenu = false;
+    private boolean generate = false;
 
     /** Populates the menus with known locales */
     public void populateMenu(Function<Locale, String> function, int rows) {
+        checkArgument(rows > -1, "Rows must be 0 or larger");
         Collection<Locale> locales = Lists.newArrayList(getLocales());
 
         for (Locale locale : locales) {
-            String title = function.apply(locale);
+            String title = function == null ? "null" : function.apply(locale);
             InventoryGUI inventoryGUI = new InventoryGUI(title, rows);
             menus.put(locale, inventoryGUI);
         }
 
+        checkState(menus.size() > 0, "Menu must contain a locale");
         populatedMenu = true;
     }
 
     /** Open the inventory that matches the player locale */
     public void openInventory(Player player) {
-        checkState(populatedMenu, "Must run AbstractGUI::populateMenu() before AbstractGUI::openInventory()");
+        checkNotNull(player, "player");
+        checkState(populatedMenu, "Must run AbstractGUI::populateMenu() before AbstractGUI::openInventory(Locale)");
+        checkState(generate, "Must run AbstractGUI::run() before AbstractGUI::getInventory(Locale)");
+
         Locale locale = getLocale(player);
         player.openInventory(getInventory(locale));
     }
 
     /** Process the action for the given IconView */
-    public void processAction(Player player, ActionMeta meta, int row, int col) {
-        checkState(populatedMenu, "Must run AbstractGUI::populateMenu() before AbstractGUI::processAction()");
-
+    boolean processAction(Player player, ActionMeta meta, int row, int col) {
         try {
             final Locale locale = getLocale(player);
             IconView[][] views = last.get(last.containsKey(locale) ? locale : Locale.US);
 
             if (views != null && row > 0 && views.length >= row && col > 0 && views[row].length >= col) {
                 Optional<IconView> view = Optional.ofNullable(views[row][col]);
-                view.ifPresent(icon -> icon.action(player, meta, menus.get(locale)));
+
+                if (view.isPresent()) {
+                    return view.get().action(player, meta, menus.get(locale));
+                }
             }
         }
         catch (Exception e) {
             Utilities.debug("AbstractGUI processAction(): ");
             Utilities.debug(e, true);
         }
+
+        return false;
     }
 
     /** Get the inventory for the specific locale or english by default */
     public Inventory getInventory(Locale locale) {
-        checkState(populatedMenu, "Must run AbstractGUI::populateMenu() before AbstractGUI::getInventory()");
+        checkNotNull(locale, "locale");
+        checkState(populatedMenu, "Must run AbstractGUI::populateMenu() before AbstractGUI::getInventory(Locale)");
+        checkState(generate, "Must run AbstractGUI::run() before AbstractGUI::getInventory(Locale)");
 
         Locale language = toLanguage(locale);
-        locale = menus.containsKey(locale) ? locale : menus.containsKey(language) ? language : Locale.US;
+        locale = menus.containsKey(locale) ? locale : menus.containsKey(language) ? language : menus.keySet().iterator().next();
         return menus.get(locale).getInventory();
     }
 
@@ -126,12 +139,14 @@ public abstract class AbstractGUI implements Runnable {
             }
             catch (Exception e) {
                 Utilities.debug(e, false);
-                view = new IconView[][]{{null, null, null, null, null}};
+                view = new IconView[][] {{}};
             }
 
             last.put(l, view);
             i.setIcons(view);
             i.populate();
         });
+
+        generate = true;
     }
 }
