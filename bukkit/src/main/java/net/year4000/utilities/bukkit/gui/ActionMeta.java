@@ -19,7 +19,10 @@ package net.year4000.utilities.bukkit.gui;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Value;
+import lombok.experimental.NonFinal;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,17 +35,45 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ActionMeta {
+    @Getter(AccessLevel.NONE)
+    private final InventoryClickEvent event;
     private final Locale locale;
     private final ClickType clickType;
-    private final Optional<ItemStack> item;
-    private final Optional<ItemStack> cursor;
+    @NonFinal
+    private Optional<ItemStack> item;
+    @NonFinal
+    private Optional<ItemStack> cursor;
 
     /** Populate Action meta from player, locale, and event */
     public ActionMeta(Locale locale, InventoryClickEvent event) {
         this.locale = checkNotNull(locale, "locale");
-        checkNotNull(event, "event");
+        this.event = checkNotNull(event, "event");
         clickType = event.getClick();
         item = Optional.ofNullable(event.getCurrentItem());
         cursor = Optional.ofNullable(event.getCursor());
+    }
+
+    /** Set the item */
+    public void setItem(ItemStack item) {
+        this.item = Optional.ofNullable(item);
+
+        if (this.item.isPresent()) {
+            event.setCurrentItem(item);
+        }
+        else {
+            event.setCurrentItem(new ItemStack(Material.AIR));
+        }
+    }
+
+    /** Set the cursor */
+    public void setCursor(ItemStack item) {
+        this.cursor = Optional.ofNullable(item);
+
+        if (this.cursor.isPresent()) {
+            event.setCursor(item);
+        }
+        else {
+            event.setCursor(new ItemStack(Material.AIR));
+        }
     }
 }
