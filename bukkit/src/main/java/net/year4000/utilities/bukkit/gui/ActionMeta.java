@@ -28,7 +28,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Locale;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -40,40 +39,28 @@ public final class ActionMeta {
     private final Locale locale;
     private final ClickType clickType;
     @NonFinal
-    private Optional<ItemStack> item;
+    private ItemStack item;
     @NonFinal
-    private Optional<ItemStack> cursor;
+    private ItemStack cursor;
 
     /** Populate Action meta from player, locale, and event */
     public ActionMeta(Locale locale, InventoryClickEvent event) {
         this.locale = checkNotNull(locale, "locale");
         this.event = checkNotNull(event, "event");
         clickType = event.getClick();
-        item = Optional.ofNullable(event.getCurrentItem());
-        cursor = Optional.ofNullable(event.getCursor());
+        setItem(event.getCurrentItem());
+        setCursor(event.getCursor());
     }
 
     /** Set the item */
     public void setItem(ItemStack item) {
-        this.item = Optional.ofNullable(item);
-
-        if (this.item.isPresent()) {
-            event.setCurrentItem(item);
-        }
-        else {
-            event.setCurrentItem(new ItemStack(Material.AIR));
-        }
+        this.item = item == null ? new ItemStack(Material.AIR) : item;
+        event.setCurrentItem(item);
     }
 
     /** Set the cursor */
-    public void setCursor(ItemStack item) {
-        this.cursor = Optional.ofNullable(item);
-
-        if (this.cursor.isPresent()) {
-            event.setCursor(item);
-        }
-        else {
-            event.setCursor(new ItemStack(Material.AIR));
-        }
+    public void setCursor(ItemStack cursor) {
+        this.cursor = cursor == null ? new ItemStack(Material.AIR) : cursor;
+        event.setCursor(item);
     }
 }
