@@ -85,7 +85,7 @@ public abstract class AbstractGUI implements Runnable {
             final Locale locale = getLocale(player);
             IconView[][] views = last.get(last.containsKey(locale) ? locale : Locale.US);
 
-            if (views != null && row > 0 && views.length >= row && col > 0 && views[row].length >= col) {
+            if (views != null && row >= 0 && views.length > row && col >= 0 && views[row].length > col) {
                 Optional<IconView> view = Optional.ofNullable(views[row][col]);
 
                 if (view.isPresent()) {
