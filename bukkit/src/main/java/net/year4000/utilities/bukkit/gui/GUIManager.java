@@ -23,6 +23,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -78,15 +79,20 @@ public class GUIManager implements Listener {
         // Get proper locale
         for (AbstractGUI gui : menus) {
             Inventory guiInventory = gui.getInventory(locale);
+            System.out.println("GUI: " + guiInventory);
 
-            if (guiInventory.getTitle().equals(title)) {
+            if (guiInventory.equals(inventory)) {
                 int slot = event.getSlot();
                 int rows = slot / InventoryGUI.COLS;
                 int cols = slot % InventoryGUI.COLS;
 
                 ActionMeta meta = new ActionMeta(locale, event);
-                gui.processAction(player, meta, rows, cols);
-                event.setCancelled(true);
+                boolean cancel = gui.processAction(player, meta, rows, cols);
+
+                if (cancel) {
+                    event.setCancelled(true);
+                }
+
                 return;
             }
         }

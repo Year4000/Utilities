@@ -25,5 +25,5 @@ public interface IconView {
     ItemStack make();
 
     /** Process what happens when you click on the icon */
-    void action(Player player, ActionMeta meta, InventoryGUI gui);
+    boolean action(Player player, ActionMeta meta, InventoryGUI gui);
 }
