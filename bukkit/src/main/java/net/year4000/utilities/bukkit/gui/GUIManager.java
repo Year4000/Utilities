@@ -60,10 +60,9 @@ public class GUIManager implements Listener {
         menus = Sets.newHashSet();
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onIconClick(InventoryClickEvent event) {
-        Inventory inventory = event.getInventory();
-        String title = inventory.getTitle();
+        Inventory inventory = event.getClickedInventory();
         Locale locale;
         Player player;
 
@@ -79,9 +78,8 @@ public class GUIManager implements Listener {
         // Get proper locale
         for (AbstractGUI gui : menus) {
             Inventory guiInventory = gui.getInventory(locale);
-            System.out.println("GUI: " + guiInventory);
 
-            if (guiInventory.equals(inventory)) {
+            if (inventory.getHolder().equals(guiInventory.getHolder())) {
                 int slot = event.getSlot();
                 int rows = slot / InventoryGUI.COLS;
                 int cols = slot % InventoryGUI.COLS;

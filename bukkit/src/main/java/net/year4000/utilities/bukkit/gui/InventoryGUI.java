@@ -26,12 +26,16 @@ import net.year4000.utilities.bukkit.BukkitUtil;
 import net.year4000.utilities.bukkit.ItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-@ToString
-@EqualsAndHashCode
-public final class InventoryGUI {
+import java.util.UUID;
+
+@ToString(of = {"uuid", "size", "title", "icons"})
+@EqualsAndHashCode(of = {"uuid", "size", "title"})
+public final class InventoryGUI implements InventoryHolder {
     public static final int COLS = 9;
+    private final UUID uuid = UUID.randomUUID();
     @Getter
     private Inventory inventory;
     private IconView[][] icons;
@@ -43,7 +47,7 @@ public final class InventoryGUI {
         this.icons = new IconView[rows][COLS];
         this.title = Ascii.truncate(MessageUtil.replaceColors(title), 32, "");
         this.size = rows * COLS;
-        this.inventory = Bukkit.createInventory(null, BukkitUtil.invBase(size), this.title);
+        this.inventory = Bukkit.createInventory(this, BukkitUtil.invBase(size), this.title);
     }
 
     /** Create an inventory view with a title and row */
@@ -51,7 +55,7 @@ public final class InventoryGUI {
         this.icons = icons;
         this.title = Ascii.truncate(MessageUtil.replaceColors(title), 32, "");
         this.size = icons.length * COLS;
-        this.inventory = Bukkit.createInventory(null, BukkitUtil.invBase(size), this.title);
+        this.inventory = Bukkit.createInventory(this, BukkitUtil.invBase(size), this.title);
     }
 
     /** Set the icon view 2d array */
