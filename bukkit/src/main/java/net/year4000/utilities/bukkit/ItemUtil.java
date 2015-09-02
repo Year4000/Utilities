@@ -111,6 +111,36 @@ public final class ItemUtil {
     /**
      * Create a simple item.
      * @param item The name of the item.
+     * @param amount The amount of items.
+     * @param damage The damage of the item.
+     * @return ItemStack
+     */
+    public static ItemStack makeItem(Material item, int amount, short damage) {
+        return new ItemStack(item, amount, damage);
+    }
+
+    /**
+     * Create a simple item.
+     * @param item The name of the item.
+     * @param amount The amount of items.
+     * @return ItemStack
+     */
+    public static ItemStack makeItem(Material item, int amount) {
+        return makeItem(item, amount, (short) 0);
+    }
+
+    /**
+     * Create a simple item.
+     * @param item The name of the item.
+     * @return ItemStack
+     */
+    public static ItemStack makeItem(Material item) {
+        return makeItem(item, 1);
+    }
+
+    /**
+     * Create a simple item.
+     * @param item The name of the item.
      * @param nbt The nbt data of the item.
      * @return ItemStack
      */
