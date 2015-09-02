@@ -51,6 +51,7 @@ public class GUIManager implements Listener {
     /** Remove a menu to the GUIManger to be listen by an action */
     public void unregisterMenu(AbstractGUI gui) {
         checkArgument(menus.contains(gui));
+        menus.stream().map(guis -> guis.subMenus).forEach(subMenus -> subMenus.forEach(this::unregisterMenu));
         menus.remove(checkNotNull(gui, "gui"));
     }
 
@@ -58,6 +59,13 @@ public class GUIManager implements Listener {
     public void unregisterMenus() {
         Sets.newHashSet(menus).forEach(this::unregisterMenu);
         menus = Sets.newHashSet();
+    }
+
+    /** Get all menus including sub menus */
+    private Set<AbstractGUI> getMenus() {
+        Set<AbstractGUI> allMenus = Sets.newHashSet(menus);
+        menus.stream().map(gui -> gui.subMenus).forEach(allMenus::addAll);
+        return allMenus;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -76,7 +84,7 @@ public class GUIManager implements Listener {
         }
 
         // Get proper locale
-        for (AbstractGUI gui : menus) {
+        for (AbstractGUI gui : getMenus()) {
             Inventory guiInventory = gui.getInventory(locale);
 
             if (inventory.getHolder().equals(guiInventory.getHolder())) {

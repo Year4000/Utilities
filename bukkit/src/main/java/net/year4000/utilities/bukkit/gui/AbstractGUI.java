@@ -19,6 +19,7 @@ package net.year4000.utilities.bukkit.gui;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import net.year4000.utilities.bukkit.Utilities;
@@ -53,6 +54,14 @@ public abstract class AbstractGUI implements Runnable {
     /** Has populateMenu() been ran */
     private boolean populatedMenu = false;
     private boolean generate = false;
+    protected Set<AbstractGUI> subMenus = Sets.newHashSet();
+
+    /** Register a submenu with the GUI */
+    public void registerSubGUI(GUIManager manager, AbstractGUI gui) {
+        if (subMenus.add(gui)) {
+            manager.registerMenu(gui);
+        }
+    }
 
     /** Populates the menus with known locales */
     public void populateMenu(Function<Locale, String> function, int rows) {
