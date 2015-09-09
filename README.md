@@ -5,6 +5,13 @@ The original [Utilities] created by ewized is ported over for [Year4000].
 This project is a modify version used for projects made for [Year4000].
 It may contain extra projects that are shaed in to the jar that you may not need.
 
+API Changes
+-----------
+
+With this project reflects the codebase on Year4000.
+It our best to maintain backwards compatablity for the moment and it will be removed in newer versions.
+Use Utilities with caution, there is no guarteen it will work the same for Year4000.
+
 Shaded Projects
 ---------------
 
