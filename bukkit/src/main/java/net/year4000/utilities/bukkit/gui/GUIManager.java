@@ -21,6 +21,8 @@ import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
+import net.year4000.utilities.bukkit.ItemUtil;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -70,7 +72,7 @@ public class GUIManager implements Listener {
         return allMenus;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onIconClick(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
         Locale locale;
@@ -99,6 +101,7 @@ public class GUIManager implements Listener {
 
                 if (cancel) {
                     event.setCancelled(true);
+                    event.setCursor(ItemUtil.makeItem(Material.AIR));
                 }
 
                 return;
