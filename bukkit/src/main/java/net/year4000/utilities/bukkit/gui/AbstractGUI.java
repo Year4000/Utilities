@@ -54,10 +54,14 @@ public abstract class AbstractGUI implements Runnable {
     /** Has populateMenu() been ran */
     private boolean populatedMenu = false;
     private boolean generate = false;
-    protected Set<AbstractGUI> subMenus = Sets.newHashSet();
+    protected Set<AbstractGUI> subMenus;
 
-    /** Register a submenu with the GUI */
+    /** Register a submenu with the GUI, lazy init sub menu tracker */
     public void registerSubGUI(GUIManager manager, AbstractGUI gui) {
+        if (subMenus == null) {
+            subMenus = Sets.newHashSet();
+        }
+
         if (subMenus.add(gui)) {
             manager.registerMenu(gui);
         }
