@@ -79,7 +79,7 @@ public class GUIManager implements Listener {
         Player player;
 
         // If a player click inventory get their locale else return
-        if (inventory != null && event.getWhoClicked() instanceof Player) {
+        if (inventory != null && inventory.getHolder() != null && event.getWhoClicked() instanceof Player) {
             player = (Player) event.getWhoClicked();
             locale = this.locale.apply(player);
         }
