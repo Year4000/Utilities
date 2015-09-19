@@ -25,4 +25,9 @@ public interface Callback<T> {
     default void callback(T data) {
         callback(data, null);
     }
+
+    /** A simple call back interface */
+    default void callback(Throwable error) {
+        callback(null, error);
+    }
 }
