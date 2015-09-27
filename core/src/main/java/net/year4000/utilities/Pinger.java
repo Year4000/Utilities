@@ -113,7 +113,7 @@ public final class Pinger {
             checkArgument(id != -1, "Premature end of stream.");
 
             //we want a status response
-            checkArgument(id == 0x00, "Invalid packetID");
+            checkArgument(id == 0x00, "Invalid packetID, expecting 0x00(" + 0x00 + ") but was " + id);
 
             int length = readVarInt(dataInputStream); //length of json string
 
@@ -135,7 +135,7 @@ public final class Pinger {
 
             checkArgument(id != -1, "Premature end of stream.");
 
-            checkArgument(id == 0x01, "Invalid packetID");
+            checkArgument(id == 0x01, "Invalid packetID, expecting 0x01(" + 0x01 + ") but was " + id);
 
             long pingtime = dataInputStream.readLong(); //read response
 
