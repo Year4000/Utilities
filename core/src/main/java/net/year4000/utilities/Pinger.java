@@ -107,18 +107,25 @@ public final class Pinger {
             dataOutputStream.writeByte(0x01); //size is only 1
             dataOutputStream.writeByte(0x00); //packet id for ping
 
-            int size = readVarInt(dataInputStream); //size of packet
-            int id = readVarInt(dataInputStream); //packet id
+            int one = readVarInt(dataInputStream); //size of packet
+            int two = readVarInt(dataInputStream); //packet id
+
+            int id = Math.min(one, two);
+            int size = Math.max(one, two);
 
             checkArgument(id != -1, "Premature end of stream.");
 
             //we want a status response
             checkArgument(id == 0x00, "Invalid packetID, expecting 0x00(" + 0x00 + ") but was " + id);
 
+            // There was a netty header sent, off set everything by one
+            if (one != size) {
+                readVarInt(dataInputStream);
+            }
+
             int length = readVarInt(dataInputStream); //length of json string
 
             checkArgument(length != -1, "Premature end of stream.");
-
             checkArgument(length != 0, "Invalid string length.");
 
             byte[] in = new byte[length];
