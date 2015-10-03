@@ -53,7 +53,7 @@ public final class LogUtil {
     }
 
     /** Logs a debug message to the console */
-    public void debug(String message, Object... args) {
+    public synchronized void debug(String message, Object... args) {
         if (debug) {
             Level old = level;
             setLevel(Level.WARNING);
@@ -63,7 +63,7 @@ public final class LogUtil {
     }
 
     /** Print out the stack trace */
-    public void debug(Exception exception, boolean simple) {
+    public synchronized void debug(Exception exception, boolean simple) {
         if (debug) {
             if (exception.getMessage() != null) {
                 debug(stripArgs(exception.getMessage()));
@@ -81,7 +81,7 @@ public final class LogUtil {
     }
 
     /** Print out the stack trace */
-    public void log(Exception exception, boolean simple) {
+    public synchronized void log(Exception exception, boolean simple) {
         if (exception.getMessage() != null) {
             log(stripArgs(exception.getMessage()));
         }
