@@ -26,7 +26,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import net.year4000.utilities.URLBuilder;
-import org.eclipse.jetty.io.RuntimeIOException;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -73,7 +72,7 @@ public class HttpConnection implements Cloneable {
             return getConnection();
         }
         catch (IOException e) {
-            throw new RuntimeIOException(e);
+            throw new RuntimeException(e);
         }
     }
 

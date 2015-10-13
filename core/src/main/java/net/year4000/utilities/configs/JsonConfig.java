@@ -7,7 +7,6 @@ import com.google.common.cache.LoadingCache;
 import lombok.EqualsAndHashCode;
 import net.year4000.utilities.sdk.HttpConnection;
 import net.year4000.utilities.sdk.HttpFetcher;
-import org.eclipse.jetty.io.RuntimeIOException;
 
 /**
  * Make it simple for a class to constructor the object from a JSON web page.
@@ -36,7 +35,7 @@ public abstract class JsonConfig {
                         }
                         catch (Exception e) {
                             System.err.println(e.toString());
-                            throw new RuntimeIOException(e);
+                            throw new RuntimeException(e);
                         }
                     }
                 });
