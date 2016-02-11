@@ -13,11 +13,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
-* This is a utility class for BarAPI. It is based on the code by SoThatsIt.
-*
-* http://forums.bukkit.org/threads/tutorial-utilizing-the-boss-health-bar
-* .158018/page-2#post-1760928
-*/
+ * This is a utility class for BarAPI. It is based on the code by SoThatsIt.
+ * <p/>
+ * http://forums.bukkit.org/threads/tutorial-utilizing-the-boss-health-bar
+ * .158018/page-2#post-1760928
+ */
 public final class BarUtil {
     public static boolean newProtocol = false;
     public static String version;
@@ -41,17 +41,23 @@ public final class BarUtil {
 
         try {
             fakeDragon = (FakeDragon) fakeDragonClass.getConstructor(String.class, Location.class).newInstance(message, loc);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             e.printStackTrace();
-        } catch (InstantiationException e) {
+        }
+        catch (InstantiationException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
 
@@ -66,15 +72,20 @@ public final class BarUtil {
             Object con = con_field.get(nmsPlayer);
             Method packet_method = getMethod(con.getClass(), "sendPacket");
             packet_method.invoke(con, packet);
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+        }
+        catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
     }
@@ -84,7 +95,8 @@ public final class BarUtil {
         Class<?> c = null;
         try {
             c = Class.forName(className);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return c;
@@ -95,11 +107,14 @@ public final class BarUtil {
         Method entity_getHandle = getMethod(world.getClass(), "getHandle");
         try {
             nms_entity = entity_getHandle.invoke(world);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             e.printStackTrace();
         }
         return nms_entity;
@@ -110,11 +125,14 @@ public final class BarUtil {
         Method entity_getHandle = getMethod(entity.getClass(), "getHandle");
         try {
             nms_entity = entity_getHandle.invoke(entity);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             e.printStackTrace();
         }
         return nms_entity;
@@ -124,9 +142,11 @@ public final class BarUtil {
         try {
             Field field = cl.getDeclaredField(field_name);
             return field;
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+        }
+        catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         return null;
@@ -162,8 +182,9 @@ public final class BarUtil {
     public static boolean ClassListEqual(Class<?>[] l1, Class<?>[] l2) {
         boolean equal = true;
 
-        if (l1.length != l2.length)
+        if (l1.length != l2.length) {
             return false;
+        }
         for (int i = 0; i < l1.length; i++) {
             if (l1[i] != l2[i]) {
                 equal = false;

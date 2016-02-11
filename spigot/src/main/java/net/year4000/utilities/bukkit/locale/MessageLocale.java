@@ -32,7 +32,8 @@ public final class MessageLocale extends BukkitLocale {
             if (localeManager.getLocales().size() == 0) {
                 throw new Exception("URLMessageManager has 0 locales loaded.");
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Utilities.log(e, true);
             localeManager = ClassMessageManager.get();
         }

@@ -17,10 +17,10 @@
 
 package net.year4000.utilities.locale;
 
-import net.year4000.utilities.LogUtil;
 import com.google.common.base.Charsets;
 import lombok.Data;
 import lombok.Getter;
+import net.year4000.utilities.LogUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,10 +40,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Data
 @SuppressWarnings("unused")
 public abstract class AbstractLocaleManager {
-    @Getter
-    private final Map<Locale, Properties> locales = new ConcurrentHashMap<>();
     public static final String DEFAULT_LOCALE = "en_US";
     protected static final String EXTENSION = ".properties";
+    @Getter
+    private final Map<Locale, Properties> locales = new ConcurrentHashMap<>();
     protected String path;
     protected String[] codes;
     protected LogUtil log;
@@ -67,9 +67,10 @@ public abstract class AbstractLocaleManager {
 
     /**
      * Fully init the locale manager and then load all the default locale codes.
-     * @param path The paths that stores the locale files.
+     *
+     * @param path  The paths that stores the locale files.
      * @param codes The locale codes that we try to grab by default.
-     * @param log The log util that this class will use.
+     * @param log   The log util that this class will use.
      */
     public AbstractLocaleManager(String path, String[] codes, LogUtil log) {
         this.path = checkNotNull(path);
@@ -79,11 +80,18 @@ public abstract class AbstractLocaleManager {
         loadLocales();
     }
 
+    /** Converts the locale to a string */
+    public static Locale toLanguage(Locale locale) {
+        String localeString = locale.toString();
+        return new Locale(localeString.contains("_") ? localeString.split("_")[0] : localeString);
+    }
+
     /** The method that will handle the loading mechanics of the locales */
     protected abstract void loadLocales();
 
     /**
      * Load a resource to be used, in the locale system.
+     *
      * @param key The name of the.
      */
     protected void loadLocale(String key, InputStream locale) {
@@ -101,6 +109,7 @@ public abstract class AbstractLocaleManager {
 
     /**
      * Check is the requested locale is loaded.
+     *
      * @param localeString The language code in string form.
      * @return true When the language is loaded.
      */
@@ -111,6 +120,7 @@ public abstract class AbstractLocaleManager {
 
     /**
      * Get the properties file for the current locale.
+     *
      * @param locale The locale code.
      * @return The properties for the locale.
      */
@@ -127,11 +137,5 @@ public abstract class AbstractLocaleManager {
         }
 
         return locales.getOrDefault(localeKey, locales.getOrDefault(backup, new Properties()));
-    }
-
-    /** Converts the locale to a string */
-    public static Locale toLanguage(Locale locale) {
-        String localeString = locale.toString();
-        return new Locale(localeString.contains("_") ? localeString.split("_")[0] : localeString);
     }
 }

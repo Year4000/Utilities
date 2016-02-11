@@ -40,6 +40,7 @@ public final class QuickCacheBuilder<T> {
 
     /**
      * Set the size of the cache.
+     *
      * @param size The new size of the cache.
      * @return this
      */
@@ -50,6 +51,7 @@ public final class QuickCacheBuilder<T> {
 
     /**
      * Set the time length of the cache.
+     *
      * @param time The new time length.
      * @return this
      */
@@ -61,6 +63,7 @@ public final class QuickCacheBuilder<T> {
 
     /**
      * Create a quick cache instance.
+     *
      * @return new QuickCache with this builder's info.
      */
     @NonNull
@@ -70,7 +73,7 @@ public final class QuickCacheBuilder<T> {
 
     /** The internal build method */
     private QuickCache<T> build(Class<T> clazz, int time, TimeUnit unit) {
-         LoadingCache<Class<T>, T> builder = CacheBuilder.newBuilder()
+        LoadingCache<Class<T>, T> builder = CacheBuilder.newBuilder()
             .maximumSize(1)
             .expireAfterWrite(time, checkNotNull(unit))
             .build(new CacheLoader<Class<T>, T>() {

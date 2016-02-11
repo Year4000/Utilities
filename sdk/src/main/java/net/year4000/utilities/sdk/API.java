@@ -40,7 +40,8 @@ public class API {
     public static final String ACCOUNTS_PATH = "accounts";
     public static final String SERVERS_PATH = "servers";
     public static final String PLAYER_COUNT_PATH = "player-count";
-    public static final Type SERVERS_TYPE = new TypeToken<Map<String, ServerJson>>() {}.getType();
+    public static final Type SERVERS_TYPE = new TypeToken<Map<String, ServerJson>>() {
+    }.getType();
     private String key = null;
 
     /** The base url builder for creating API urls */

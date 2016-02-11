@@ -29,32 +29,28 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 import static net.year4000.utilities.locale.AbstractLocaleManager.toLanguage;
 
 @ToString
 @EqualsAndHashCode(of = {"uuid"})
 public abstract class AbstractGUI implements Runnable {
-    /** A random uuid for the GUI */
-    private final UUID uuid = UUID.randomUUID();
-
     /** The locales for the menus */
     protected final Map<Locale, InventoryGUI> menus = Maps.newConcurrentMap();
+    /** A random uuid for the GUI */
+    private final UUID uuid = UUID.randomUUID();
     /** The last state of the generate method */
     protected Map<Locale, IconView[][]> last = Maps.newConcurrentMap();
+    protected Set<AbstractGUI> subMenus;
+    /** Has populateMenu() been ran */
+    private boolean populatedMenu = false;
+    private boolean generate = false;
 
     /** Get all the locales this menu can offer */
     public abstract Locale[] getLocales();
 
     /** Get the locale for the current player */
     public abstract Locale getLocale(Player player);
-
-    /** Has populateMenu() been ran */
-    private boolean populatedMenu = false;
-    private boolean generate = false;
-    protected Set<AbstractGUI> subMenus;
 
     /** Register a submenu with the GUI, lazy init sub menu tracker */
     public void registerSubGUI(GUIManager manager, AbstractGUI gui) {
@@ -126,7 +122,8 @@ public abstract class AbstractGUI implements Runnable {
     }
 
     /** Handle the preProcess of the menu */
-    public void preProcess() throws Exception {}
+    public void preProcess() throws Exception {
+    }
 
     /** Generate the 2d array for the menu */
     public abstract IconView[][] generate(Locale locale);
@@ -152,7 +149,7 @@ public abstract class AbstractGUI implements Runnable {
             }
             catch (Exception e) {
                 Utilities.debug(e, false);
-                view = new IconView[][] {{}};
+                view = new IconView[][]{{}};
             }
 
             last.put(l, view);

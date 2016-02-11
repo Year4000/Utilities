@@ -44,6 +44,20 @@ public class ServerInfoPing implements PacketOutputHandler {
         this(ListenerPriority.NORMAL);
     }
 
+    /** Inject this class into the system */
+    public static ServerInfoPing inject(ProtocolManager protocol, ServerInfoPing ping) {
+        protocol.addPacketListener(
+            new PacketAdapter(ping.getPlugin(), PacketType.Status.Server.OUT_SERVER_INFO) {
+                @Override
+                public void onPacketSending(PacketEvent event) {
+                    event.getNetworkMarker().addOutputHandler(ping);
+                }
+            }
+        );
+
+        return ping;
+    }
+
     @Override
     public Plugin getPlugin() {
         return Utilities.getInst();
@@ -88,19 +102,5 @@ public class ServerInfoPing implements PacketOutputHandler {
     /** Just an element in json ping data */
     public void put(String key, Supplier<JsonElement> value) {
         customElements.put(key, value);
-    }
-
-    /** Inject this class into the system */
-    public static ServerInfoPing inject(ProtocolManager protocol, ServerInfoPing ping) {
-        protocol.addPacketListener(
-            new PacketAdapter(ping.getPlugin(), PacketType.Status.Server.OUT_SERVER_INFO) {
-                @Override
-                public void onPacketSending(PacketEvent event) {
-                    event.getNetworkMarker().addOutputHandler(ping);
-                }
-            }
-        );
-
-        return ping;
     }
 }

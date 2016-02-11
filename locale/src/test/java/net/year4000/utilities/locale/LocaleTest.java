@@ -12,8 +12,17 @@ import java.net.URL;
 
 @Log
 public class LocaleTest {
+    private static void test(AbstractLocaleManager manager) {
+        Assert.assertTrue(manager.getLocales().size() > 0);
+
+        manager.getLocales().forEach((code, property) -> {
+            LocaleUtil locale = (key, args) -> String.format(property.getProperty(key), args);
+            Assert.assertEquals(locale.get("locale.code").toLowerCase(), code.toString());
+        });
+    }
+
     //@Test
-    public void localeTests() throws Exception{
+    public void localeTests() throws Exception {
         test(new ClassLocaleManager(System.getProperty("test.locales.class"), "en_US", "fr_FR"));
 
         test(new ClassLocaleManager(LocaleTest.class, System.getProperty("test.locales.class"), "en_US", "fr_FR"));
@@ -26,14 +35,5 @@ public class LocaleTest {
 
         test(new FileLocaleManager(System.getProperty("test.locales.file"), "en_US", "fr_FR"));
 
-    }
-
-    private static void test(AbstractLocaleManager manager) {
-        Assert.assertTrue(manager.getLocales().size() > 0);
-
-        manager.getLocales().forEach((code, property) -> {
-            LocaleUtil locale = (key, args) -> String.format(property.getProperty(key), args);
-            Assert.assertEquals(locale.get("locale.code").toLowerCase(), code.toString());
-        });
     }
 }

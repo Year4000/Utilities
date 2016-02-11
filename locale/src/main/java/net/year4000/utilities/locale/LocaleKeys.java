@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 /**
  * An interface used for Enums or Classes that represents a locale key.
+ *
  * @param <A> The actor to grab the locale for.
  */
 public interface LocaleKeys<A> extends Function<A, LocaleUtil> {

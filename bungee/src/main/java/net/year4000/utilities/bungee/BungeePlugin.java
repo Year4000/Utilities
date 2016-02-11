@@ -17,8 +17,6 @@
 
 package net.year4000.utilities.bungee;
 
-import net.year4000.utilities.LogUtil;
-import net.year4000.utilities.bungee.locale.MessageLocale;
 import com.sk89q.bungee.util.BungeeCommandsManager;
 import com.sk89q.bungee.util.CommandExecutor;
 import com.sk89q.bungee.util.CommandRegistration;
@@ -31,6 +29,8 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.year4000.utilities.LogUtil;
+import net.year4000.utilities.bungee.locale.MessageLocale;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,6 +55,30 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
         inst = this;
     }
 
+    /** Logs a message to the console */
+    public static void log(String message, Object... args) {
+        getInst().log.log(message, args);
+    }
+
+    /** Logs a debug message to the console */
+    public static void debug(String message, Object... args) {
+        getInst().log.debug(message, args);
+    }
+
+    // Command Stuff //
+
+    /** Print out the stack trace */
+    public static void debug(Exception e, boolean simple) {
+        getInst().log.debug(e, simple);
+    }
+
+    /** Print out the stack trace */
+    public static void log(Exception e, boolean simple) {
+        getInst().log.log(e, simple);
+    }
+
+    // Logger Stuff //
+
     /** Re-register the LogUtil after plugin been enabled */
     @Override
     public void onEnable() {
@@ -65,8 +89,6 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
     public void setDebug(boolean debug) {
         log.setDebug(debug);
     }
-
-    // Command Stuff //
 
     /** Register a command for this plugin */
     public void registerCommand(Class<?> commandClass) {
@@ -81,14 +103,18 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
 
         try {
             commands.execute(commandName, args, sender, sender);
-        } catch (CommandPermissionsException e) {
+        }
+        catch (CommandPermissionsException e) {
             msg.add(MessageUtil.message(locale.get("error.cmd.permission")));
-        } catch (MissingNestedCommandException e) {
+        }
+        catch (MissingNestedCommandException e) {
             msg.add(MessageUtil.message(locale.get("error.cmd.usage", e.getUsage())));
-        } catch (CommandUsageException e) {
+        }
+        catch (CommandUsageException e) {
             msg.add(MessageUtil.message(ChatColor.RED + e.getMessage().replaceAll(":", "&7:&e")));
             msg.add(MessageUtil.message(locale.get("error.cmd.usage", e.getUsage())));
-        } catch (WrappedCommandException e) {
+        }
+        catch (WrappedCommandException e) {
             if (e.getCause() instanceof NumberFormatException) {
                 msg.add(MessageUtil.message(locale.get("error.cmd.number")));
             }
@@ -96,9 +122,11 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
                 msg.add(MessageUtil.message(locale.get("error.cmd.error")));
                 e.printStackTrace();
             }
-        } catch (CommandException e) {
+        }
+        catch (CommandException e) {
             msg.add(MessageUtil.message(ChatColor.RED + e.getMessage()));
-        } finally {
+        }
+        finally {
             Iterator<BaseComponent[]> line = msg.listIterator();
 
             if (line.hasNext()) {
@@ -109,27 +137,5 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
                 }
             }
         }
-    }
-
-    // Logger Stuff //
-
-    /** Logs a message to the console */
-    public static void log(String message, Object... args) {
-        getInst().log.log(message, args);
-    }
-
-    /** Logs a debug message to the console */
-    public static void debug(String message, Object... args) {
-        getInst().log.debug(message, args);
-    }
-
-    /** Print out the stack trace */
-    public static void debug(Exception e, boolean simple) {
-        getInst().log.debug(e, simple);
-    }
-
-    /** Print out the stack trace */
-    public static void log(Exception e, boolean simple) {
-        getInst().log.log(e, simple);
     }
 }

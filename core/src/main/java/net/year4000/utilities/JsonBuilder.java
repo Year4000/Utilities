@@ -26,12 +26,10 @@ import static com.google.common.base.Preconditions.checkState;
 
 public final class JsonBuilder {
     public static JsonBuilder NULL = new JsonBuilder(Type.NULL);
-    private enum Type {OBJECT, ARRAY, NULL}
     private Type type;
     private JsonElement element;
     private JsonBuilder parent;
     private Optional<String> key = Optional.empty();
-
     private JsonBuilder(Type type, JsonBuilder parent, Optional<String> key) {
         this(type);
         this.key = checkNotNull(key, "key");
@@ -250,4 +248,6 @@ public final class JsonBuilder {
                 return null;
         }
     }
+
+    private enum Type {OBJECT, ARRAY, NULL}
 }

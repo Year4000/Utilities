@@ -17,8 +17,8 @@
 
 package net.year4000.utilities.locale;
 
-import net.year4000.utilities.LogUtil;
 import lombok.NoArgsConstructor;
+import net.year4000.utilities.LogUtil;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -29,7 +29,8 @@ public class ClassLocaleManager extends AbstractLocaleManager {
 
     /**
      * Load the manager using this class as a reference point.
-     * @param path The path to use.
+     *
+     * @param path    The path to use.
      * @param locales The locale codes to use.
      */
     public ClassLocaleManager(String path, String... locales) {
@@ -38,8 +39,9 @@ public class ClassLocaleManager extends AbstractLocaleManager {
 
     /**
      * Load the manager with resources inside the class.
-     * @param clazz The class to use as a reference.
-     * @param path The path to use.
+     *
+     * @param clazz   The class to use as a reference.
+     * @param path    The path to use.
      * @param locales The locale codes to use.
      */
     public ClassLocaleManager(Class clazz, String path, String... locales) {
@@ -52,8 +54,9 @@ public class ClassLocaleManager extends AbstractLocaleManager {
 
     /**
      * Load the class files and provide a LogUtil
-     * @param log The LogUtil to use when creating the locale manager.
-     * @param path The path to use.
+     *
+     * @param log     The LogUtil to use when creating the locale manager.
+     * @param path    The path to use.
      * @param locales The locale codes to use.
      */
     public ClassLocaleManager(LogUtil log, String path, String... locales) {

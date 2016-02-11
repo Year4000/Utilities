@@ -6,15 +6,11 @@ package net.year4000.utilities.sdk;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.year4000.utilities.mc.MessageUtil;
 import net.year4000.utilities.mc.ChatColor;
+import net.year4000.utilities.mc.MessageUtil;
 
 public abstract class AbstractBadgeManager<P> {
     public static final int MAX_RANK = Badges.values().length;
-
-    public abstract Badges findBadge(P player);
-
-    public abstract String getBadge(P player);
 
     /** Is the specific badge vip rank */
     public static boolean isVIP(Badges badge) {
@@ -40,6 +36,10 @@ public abstract class AbstractBadgeManager<P> {
                 return false;
         }
     }
+
+    public abstract Badges findBadge(P player);
+
+    public abstract String getBadge(P player);
 
     @AllArgsConstructor
     public enum Badges {

@@ -29,7 +29,7 @@ public class URLBuilderTest {
             .addQuery("key", 123456789)
             .build();
         String fromURL = URLBuilder.fromURL("http://localhost/jhon/smith?fname=bobby&lname=bob")
-                .build();
+            .build();
 
 
         Assert.assertEquals(host, "http://localhost/");

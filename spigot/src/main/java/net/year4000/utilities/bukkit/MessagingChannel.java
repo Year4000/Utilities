@@ -21,7 +21,6 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
 import org.bukkit.Bukkit;
@@ -36,10 +35,10 @@ import java.util.concurrent.ConcurrentMap;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MessagingChannel implements PluginMessageListener {
-    private static MessagingChannel inst;
     private static final String CHANNEL = "BungeeCord";
     private static final String FORWARD = "Forward";
     private static final String FORWARD_TO_PLAYER = "ForwardToPlayer";
+    private static MessagingChannel inst;
     private final Deque<AbstractMap.Entry<String, Callback<ByteArrayDataInput>>> requests = new ArrayDeque<>();
     private final ConcurrentMap<String, Callback<ByteArrayDataInput>> custom = new ConcurrentHashMap<>();
 
@@ -110,7 +109,9 @@ public final class MessagingChannel implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] bytes) {
-        if (!channel.equals(CHANNEL))  return;
+        if (!channel.equals(CHANNEL)) {
+            return;
+        }
 
         ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
         String subChannel = in.readUTF();

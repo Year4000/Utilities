@@ -7,18 +7,17 @@ import org.bukkit.Location;
 @Data
 public abstract class FakeDragon {
     public static final float MAX_HEALTH = 200;
+    public float health = 0;
+    public String name;
     private int x;
     private int y;
     private int z;
-
     private int pitch = 0;
     private int yaw = 0;
     private byte xvel = 0;
     private byte yvel = 0;
     private byte zvel = 0;
-    public float health = 0;
     private boolean visible = true;
-    public String name;
     private Object world;
 
     public FakeDragon(String name, Location loc, int percent) {

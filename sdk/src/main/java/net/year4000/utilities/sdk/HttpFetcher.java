@@ -36,7 +36,6 @@ public class HttpFetcher {
     private static final int MAX_TRIES = 3;
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     private static final SchedulerManager SCHEDULER = new SchedulerManager();
-    private enum Methods {GET, POST, PUT, DELETE}
 
     /** Normal data request method that only return data */
 
@@ -390,4 +389,6 @@ public class HttpFetcher {
     public static <T> T delete(String url, JsonObject data, Type type) throws Exception {
         return delete(new HttpConnection(url), data, type);
     }
+
+    private enum Methods {GET, POST, PUT, DELETE}
 }

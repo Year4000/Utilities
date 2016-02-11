@@ -4,7 +4,9 @@ import com.comphenix.packetwrapper.WrapperPlayClientResourcePackStatus;
 import com.comphenix.packetwrapper.WrapperPlayServerResourcePackSend;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.*;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
@@ -26,10 +28,10 @@ import java.util.function.BiConsumer;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ResourcePacks implements Closeable {
+    private static Map<UUID, PackWrapper> packs = Maps.newHashMap();
     private final ProtocolManager manager;
     private final Plugin plugin;
     private final PackAdapter adapter;
-    private static Map<UUID, PackWrapper> packs = Maps.newHashMap();
 
     /** Create an instance of ResourcePacks */
     public ResourcePacks(ProtocolManager manager, Plugin plugin) {
@@ -101,7 +103,9 @@ public class ResourcePacks implements Closeable {
 
         @Override
         public void onPacketReceiving(PacketEvent event) {
-            if (event.getPacketType() != PacketType.Play.Client.RESOURCE_PACK_STATUS) return;
+            if (event.getPacketType() != PacketType.Play.Client.RESOURCE_PACK_STATUS) {
+                return;
+            }
 
             WrapperPlayClientResourcePackStatus resource = new WrapperPlayClientResourcePackStatus(event.getPacket());
 

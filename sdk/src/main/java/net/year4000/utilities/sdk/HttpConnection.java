@@ -66,40 +66,6 @@ public class HttpConnection implements Cloneable {
         timeout = connection.timeout;
     }
 
-    /** Get or create new connection that only throws RuntimeIOException */
-    public <T extends HttpURLConnection> T getSuppressedConnection() {
-        try {
-            return getConnection();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /** Get or create new connection */
-    public <T extends HttpURLConnection> T getConnection() throws IOException {
-        if (urlConnection == null) {
-            urlConnection = this.<T>newConnection();
-        }
-
-        return (T) urlConnection;
-    }
-
-    /** Create a new HTTPURLConnection from this class */
-    private <T extends HttpURLConnection> T newConnection() throws IOException {
-        T connection = (T) (new URL(urlBuilder.build())).openConnection();
-
-        // Add headers
-        headers.forEach(connection::setRequestProperty);
-
-        // Other connection settings
-        connection.setRequestProperty("User-Agent", userAgent == null ? USER_AGENT : userAgent);
-        connection.setConnectTimeout(timeout < 0 ? TIMEOUT : timeout);
-        connection.setReadTimeout(timeout < 0 ? TIMEOUT : timeout);
-
-        return connection;
-    }
-
     /** Response with http */
     public static Reader responseHttp(HttpURLConnection connection) throws IOException {
         int responseCode = connection.getResponseCode();
@@ -140,6 +106,40 @@ public class HttpConnection implements Cloneable {
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
             GSON.toJson(object, writer);
         }
+    }
+
+    /** Get or create new connection that only throws RuntimeIOException */
+    public <T extends HttpURLConnection> T getSuppressedConnection() {
+        try {
+            return getConnection();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /** Get or create new connection */
+    public <T extends HttpURLConnection> T getConnection() throws IOException {
+        if (urlConnection == null) {
+            urlConnection = this.<T>newConnection();
+        }
+
+        return (T) urlConnection;
+    }
+
+    /** Create a new HTTPURLConnection from this class */
+    private <T extends HttpURLConnection> T newConnection() throws IOException {
+        T connection = (T) (new URL(urlBuilder.build())).openConnection();
+
+        // Add headers
+        headers.forEach(connection::setRequestProperty);
+
+        // Other connection settings
+        connection.setRequestProperty("User-Agent", userAgent == null ? USER_AGENT : userAgent);
+        connection.setConnectTimeout(timeout < 0 ? TIMEOUT : timeout);
+        connection.setReadTimeout(timeout < 0 ? TIMEOUT : timeout);
+
+        return connection;
     }
 
     /** Clone this object just runs the copy constructor */

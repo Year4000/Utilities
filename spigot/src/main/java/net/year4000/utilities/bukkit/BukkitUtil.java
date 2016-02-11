@@ -27,8 +27,6 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public final class BukkitUtil {
-    private BukkitUtil() {}
-
     /** Color to DyeColor Map */
     public static final Map<Color, DyeColor> COLOR_MAP = ImmutableMap.<Color, DyeColor>builder()
         .putAll(new HashMap<Color, DyeColor>() {{
@@ -50,7 +48,6 @@ public final class BukkitUtil {
             put(Color.WHITE, DyeColor.WHITE);
             put(Color.TEAL, DyeColor.LIGHT_BLUE);
         }}).build();
-
     /** DyeColor to Color Map */
     public static final Map<DyeColor, Color> DYECOLOR_MAP = ImmutableMap.<DyeColor, Color>builder()
         .putAll(new HashMap<DyeColor, Color>() {{
@@ -70,7 +67,6 @@ public final class BukkitUtil {
             put(DyeColor.WHITE, Color.WHITE);
             put(DyeColor.CYAN, Color.TEAL);
         }}).build();
-
     /** ChatColor to DyeColor */
     public static final Map<ChatColor, DyeColor> CHATCOLOR_MAP = ImmutableMap.<ChatColor, DyeColor>builder()
         .putAll(new HashMap<ChatColor, DyeColor>() {{
@@ -92,8 +88,12 @@ public final class BukkitUtil {
             put(ChatColor.YELLOW, DyeColor.YELLOW);
         }}).build();
 
+    private BukkitUtil() {
+    }
+
     /**
      * Get the Color for the DyeColor match.
+     *
      * @param dyeColor The DyeColor.
      * @return The Color.
      */
@@ -104,6 +104,7 @@ public final class BukkitUtil {
 
     /**
      * Get the DyeColor for the Color match.
+     *
      * @param color The Color.
      * @return The DyeColor.
      */
@@ -114,6 +115,7 @@ public final class BukkitUtil {
 
     /**
      * Get the  for the Color match.
+     *
      * @param color The Color.
      * @return The DyeColor.
      */
@@ -124,10 +126,11 @@ public final class BukkitUtil {
 
     /**
      * Gets the multiples of 9 for inventories.
+     *
      * @param size The size that will do math to get the multiple of 9.
      * @return the base size of the inventory.
      */
     public static int invBase(int size) {
-        return (size % 9 == 0) ? (size/9)*9 : (1+(size/9))*9;
+        return (size % 9 == 0) ? (size / 9) * 9 : (1 + (size / 9)) * 9;
     }
 }

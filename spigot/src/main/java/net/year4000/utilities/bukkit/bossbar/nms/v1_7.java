@@ -8,13 +8,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
-* This is the FakeDragon class for BarAPI.
-* It is based on the code by SoThatsIt.
-*
-* http://forums.bukkit.org/threads/tutorial-utilizing-the-boss-health-bar.158018/page-5#post-2053705
-*
-* @author James Mortemore
-*/
+ * This is the FakeDragon class for BarAPI.
+ * It is based on the code by SoThatsIt.
+ * <p/>
+ * http://forums.bukkit.org/threads/tutorial-utilizing-the-boss-health-bar.158018/page-5#post-2053705
+ *
+ * @author James Mortemore
+ */
 public class v1_7 extends FakeDragon {
     private Object dragon;
     private int id;
@@ -58,18 +58,24 @@ public class v1_7 extends FakeDragon {
 
             Class<?> PacketPlayOutSpawnEntityLiving = BarUtil.getCraftClass("PacketPlayOutSpawnEntityLiving");
 
-            packet = PacketPlayOutSpawnEntityLiving.getConstructor(new Class<?>[] { EntityLiving }).newInstance(dragon);
-        } catch (IllegalArgumentException e) {
+            packet = PacketPlayOutSpawnEntityLiving.getConstructor(new Class<?>[]{EntityLiving}).newInstance(dragon);
+        }
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             e.printStackTrace();
-        } catch (InstantiationException e) {
+        }
+        catch (InstantiationException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
 
@@ -85,16 +91,21 @@ public class v1_7 extends FakeDragon {
             packet = PacketPlayOutEntityDestroy.newInstance();
             Field a = PacketPlayOutEntityDestroy.getDeclaredField("a");
             a.setAccessible(true);
-            a.set(packet, new int[] { id });
-        } catch (SecurityException e) {
+            a.set(packet, new int[]{id});
+        }
+        catch (SecurityException e) {
             e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+        }
+        catch (NoSuchFieldException e) {
             e.printStackTrace();
-        } catch (InstantiationException e) {
+        }
+        catch (InstantiationException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
 
@@ -109,18 +120,24 @@ public class v1_7 extends FakeDragon {
 
         Object packet = null;
         try {
-            packet = PacketPlayOutEntityMetadata.getConstructor(new Class<?>[] { int.class, DataWatcher, boolean.class }).newInstance(id, watcher, true);
-        } catch (IllegalArgumentException e) {
+            packet = PacketPlayOutEntityMetadata.getConstructor(new Class<?>[]{int.class, DataWatcher, boolean.class}).newInstance(id, watcher, true);
+        }
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             e.printStackTrace();
-        } catch (InstantiationException e) {
+        }
+        catch (InstantiationException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
 
@@ -139,7 +156,7 @@ public class v1_7 extends FakeDragon {
 
         Object watcher = null;
         try {
-            watcher = DataWatcher.getConstructor(new Class<?>[] { Entity }).newInstance(dragon);
+            watcher = DataWatcher.getConstructor(new Class<?>[]{Entity}).newInstance(dragon);
             Method a = BarUtil.getMethod(DataWatcher, "a", new Class<?>[]{int.class, Object.class});
 
             a.invoke(watcher, 0, isVisible() ? (byte) 0 : (byte) 0x20);
@@ -148,22 +165,28 @@ public class v1_7 extends FakeDragon {
             a.invoke(watcher, 8, (Byte) (byte) 0);
             a.invoke(watcher, 10, name);
             a.invoke(watcher, 11, (Byte) (byte) 1);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
 
             e.printStackTrace();
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
 
             e.printStackTrace();
-        } catch (InstantiationException e) {
+        }
+        catch (InstantiationException e) {
 
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
 
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
 
             e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
 
             e.printStackTrace();
         }

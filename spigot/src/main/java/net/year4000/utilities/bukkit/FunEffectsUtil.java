@@ -23,7 +23,8 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("unused")
 /** Fun effects and a simple function. */
 public final class FunEffectsUtil {
-    private FunEffectsUtil() {}
+    private FunEffectsUtil() {
+    }
 
     /** Player a sound for the player. */
     public static void playSound(Player player, Sound sound) {

@@ -10,7 +10,6 @@ import org.junit.Test;
 public class HttpFetcherTest {
     private static final String URL = "https://api.year4000.net";
     private static final String OFFLINE = "502 Bad Gateway";
-    private enum Methods {GET, POST, PUT, DELETE}
 
     private void test(Methods method) {
         try {
@@ -66,4 +65,6 @@ public class HttpFetcherTest {
     public void deleteTest() {
         test(Methods.DELETE);
     }
+
+    private enum Methods {GET, POST, PUT, DELETE}
 }

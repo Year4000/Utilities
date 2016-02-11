@@ -17,8 +17,8 @@
 
 package net.year4000.utilities.locale;
 
-import net.year4000.utilities.LogUtil;
 import lombok.NoArgsConstructor;
+import net.year4000.utilities.LogUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +30,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class FileLocaleManager extends AbstractLocaleManager {
     /**
      * Load the locales provided and use a File object as a base location.
-     * @param file The file object to use as a base location.
+     *
+     * @param file    The file object to use as a base location.
      * @param locales The locales to use by default
      */
     public FileLocaleManager(File file, String... locales) {
@@ -39,7 +40,8 @@ public class FileLocaleManager extends AbstractLocaleManager {
 
     /**
      * Load the locales provided and use a File object as a base location.
-     * @param path The file path to use when getting the files.
+     *
+     * @param path    The file path to use when getting the files.
      * @param locales The locales to use by default
      */
     public FileLocaleManager(String path, String... locales) {
@@ -48,12 +50,19 @@ public class FileLocaleManager extends AbstractLocaleManager {
 
     /**
      * Load the locales provided and use a File object as a base location.
-     * @param log The LogUtil to use when creating this locale manager.
-     * @param path The file path to use when getting the files.
+     *
+     * @param log     The LogUtil to use when creating this locale manager.
+     * @param path    The file path to use when getting the files.
      * @param locales The locales to use by default.
      */
     public FileLocaleManager(LogUtil log, String path, String... locales) {
         super(path, locales, log);
+    }
+
+    /** Check is the argument is a file and an a directory, internal usage. */
+    private static <T> T isFileDirectory(T file) {
+        checkArgument(file instanceof File && ((File) file).isDirectory());
+        return file;
     }
 
     /** Load all the locales that are in the folder */
@@ -69,11 +78,5 @@ public class FileLocaleManager extends AbstractLocaleManager {
                 e.printStackTrace();
             }
         }
-    }
-
-    /** Check is the argument is a file and an a directory, internal usage. */
-    private static <T> T isFileDirectory(T file) {
-        checkArgument(file instanceof File && ((File) file).isDirectory());
-        return file;
     }
 }

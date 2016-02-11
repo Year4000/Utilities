@@ -27,7 +27,10 @@ import java.util.concurrent.TimeUnit;
 @Target(ElementType.TYPE)
 public @interface ConfigURL {
     String value();
+
     Class config();
+
     int expire() default 1;
+
     TimeUnit unit() default TimeUnit.HOURS;
 }

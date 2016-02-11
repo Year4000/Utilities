@@ -50,7 +50,7 @@ public final class URLBuilder {
 
     /** Create a URL Builder instance from url */
     public static URLBuilder fromURL(String url) {
-        String[] uri = url.startsWith("http://") || url.startsWith("https://") ? url.split("://") : new String[] {"http", url};
+        String[] uri = url.startsWith("http://") || url.startsWith("https://") ? url.split("://") : new String[]{"http", url};
         String[] paths = uri[1].contains("/") ? uri[1].split("/") : new String[]{uri[1]};
         URLBuilder copy = URLBuilder.builder(uri[0] + "://" + paths[0]);
         copy.paths = new LinkedList<>();
@@ -96,7 +96,7 @@ public final class URLBuilder {
     public URLBuilder addPath(Number path) {
         return addPath(path.toString());
     }
-    
+
     /** Add an empty path to the base url */
     public URLBuilder addPath() {
         return addPath("");

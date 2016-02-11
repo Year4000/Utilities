@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author zh32 <zh32 at zh32.de> modify by ewized to add lombok support,
- * update the code to latest java standards, and various tweaks.
+ *         update the code to latest java standards, and various tweaks.
  */
 @Data
 @AllArgsConstructor
@@ -39,8 +39,12 @@ public final class Pinger {
         while (true) {
             int k = in.readByte();
             i |= (k & 0x7F) << j++ * 7;
-            if (j > 5) throw new RuntimeException("VarInt too big");
-            if ((k & 0x80) != 128) break;
+            if (j > 5) {
+                throw new RuntimeException("VarInt too big");
+            }
+            if ((k & 0x80) != 128) {
+                break;
+            }
         }
 
         return i;

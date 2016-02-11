@@ -23,6 +23,7 @@ import com.google.common.annotations.Beta;
 public abstract class MessageUtil {
     /**
      * Replace color codes with Minecraft colors.
+     *
      * @param message The message to be translated.
      * @return The translated message.
      */
@@ -32,6 +33,7 @@ public abstract class MessageUtil {
 
     /**
      * Strip Minecraft colors to create a clean message.
+     *
      * @param message The message to strip from.
      * @return The clean message with no colors.
      */
@@ -41,6 +43,7 @@ public abstract class MessageUtil {
 
     /**
      * Replace Minecraft colors with color codes.
+     *
      * @param message The message to be translated.
      * @return The translated message.
      */
@@ -50,6 +53,7 @@ public abstract class MessageUtil {
 
     /**
      * Check is the message could be a raw message
+     *
      * @param message Message to check.
      * @return true|false
      */
@@ -59,6 +63,7 @@ public abstract class MessageUtil {
 
     /**
      * Replace end of line symbol with a char.
+     *
      * @param message The message to be translated.
      * @return The translated message.
      */

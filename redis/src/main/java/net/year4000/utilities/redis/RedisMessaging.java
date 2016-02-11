@@ -15,8 +15,8 @@ import redis.clients.jedis.JedisPubSub;
 import java.io.Closeable;
 import java.util.function.Consumer;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @ToString
 @EqualsAndHashCode

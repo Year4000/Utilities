@@ -36,6 +36,7 @@ public final class QuickCache<T> {
 
     /**
      * Get the instance of T
+     *
      * @return The instance of T
      */
     public T get() {

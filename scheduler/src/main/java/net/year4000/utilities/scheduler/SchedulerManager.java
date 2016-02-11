@@ -27,13 +27,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class SchedulerManager {
+    final LogUtil log;
+    final Map<Integer, ThreadedTask> tasks = new ConcurrentSkipListMap<>();
     private final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder()
         .setNameFormat("Utilities Pool Thread #%1$d")
         .build();
     private final ExecutorService EXECUTOR = Executors.newCachedThreadPool(THREAD_FACTORY);
     private final AtomicInteger counter = new AtomicInteger();
-    final LogUtil log;
-    final Map<Integer, ThreadedTask> tasks = new ConcurrentSkipListMap<>();
 
     public SchedulerManager() {
         this(new LogUtil());

@@ -14,7 +14,7 @@ apply from: "${rootDir}/gradle/utilities.gradle"
 processResources {
     from('src/main/resources') {
         include 'plugin.yml'
-        filter(ReplaceTokens, tokens: [version : project.version, git_hash: git()])
+        filter(ReplaceTokens, tokens: [version: project.version, git_hash: git()])
     }
 }
 

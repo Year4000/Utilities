@@ -17,8 +17,8 @@
 
 package net.year4000.utilities.bungee;
 
-import net.year4000.utilities.locale.LocaleWrapper;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.year4000.utilities.locale.LocaleWrapper;
 
 @SuppressWarnings("unused")
 public abstract class BungeeLocale extends LocaleWrapper {

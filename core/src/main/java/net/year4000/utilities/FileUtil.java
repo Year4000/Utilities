@@ -24,11 +24,13 @@ import java.io.IOException;
 
 @SuppressWarnings("unused")
 public final class FileUtil {
-    private FileUtil() {}
+    private FileUtil() {
+    }
 
     /**
      * Copy one file source to a destination.
-     * @param source The file source.
+     *
+     * @param source      The file source.
      * @param destination The new path.
      * @throws IOException
      */
@@ -38,9 +40,10 @@ public final class FileUtil {
 
     /**
      * Copy one file source to a destination.
-     * @param source The file source.
+     *
+     * @param source      The file source.
      * @param destination The new path.
-     * @param force Should this operation overwrite.
+     * @param force       Should this operation overwrite.
      * @throws IOException
      */
     public static void copy(File source, File destination, boolean force) throws IOException {
@@ -70,7 +73,8 @@ public final class FileUtil {
         for (File file : files) {
             if (file.isDirectory()) {
                 copyDirectory(file, new File(destination, file.getName()));
-            } else {
+            }
+            else {
                 copyFile(file, new File(destination, file.getName()));
             }
         }

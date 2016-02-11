@@ -25,12 +25,14 @@ import net.md_5.bungee.chat.ComponentSerializer;
 
 @SuppressWarnings("unused")
 public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
-    private MessageUtil() {}
+    private MessageUtil() {
+    }
 
     /**
      * Creates a message with colors and allowed for formatted.
+     *
      * @param message The message to create.
-     * @param args The optional args to format the message.
+     * @param args    The optional args to format the message.
      * @return The message all prettied and formatted.
      */
     public static BaseComponent[] message(String message, Object... args) {
@@ -39,6 +41,7 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Sends out a broadcast message.
+     *
      * @param message The message to broadcast.
      */
     public static void broadcast(String message, Object... args) {
@@ -49,6 +52,7 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Sends out a broadcast message.
+     *
      * @param message The message to broadcast.
      */
     public static void broadcast(BaseComponent[] message) {
@@ -59,6 +63,7 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Sends out a color broadcast message.
+     *
      * @param message The message to broadcast.
      */
     public static void colorBroadcast(String message) {
@@ -67,6 +72,7 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Translate a normal string to a BaseComponent.
+     *
      * @param message The message to translate.
      * @return The translated message.
      */
@@ -76,6 +82,7 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Parse a message to be used.
+     *
      * @param message The message.
      * @return The parsed message.
      * @throws java.lang.Exception
@@ -89,14 +96,16 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
             else {
                 throw new Exception("Not a raw message.");
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new Exception("Message could not be parsed.");
         }
     }
 
     /**
      * Merge two BaseComponents together.
-     * @param first The first BaseComponent
+     *
+     * @param first  The first BaseComponent
      * @param second The second BaseComponet
      * @return The merged
      */
@@ -113,7 +122,8 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Merge two BaseComponents together.
-     * @param first The first String
+     *
+     * @param first  The first String
      * @param second The second String
      * @return The merged
      */
@@ -123,7 +133,8 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Merge two BaseComponents together.
-     * @param first The first String
+     *
+     * @param first  The first String
      * @param second The second String
      * @return The merged
      */
@@ -133,7 +144,8 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Merge two BaseComponents together.
-     * @param first The first String
+     *
+     * @param first  The first String
      * @param second The second String
      * @return The merged
      */

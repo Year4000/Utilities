@@ -17,8 +17,8 @@
 
 package net.year4000.utilities.bukkit;
 
-import net.year4000.utilities.bukkit.items.NBT;
 import com.google.gson.Gson;
+import net.year4000.utilities.bukkit.items.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -39,13 +39,15 @@ import java.util.List;
 public final class ItemUtil {
     private static final Gson gson = new Gson();
 
-    private ItemUtil() {}
+    private ItemUtil() {
+    }
 
     /**
      * Create a book with the data inside
-     * @param title The title.
+     *
+     * @param title  The title.
      * @param author The author.
-     * @param pages The pages' content.
+     * @param pages  The pages' content.
      * @return The book
      */
     public static ItemStack createBook(String title, String author, List<String> pages) {
@@ -63,7 +65,8 @@ public final class ItemUtil {
 
     /**
      * Set the color of a item
-     * @param item The item
+     *
+     * @param item  The item
      * @param color The color
      * @return Item with color
      * @throws InputMismatchException
@@ -80,7 +83,8 @@ public final class ItemUtil {
 
     /**
      * Create a simple item.
-     * @param item The name of the item.
+     *
+     * @param item   The name of the item.
      * @param amount The amount of items.
      * @param damage The damage of the item.
      * @return ItemStack
@@ -91,7 +95,8 @@ public final class ItemUtil {
 
     /**
      * Create a simple item.
-     * @param item The name of the item.
+     *
+     * @param item   The name of the item.
      * @param amount The amount of items.
      * @return ItemStack
      */
@@ -101,6 +106,7 @@ public final class ItemUtil {
 
     /**
      * Create a simple item.
+     *
      * @param item The name of the item.
      * @return ItemStack
      */
@@ -110,7 +116,8 @@ public final class ItemUtil {
 
     /**
      * Create a simple item.
-     * @param item The name of the item.
+     *
+     * @param item   The name of the item.
      * @param amount The amount of items.
      * @param damage The damage of the item.
      * @return ItemStack
@@ -121,7 +128,8 @@ public final class ItemUtil {
 
     /**
      * Create a simple item.
-     * @param item The name of the item.
+     *
+     * @param item   The name of the item.
      * @param amount The amount of items.
      * @return ItemStack
      */
@@ -131,6 +139,7 @@ public final class ItemUtil {
 
     /**
      * Create a simple item.
+     *
      * @param item The name of the item.
      * @return ItemStack
      */
@@ -140,8 +149,9 @@ public final class ItemUtil {
 
     /**
      * Create a simple item.
+     *
      * @param item The name of the item.
-     * @param nbt The nbt data of the item.
+     * @param nbt  The nbt data of the item.
      * @return ItemStack
      */
     public static ItemStack makeItem(String item, String nbt) {
@@ -152,8 +162,9 @@ public final class ItemUtil {
 
     /**
      * Add ItemMeta to an item.
+     *
      * @param itemStack The item to use as a reference point.
-     * @param nbtJson The json string to make the item.
+     * @param nbtJson   The json string to make the item.
      * @return The ItemMeta.
      */
     public static ItemMeta addMeta(ItemStack itemStack, String nbtJson) {
@@ -200,7 +211,7 @@ public final class ItemUtil {
 
         // Set the item's enchantment
         if (nbt.getEnchantments() != null) {
-            for (NBT.Enchantments enchantment: nbt.getEnchantments()) {
+            for (NBT.Enchantments enchantment : nbt.getEnchantments()) {
                 // The true is forcing the item to have enchantments even if the items can't have it.
                 itemMeta.addEnchant(
                     Enchantment.getByName(enchantment.getName().toUpperCase()),

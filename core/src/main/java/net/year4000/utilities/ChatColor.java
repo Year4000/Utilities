@@ -56,15 +56,9 @@ public enum ChatColor {
     public static final char COLOR_CHAR = '\u00A7';
     public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
     /** Pattern to remove all colour codes. */
-    public static final Pattern STRIP_COLOR_PATTERN = Pattern.compile( "(?i)" + String.valueOf( COLOR_CHAR ) + "[0-9A-FK-OR]" );
+    public static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
     /** Colour instances keyed by their active character. */
     private static final Map<Character, ChatColor> BY_CHAR = new HashMap<>();
-    /** The code appended to {@link #COLOR_CHAR} to make usable colour. */
-    private final char code;
-    /** This colour's colour char prefixed by the {@link #COLOR_CHAR}. */
-    private final String toString;
-    @Getter
-    private final String name;
 
     static {
         for (ChatColor colour : values()) {
@@ -72,17 +66,19 @@ public enum ChatColor {
         }
     }
 
+    /** The code appended to {@link #COLOR_CHAR} to make usable colour. */
+    private final char code;
+    /** This colour's colour char prefixed by the {@link #COLOR_CHAR}. */
+    private final String toString;
+    @Getter
+    private final String name;
+
     ChatColor(char code, String name) {
         this.code = code;
         this.name = name;
-        this.toString = new String( new char[] {
+        this.toString = new String(new char[]{
             COLOR_CHAR, code
         });
-    }
-
-    @Override
-    public String toString() {
-        return toString;
     }
 
     /**
@@ -103,7 +99,7 @@ public enum ChatColor {
         char[] b = textToTranslate.toCharArray();
 
         for (int i = 0; i < b.length - 1; i++) {
-            if (b[i] == altColorChar && ALL_CODES.indexOf(b[i + 1] ) > -1) {
+            if (b[i] == altColorChar && ALL_CODES.indexOf(b[i + 1]) > -1) {
                 b[i] = ChatColor.COLOR_CHAR;
                 b[i + 1] = Character.toLowerCase(b[i + 1]);
             }
@@ -120,5 +116,10 @@ public enum ChatColor {
      */
     public static ChatColor getByChar(char code) {
         return BY_CHAR.get(code);
+    }
+
+    @Override
+    public String toString() {
+        return toString;
     }
 }

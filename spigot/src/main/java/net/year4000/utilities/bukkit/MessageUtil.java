@@ -21,12 +21,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
-    private MessageUtil() {}
+    private MessageUtil() {
+    }
 
     /**
      * Creates a message with colors and allowed for formatted.
+     *
      * @param message The message to create.
-     * @param args The optional args to format the message.
+     * @param args    The optional args to format the message.
      * @return The message all prettied and formatted.
      */
     public static String message(String message, Object... args) {
@@ -35,6 +37,7 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Sends out a raw broadcast message.
+     *
      * @param message The message to broadcast.
      */
     public static void broadcast(String message) {
@@ -45,6 +48,7 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Sends out a color broadcast message.
+     *
      * @param message The message to broadcast.
      */
     public static void colorBroadcast(String message) {
@@ -53,6 +57,7 @@ public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
 
     /**
      * Sends out a raw broadcast message.
+     *
      * @param message The message to broadcast.
      */
     public static void rawBroadcast(String message) {
