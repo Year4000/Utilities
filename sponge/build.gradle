@@ -1,0 +1,41 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+apply from: "${rootDir}/gradle/utilities.gradle"
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': rootProject.name
+        attributes 'Implementation-Version': project.version
+    }
+}
+
+build.dependsOn shadowJar {
+    baseName = rootProject.name
+    version = project.version
+
+    dependencies {
+        include(dependency('redis.clients:jedis:.*'))
+        include(dependency('net.year4000.utilities:.*'))
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'sponge'
+        url = 'http://repo.spongepowered.org/maven'
+    }
+}
+
+dependencies {
+    compile project(':core')
+    compile project(':redis')
+    compile 'org.spongepowered:spongeapi:3.1.0-SNAPSHOT'
+}

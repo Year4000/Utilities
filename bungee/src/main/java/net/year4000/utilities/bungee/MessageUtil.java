@@ -24,7 +24,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.chat.ComponentSerializer;
 
 @SuppressWarnings("unused")
-public final class MessageUtil extends net.year4000.utilities.MessageUtil {
+public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
     private MessageUtil() {}
 
     /**

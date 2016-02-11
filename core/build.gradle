@@ -1,0 +1,22 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
+plugins {
+    id 'java'
+    id "net.ellune.blossom" version "1.0.1"
+}
+
+apply from: "${rootDir}/gradle/utilities.gradle"
+
+// Insert Tokens into a java Constants file
+blossom {
+    def constants = 'src/main/java/' + group.toString().replaceAll('\\.', '/') + '/Tokens.java'
+    replaceToken '${version}', version, constants
+    replaceToken '${git_hash}', git(), constants
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.google.guava:guava:19.0'
+}

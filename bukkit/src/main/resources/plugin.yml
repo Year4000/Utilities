@@ -1,6 +1,0 @@
-name: Utilities
-version: ${pom.version}-${git.commit.id.abbrev}
-author: Year4000
-main: ${plugin.mainClass}
-load: STARTUP
-depend: []

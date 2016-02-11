@@ -1,0 +1,32 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
+apply from: "${rootDir}/gradle/utils.gradle"
+apply plugin: 'java'
+
+// Project Details
+group 'net.year4000.utilities'
+version '2.0.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': rootProject.name
+        attributes 'Implementation-Version': project.version
+        attributes 'Specification-Version': git()
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.projectlombok:lombok:1.16.6'
+}

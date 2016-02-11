@@ -15,22 +15,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.year4000.utilities.bungee;
+package net.year4000.utilities.bukkit;
 
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.year4000.utilities.sdk.AbstractBadgeManager;
 import net.year4000.utilities.sdk.AccountBadgeManager;
+import org.bukkit.entity.Player;
 
-public final class BadgeManager extends AbstractBadgeManager<ProxiedPlayer> {
+public final class BadgeManager extends AbstractBadgeManager<Player> {
     private final AccountBadgeManager manager = new AccountBadgeManager();
 
     /** Find the badge the player should have */
-    public Badges findBadge(ProxiedPlayer player) {
+    public AbstractBadgeManager.Badges findBadge(Player player) {
         return manager.findBadge(player.getUniqueId().toString());
     }
 
     /** Get the badge in bracket form */
-    public String getBadge(ProxiedPlayer player) {
+    public String getBadge(Player player) {
         Badges badge = findBadge(player);
         return MessageUtil.replaceColors("&f[" + badge + "&f]");
     }

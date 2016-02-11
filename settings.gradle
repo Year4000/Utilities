@@ -1,0 +1,15 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
+rootProject.name = 'Utilities'
+include ':core'
+include ':sdk'
+include ':minecraft'
+include ':redis'
+include ':locale'
+include ':sponge'
+include 'bungee'
+include 'scheduler'
+include 'spigot'
+

@@ -1,0 +1,60 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+apply from: "${rootDir}/gradle/utilities.gradle"
+
+processResources {
+    from('src/main/resources') {
+        include 'plugin.yml'
+        filter(ReplaceTokens, tokens: [version : project.version, git_hash: git()])
+    }
+}
+
+build.dependsOn shadowJar {
+    baseName = rootProject.name
+    version = project.version
+
+    dependencies {
+        include(dependency('redis.clients:jedis:.*'))
+        include(dependency('com.comphenix.packetwrapper:PacketWrapper:.*'))
+        include(dependency('com.sk89q:command-framework-bukkit:.*'))
+        include(dependency('net.year4000.utilities:.*'))
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'oc-tc'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+    maven {
+        name = 'spigot'
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name = 'dmulloy2'
+        url = 'http://repo.dmulloy2.net/content/groups/public/'
+    }
+}
+
+dependencies {
+    compile project(':core')
+    compile project(':redis')
+    compile project(':minecraft')
+    compile project(':locale')
+    compile project(':sdk')
+    compile project(':scheduler')
+    compile 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    compile 'com.comphenix.protocol:ProtocolLib:3.6.5-SNAPSHOT'
+    compile 'com.comphenix.packetwrapper:PacketWrapper:1.8.7-R0.1-SNAPSHOT'
+    compile 'com.sk89q:command-framework-bukkit:0.5-SNAPSHOT'
+}

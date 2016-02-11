@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * Copyright 2015 Year4000.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -13,6 +14,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+=======
+ * Copyright 2016 Year4000. All Rights Reserved.
+>>>>>>> utils/master
  */
 
 package net.year4000.utilities;
@@ -49,7 +53,7 @@ public final class LogUtil {
 
     /** Logs a message to the console */
     public synchronized void log(String message, Object... args) {
-        logger.log(level, String.format(MessageUtil.stripColors(message), args));
+        logger.log(level, String.format(message, args));
     }
 
     /** Logs a debug message to the console */
@@ -57,7 +61,7 @@ public final class LogUtil {
         if (debug) {
             Level old = level;
             setLevel(Level.WARNING);
-            log("DEBUG: " + MessageUtil.stripColors(message), args);
+            log("DEBUG: " + message, args);
             setLevel(old);
         }
     }
