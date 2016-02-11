@@ -1,0 +1,24 @@
+// Copyright 2016 Year4000. All Rights Reserved.
+
+apply from: "${rootDir}/gradle/utils.gradle"
+apply plugin: 'java'
+//apply plugin: 'com.github.johnrengelman.shadow'
+
+defaultTasks 'clean', 'build'
+
+// Project Details
+group 'net.year4000.utilities'
+version '2.0.0-SNAPSHOT-' + git()
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.projectlombok:lombok:1.14.8'
+}

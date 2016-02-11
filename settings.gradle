@@ -1,0 +1,3 @@
+rootProject.name = 'Utilities'
+include ':core'
+

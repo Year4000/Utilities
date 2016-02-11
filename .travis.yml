@@ -1,0 +1,9 @@
+sudo: true
+language: java
+jdk:
+  - oraclejdk8
+notifications:
+  email: false
+before_script: sudo redis-server /etc/redis/redis.conf --port 6379
+after_success:
+  - ./deploy_maven.py

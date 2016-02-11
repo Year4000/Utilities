@@ -1,0 +1,15 @@
+# Maven
+target/
+*/target/
+*/src/main/resources/git.properties
+dependency-reduced-pom.xml
+settings.xml
+
+
+# IDES
+*~
+*.swp
+*.swap
+*.tmp
+.idea/
+*.iml
