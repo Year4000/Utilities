@@ -1,6 +1,8 @@
-// Copyright 2016 Year4000. All Rights Reserved.
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
 
-// Run a console command and return the output
+/** Run a console command and return the output */
 ext.cmd = { String[] input ->
     def out = new ByteArrayOutputStream()
 
@@ -12,7 +14,7 @@ ext.cmd = { String[] input ->
     return out.toString().trim()
 }
 
-// Grab the git hash id
+/** Grab the git hash id, will throw a problem if not a git repo */
 ext.git = {
     cmd('git', 'log', '--pretty=format:%h', '-1')
 }
