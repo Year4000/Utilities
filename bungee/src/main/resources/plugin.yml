@@ -1,0 +1,5 @@
+name: Utilities
+version: ${pom.version}-git-${git.commit.id.abbrev}
+author: ewized
+main: ${plugin.mainClass}
+depends: []
