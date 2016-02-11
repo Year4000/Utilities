@@ -13,4 +13,7 @@ public class Tokens {
 
     /** The git hash of this gradle project */
     public static final String GIT_HASH = "${git_hash}";
+
+    /** The full version including git hash of this gradle project */
+    public static final String FULL_VERSION = "${version}-${git_hash}";
 }
