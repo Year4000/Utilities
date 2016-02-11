@@ -1,9 +1,6 @@
-# Maven
-target/
-*/target/
-*/src/main/resources/git.properties
-dependency-reduced-pom.xml
-settings.xml
+# Gradle
+.gradle/
+build/
 
 
 # IDES
