@@ -1,3 +1,20 @@
 // Copyright 2016 Year4000. All Rights Reserved.
 
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "1.2.3"
+    id "net.ellune.blossom" version "1.0.1"
+}
+
 apply from: "${rootDir}/gradle/utilities.gradle"
+
+blossom {
+    def constants = 'src/main/java/' + group.toString().replaceAll('\\.', '/') + '/Tokens.java'
+    replaceToken '${version}', version, constants
+    replaceToken '${git_hash}', git(), constants
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.projectlombok:lombok:1.14.8'
+}

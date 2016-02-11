@@ -2,9 +2,6 @@
 
 apply from: "${rootDir}/gradle/utils.gradle"
 apply plugin: 'java'
-//apply plugin: 'com.github.johnrengelman.shadow'
-
-defaultTasks 'clean', 'build'
 
 // Project Details
 group 'net.year4000.utilities'
