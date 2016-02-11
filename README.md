@@ -11,7 +11,6 @@ API Changes
 With this project reflects the codebase on Year4000.
 It our best to maintain backwards compatibility for the moment and it will be removed in newer versions.
 Use Utilities with caution, there is no fact that it will work the same for Year4000.
->>>>>>> utils/master
 
 Shaded Projects
 ---------------
@@ -32,7 +31,6 @@ License
 This project is licensed under the [GNU General Public License][license], version 3.
 
 Copyright &copy; 2016 Year4000 [www.year4000.net][year4000]
->>>>>>> utils/master
 
 [license]: https://www.gnu.org/copyleft/gpl.html
 [utilities]: https://github.com/ewized/utilities/
