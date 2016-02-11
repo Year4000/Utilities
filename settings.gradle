@@ -4,3 +4,8 @@
 
 rootProject.name = 'Utilities'
 include ':core'
+include ':sdk'
+include ':minecraft'
+include ':redis'
+include ':locale'
+
