@@ -7,7 +7,7 @@ plugins {
     id "net.ellune.blossom" version "1.0.1"
 }
 
-apply from: "${rootDir}/gradle/utilities.gradle"
+apply from: utilities.file('gradle/utilities.gradle')
 
 // Insert Tokens into a java Constants file
 blossom {

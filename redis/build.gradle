@@ -2,9 +2,9 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
-apply from: "${rootDir}/gradle/utilities.gradle"
+apply from: utilities.file('gradle/utilities.gradle')
 
 dependencies {
-    compile project(':core')
+    compile utilities.project('core')
     compile 'redis.clients:jedis:2.8.0'
 }

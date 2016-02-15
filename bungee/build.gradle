@@ -9,7 +9,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
-apply from: "${rootDir}/gradle/utilities.gradle"
+apply from: utilities.file('gradle/utilities.gradle')
 
 processResources {
     from('src/main/resources') {
@@ -42,12 +42,12 @@ repositories {
 }
 
 dependencies {
-    compile project(':core')
-    compile project(':redis')
-    compile project(':minecraft')
-    compile project(':locale')
-    compile project(':sdk')
-    compile project(':scheduler')
+    compile utilities.project('core')
+    compile utilities.project('redis')
+    compile utilities.project('minecraft')
+    compile utilities.project('locale')
+    compile utilities.project('sdk')
+    compile utilities.project('scheduler')
     compile 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
     compile 'com.sk89q:command-framework-bungee:0.5-SNAPSHOT'
 }

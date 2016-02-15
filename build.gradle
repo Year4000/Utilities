@@ -2,4 +2,6 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
+ext.utilities = project
+
 defaultTasks 'clean', 'build', 'test'

@@ -9,7 +9,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
-apply from: "${rootDir}/gradle/utilities.gradle"
+apply from: utilities.file('gradle/utilities.gradle')
 
 processResources {
     from('src/main/resources') {
@@ -47,12 +47,12 @@ repositories {
 }
 
 dependencies {
-    compile project(':core')
-    compile project(':redis')
-    compile project(':minecraft')
-    compile project(':locale')
-    compile project(':sdk')
-    compile project(':scheduler')
+    compile utilities.project('core')
+    compile utilities.project('redis')
+    compile utilities.project('minecraft')
+    compile utilities.project('locale')
+    compile utilities.project('sdk')
+    compile utilities.project('scheduler')
     compile 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
     compile 'com.comphenix.protocol:ProtocolLib:3.6.5-SNAPSHOT'
     compile 'com.comphenix.packetwrapper:PacketWrapper:1.8.7-R0.1-SNAPSHOT'
