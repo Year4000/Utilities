@@ -48,11 +48,11 @@ repositories {
 
 dependencies {
     compile utilities.project('core')
-    compile utilities.project('redis')
-    compile utilities.project('minecraft')
-    compile utilities.project('locale')
-    compile utilities.project('sdk')
-    compile utilities.project('scheduler')
+    compile utilities.project('core:redis')
+    compile utilities.project('core:minecraft')
+    compile utilities.project('core:locale')
+    compile utilities.project('core:sdk')
+    compile utilities.project('core:scheduler')
     compile 'org.spigotmc:spigot-api:1.8.7-R0.1-SNAPSHOT'
     compile ('com.comphenix.protocol:ProtocolLib:3.6.5-SNAPSHOT') {
         exclude module: 'bukkit'
