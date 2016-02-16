@@ -23,9 +23,9 @@ build.dependsOn shadowJar {
     version = project.version
 
     dependencies {
-        include(dependency('redis.clients:jedis:.*'))
-        include(dependency('net.year4000.utilities:.*'))
-        include(dependency('com.sk89q:command-framework-bungee:.*'))
+        include dependency('redis.clients:jedis:.*')
+        include dependency('net.year4000.utilities:.*')
+        include dependency('com.sk89q:command-framework-bungee:.*')
     }
 }
 

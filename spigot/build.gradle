@@ -23,10 +23,10 @@ build.dependsOn shadowJar {
     version = project.version
 
     dependencies {
-        include(dependency('redis.clients:jedis:.*'))
-        include(dependency('com.comphenix.packetwrapper:PacketWrapper:.*'))
-        include(dependency('com.sk89q:command-framework-bukkit:.*'))
-        include(dependency('net.year4000.utilities:.*'))
+        include dependency('redis.clients:jedis:.*')
+        include dependency('com.comphenix.packetwrapper:PacketWrapper:.*')
+        include dependency('com.sk89q:command-framework-bukkit:.*')
+        include dependency('net.year4000.utilities:.*')
     }
 }
 

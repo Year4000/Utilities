@@ -3,8 +3,6 @@
  */
 
 apply from: utilities.file('gradle/utils.gradle')
-apply plugin: 'java'
-apply plugin: 'idea'
 
 // Project Details
 group 'net.year4000.utilities'

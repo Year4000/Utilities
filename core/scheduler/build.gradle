@@ -2,6 +2,10 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
+plugins {
+    id 'java'
+}
+
 apply from: utilities.file('gradle/utilities.gradle')
 
 dependencies {

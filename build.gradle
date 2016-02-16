@@ -2,6 +2,10 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
+plugins {
+    id 'idea'
+}
+
 ext.utilities = project
 
 defaultTasks 'clean', 'build', 'test'
