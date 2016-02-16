@@ -2,11 +2,22 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
-plugins {
-    id 'java'
-    id "net.ellune.blossom" version "1.0.1"
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath 'gradle.plugin.net.ellune:blossom:1.0.1'
+    }
 }
 
+plugins {
+    id 'java'
+}
+
+apply plugin: 'net.ellune.blossom'
 apply from: utilities.file('gradle/utilities.gradle')
 
 // Insert Tokens into a java Constants file
