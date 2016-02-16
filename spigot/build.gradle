@@ -34,7 +34,7 @@ repositories {
     mavenCentral()
     maven {
         name = 'oc-tc'
-        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+        url = 'https://repo.oc.tc/content/repositories/public'
     }
     maven {
         name = 'spigot'
