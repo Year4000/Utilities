@@ -53,8 +53,16 @@ dependencies {
     compile utilities.project('locale')
     compile utilities.project('sdk')
     compile utilities.project('scheduler')
-    compile 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
-    compile 'com.comphenix.protocol:ProtocolLib:3.6.5-SNAPSHOT'
-    compile 'com.comphenix.packetwrapper:PacketWrapper:1.8.7-R0.1-SNAPSHOT'
-    compile 'com.sk89q:command-framework-bukkit:0.5-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.8.7-R0.1-SNAPSHOT'
+    compile ('com.comphenix.protocol:ProtocolLib:3.6.5-SNAPSHOT') {
+        exclude module: 'bukkit'
+    }
+    compile ('com.comphenix.packetwrapper:PacketWrapper:1.8.7-R0.1-SNAPSHOT') {
+        exclude module: 'bukkit'
+        exclude module: 'spigot'
+    }
+    compile ('com.sk89q:command-framework-bukkit:0.5-SNAPSHOT') {
+        exclude module: 'spigot'
+        exclude module: 'bukkit'
+    }
 }
