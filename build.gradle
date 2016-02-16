@@ -8,4 +8,4 @@ plugins {
 
 ext.utilities = project
 
-defaultTasks 'clean', 'build', 'test'
+defaultTasks 'clean', 'build'
