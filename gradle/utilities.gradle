@@ -7,14 +7,16 @@ apply from: utilities.file('gradle/utils.gradle')
 // Project Details
 group 'net.year4000.utilities'
 version '2.0.0-SNAPSHOT'
+utilities.version = version
+utilities.group = group
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 jar {
     manifest {
-        attributes 'Implementation-Title': rootProject.name
-        attributes 'Implementation-Version': project.version
+        attributes 'Implementation-Title': utilities.name
+        attributes 'Implementation-Version': utilities.version
         attributes 'Specification-Version': git()
     }
 }

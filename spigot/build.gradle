@@ -14,13 +14,13 @@ apply from: utilities.file('gradle/utilities.gradle')
 processResources {
     from('src/main/resources') {
         include 'plugin.yml'
-        filter(ReplaceTokens, tokens: [version: project.version, git_hash: git()])
+        filter(ReplaceTokens, tokens: [version: utilities.version, git_hash: git()])
     }
 }
 
 build.dependsOn shadowJar {
-    baseName = rootProject.name
-    version = project.version
+    baseName = utilities.name
+    version = utilities.version
 
     dependencies {
         include dependency('redis.clients:jedis:.*')

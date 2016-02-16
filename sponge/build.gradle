@@ -11,14 +11,14 @@ apply from: utilities.file('gradle/utilities.gradle')
 
 jar {
     manifest {
-        attributes 'Implementation-Title': rootProject.name
-        attributes 'Implementation-Version': project.version
+        attributes 'Implementation-Title': utilities.name
+        attributes 'Implementation-Version': utilities.version
     }
 }
 
 build.dependsOn shadowJar {
-    baseName = rootProject.name
-    version = project.version
+    baseName = utilities.name
+    version = utilities.version
 
     dependencies {
         include dependency('redis.clients:jedis:.*')
