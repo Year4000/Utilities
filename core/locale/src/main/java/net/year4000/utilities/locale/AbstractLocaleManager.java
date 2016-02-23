@@ -40,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Data
 @SuppressWarnings("unused")
 public abstract class AbstractLocaleManager {
-    public static final String DEFAULT_LOCALE = "en_US";
+    public static final Locale DEFAULT_LOCALE = Locale.US;
     protected static final String EXTENSION = ".properties";
     @Getter
     private final Map<Locale, Properties> locales = Maps.newConcurrentMap();

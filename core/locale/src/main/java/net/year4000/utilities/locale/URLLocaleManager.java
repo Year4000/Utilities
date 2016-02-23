@@ -86,7 +86,7 @@ public class URLLocaleManager extends AbstractLocaleManager {
             return gson.fromJson(new InputStreamReader(con.getInputStream()), String[].class);
         }
         catch (IOException e) {
-            return new String[]{DEFAULT_LOCALE};
+            return new String[]{DEFAULT_LOCALE.toString()};
         }
     }
 

@@ -7,10 +7,10 @@ package net.year4000.utilities.locale;
 import com.google.common.base.Joiner;
 import lombok.Getter;
 
-import java.util.Locale;
 import java.util.MissingFormatArgumentException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static net.year4000.utilities.locale.AbstractLocaleManager.DEFAULT_LOCALE;
 
 /**
  * Abstract layout to add simple translation keys.
@@ -20,8 +20,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * this player is loaded.
  */
 public abstract class AbstractTranslation implements Translatable {
-    public static final Locale DEFAULT_LOCALE = Locale.US;
-    public static final String DEFAULT_LOCALE_STRING = DEFAULT_LOCALE.toString();
     protected AbstractLocaleManager localeManager;
     @Getter
     protected String locale;
@@ -34,11 +32,11 @@ public abstract class AbstractTranslation implements Translatable {
 
     /** Translate to the specific locale with formatting */
     public String get(String key, Object... args) {
-        if (localeManager.getLocales().size() == 0 || !localeManager.isLocale(DEFAULT_LOCALE_STRING)) {
+        if (localeManager.getLocales().size() == 0 || !localeManager.isLocale(DEFAULT_LOCALE.toString())) {
             return "(" + locale + ") " + key + " " + Joiner.on(", ").join(args);
         }
         else if (!localeManager.isLocale(locale)) {
-            locale = DEFAULT_LOCALE_STRING;
+            locale = DEFAULT_LOCALE.toString();
         }
 
         String formatted, missingKey = key + (args.length > 0 ? " " + Joiner.on(", ").join(args) : "");
