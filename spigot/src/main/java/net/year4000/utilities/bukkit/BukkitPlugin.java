@@ -23,15 +23,15 @@ import com.sk89q.minecraft.util.commands.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.year4000.utilities.LogUtil;
-import net.year4000.utilities.bukkit.locale.MessageLocale;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
+import static net.year4000.utilities.bukkit.Messages.*;
 
 /**
  * This is a wrapper for Bukkit plugins, this will allow for
@@ -90,28 +90,32 @@ public class BukkitPlugin extends JavaPlugin {
     @SuppressWarnings("unchecked")
     public boolean onCommand(CommandSender sender, Command cmd, String commandName, String[] args) {
         List<String> msg = new ArrayList<>();
+        Optional<Locale> locale = Optional.empty();
 
-        MessageLocale locale = new MessageLocale(sender);
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            locale = Optional.of(new Locale(player.spigot().getLocale()));
+        }
 
         try {
             commands.execute(cmd.getName(), args, sender, sender);
         }
         catch (CommandPermissionsException e) {
-            msg.add(locale.get("error.cmd.permission"));
+            msg.add(CMD_ERROR_PERMISSION.get(locale));
         }
         catch (MissingNestedCommandException e) {
-            msg.add(locale.get("error.cmd.usage", e.getUsage()));
+            msg.add(CMD_ERROR_USAGE.get(locale, e.getUsage()));
         }
         catch (CommandUsageException e) {
             msg.add(ChatColor.RED + e.getMessage());
-            msg.add(locale.get("error.cmd.usage", e.getUsage()));
+            msg.add(CMD_ERROR_USAGE.get(locale, e.getUsage()));
         }
         catch (WrappedCommandException e) {
             if (e.getCause() instanceof NumberFormatException) {
-                msg.add(locale.get("error.cmd.number"));
+                msg.add(CMD_ERROR_NUMBER.get(locale));
             }
             else {
-                msg.add(locale.get("error.cmd.error"));
+                msg.add(CMD_ERROR.get(locale));
                 e.printStackTrace();
             }
         }

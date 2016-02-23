@@ -28,13 +28,13 @@ import lombok.Getter;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.year4000.utilities.LogUtil;
-import net.year4000.utilities.bungee.locale.MessageLocale;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
+import static net.year4000.utilities.bungee.Messages.*;
 
 /**
  * This is a wrapper for BungeeCord plugins, this will allow for
@@ -99,27 +99,32 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
     public void onCommand(CommandSender sender, String commandName, String[] args) {
         List<BaseComponent[]> msg = new ArrayList<>();
 
-        MessageLocale locale = new MessageLocale(sender);
+        Optional<Locale> locale = Optional.empty();
+
+        if (sender instanceof ProxiedPlayer) {
+            ProxiedPlayer player = (ProxiedPlayer) sender;
+            locale = Optional.of(player.getLocale());
+        }
 
         try {
             commands.execute(commandName, args, sender, sender);
         }
         catch (CommandPermissionsException e) {
-            msg.add(MessageUtil.message(locale.get("error.cmd.permission")));
+            msg.add(MessageUtil.message(CMD_ERROR_PERMISSION.get(locale)));
         }
         catch (MissingNestedCommandException e) {
-            msg.add(MessageUtil.message(locale.get("error.cmd.usage", e.getUsage())));
+            msg.add(MessageUtil.message(CMD_ERROR_USAGE.get(locale, e.getUsage())));
         }
         catch (CommandUsageException e) {
-            msg.add(MessageUtil.message(ChatColor.RED + e.getMessage().replaceAll(":", "&7:&e")));
-            msg.add(MessageUtil.message(locale.get("error.cmd.usage", e.getUsage())));
+            msg.add(MessageUtil.message(ChatColor.RED + e.getMessage()));
+            msg.add(MessageUtil.message(CMD_ERROR_USAGE.get(locale, e.getUsage())));
         }
         catch (WrappedCommandException e) {
             if (e.getCause() instanceof NumberFormatException) {
-                msg.add(MessageUtil.message(locale.get("error.cmd.number")));
+                msg.add(MessageUtil.message(CMD_ERROR_NUMBER.get(locale)));
             }
             else {
-                msg.add(MessageUtil.message(locale.get("error.cmd.error")));
+                msg.add(MessageUtil.message(CMD_ERROR.get(locale)));
                 e.printStackTrace();
             }
         }

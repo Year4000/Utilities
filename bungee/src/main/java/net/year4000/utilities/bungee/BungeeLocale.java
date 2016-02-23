@@ -17,18 +17,22 @@
 
 package net.year4000.utilities.bungee;
 
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.year4000.utilities.locale.LocaleWrapper;
+import net.year4000.utilities.locale.AbstractLocaleManager;
+import net.year4000.utilities.locale.AbstractTranslation;
+
+import java.util.Locale;
+import java.util.Optional;
+
+import static net.year4000.utilities.locale.AbstractLocaleManager.DEFAULT_LOCALE;
 
 @SuppressWarnings("unused")
-public abstract class BungeeLocale extends LocaleWrapper {
+public class BungeeLocale extends AbstractTranslation {
     /** Start creating locales for the specific player's locale */
-    public BungeeLocale(ProxiedPlayer player) {
-        this.locale = player == null ? DEFAULT_LOCALE : player.getLocale().toString();
+    public BungeeLocale(AbstractLocaleManager localeManager, Optional<Locale> locale) {
+        super(localeManager, locale.orElse(DEFAULT_LOCALE).toString());
     }
 
     /** Translate to the specific locale with formatting */
     public String get(String key, Object... args) {
-        return super.get(key, args);
-    }
-}
+        return MessageUtil.replaceColors(super.get(key, args));
+    }}

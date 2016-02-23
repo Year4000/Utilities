@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.spongepowered.api.text.format.TextColors.*;
+import static net.year4000.utilities.sponge.Messages.*;
+
 
 public final class PluginCommand implements CommandExecutor {
     public static final String[] ALIAS = {"plugins", "pl"};
@@ -32,12 +34,12 @@ public final class PluginCommand implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         List<PluginContainer> collection = plugins();
         int size = collection.size();
-        Text prefix = Text.of(YELLOW, "Plugins ");
-        Text count = Text.of(GRAY, "(", YELLOW, collection.size(), GRAY, ")", DARK_GRAY, ": ");
+        Text prefix = Text.of(YELLOW, CMD_PLUGINS.get(src));
+        Text count = Text.of(GRAY, " (", YELLOW, collection.size(), GRAY, ")", DARK_GRAY, ": ");
         List<Text> plugins = Lists.newArrayList(prefix, count);
 
         for (int i = 0; i < size; i++) {
-            plugins.add(toText(collection.get(i)));
+            plugins.add(toText(collection.get(i), src));
 
             if (i < size - 1) {
                 plugins.add(Text.of(DARK_GRAY, ", "));
@@ -49,11 +51,11 @@ public final class PluginCommand implements CommandExecutor {
     }
 
     /** Convert the SimpleContainer to a pretty text */
-    public Text toText(PluginContainer plugin) {
+    public Text toText(PluginContainer plugin, CommandSource src) {
         List<Text> texts = Lists.newArrayList();
         String prefix = plugin.getInstance().orElseGet(Object::new).getClass().getName();
         Text display = Text.of(GREEN, plugin.getName());
-        Text version = Text.of(AQUA, "Version", DARK_GRAY, ": ", GREEN, plugin.getVersion());
+        Text version = Text.of(AQUA, CMD_VERSION.get(src), DARK_GRAY, ": ", GREEN, plugin.getVersion());
         String[] packages = prefix.split("\\.", prefix.split("\\.").length - 1);
 
         for (String parts : packages) {

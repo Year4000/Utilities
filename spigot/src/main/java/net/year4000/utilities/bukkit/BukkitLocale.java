@@ -17,18 +17,23 @@
 
 package net.year4000.utilities.bukkit;
 
-import net.year4000.utilities.locale.LocaleWrapper;
-import org.bukkit.entity.Player;
+import net.year4000.utilities.locale.AbstractLocaleManager;
+import net.year4000.utilities.locale.AbstractTranslation;
+
+import java.util.Locale;
+import java.util.Optional;
+
+import static net.year4000.utilities.locale.AbstractLocaleManager.DEFAULT_LOCALE;
 
 @SuppressWarnings("unused")
-public abstract class BukkitLocale extends LocaleWrapper {
+public class BukkitLocale extends AbstractTranslation {
     /** Start creating locales for the specific player's locale */
-    public BukkitLocale(Player player) {
-        this.locale = player == null ? DEFAULT_LOCALE : player.spigot().getLocale();
+    public BukkitLocale(AbstractLocaleManager localeManager, Optional<Locale> locale) {
+        super(localeManager, locale.orElse(DEFAULT_LOCALE).toString());
     }
 
     /** Translate to the specific locale with formatting */
     public String get(String key, Object... args) {
-        return super.get(key, args);
+        return MessageUtil.replaceColors(super.get(key, args));
     }
 }
