@@ -6,6 +6,8 @@ package net.year4000.utilities.locale;
 
 import junit.framework.Assert;
 import lombok.extern.java.Log;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
@@ -16,12 +18,13 @@ public class LocaleTest {
         Assert.assertTrue(manager.getLocales().size() > 0);
 
         manager.getLocales().forEach((code, property) -> {
-            LocaleUtil locale = (key, args) -> String.format(property.getProperty(key), args);
+            Translatable locale = (key, args) -> String.format(property.getProperty(key), args);
             Assert.assertEquals(locale.get("locale.code").toLowerCase(), code.toString());
         });
     }
 
-    //@Test
+    @Test
+    @Ignore // todo Fix paths for test locales
     public void localeTests() throws Exception {
         test(new ClassLocaleManager(System.getProperty("test.locales.class"), "en_US", "fr_FR"));
 

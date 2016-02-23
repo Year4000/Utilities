@@ -59,10 +59,7 @@ public final class LogUtil {
     /** Logs a debug message to the console */
     public synchronized void debug(String message, Object... args) {
         if (debug) {
-            Level old = level;
-            setLevel(Level.WARNING);
-            log("DEBUG: " + message, args);
-            setLevel(old);
+            logger.warning("DEBUG: " + String.format(message, args));
         }
     }
 

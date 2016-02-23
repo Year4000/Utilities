@@ -17,7 +17,6 @@
 
 package net.year4000.utilities.locale;
 
-import lombok.NoArgsConstructor;
 import net.year4000.utilities.LogUtil;
 
 import java.io.File;
@@ -25,7 +24,6 @@ import java.io.FileInputStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-@NoArgsConstructor
 @SuppressWarnings("unused")
 public class FileLocaleManager extends AbstractLocaleManager {
     /**
@@ -66,6 +64,7 @@ public class FileLocaleManager extends AbstractLocaleManager {
     }
 
     /** Load all the locales that are in the folder */
+    @Override
     public void loadLocales() {
         for (String code : codes) {
             try {

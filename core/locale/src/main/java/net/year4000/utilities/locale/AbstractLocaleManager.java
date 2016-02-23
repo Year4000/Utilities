@@ -18,6 +18,7 @@
 package net.year4000.utilities.locale;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.Getter;
 import net.year4000.utilities.LogUtil;
@@ -28,7 +29,6 @@ import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -43,18 +43,10 @@ public abstract class AbstractLocaleManager {
     public static final String DEFAULT_LOCALE = "en_US";
     protected static final String EXTENSION = ".properties";
     @Getter
-    private final Map<Locale, Properties> locales = new ConcurrentHashMap<>();
+    private final Map<Locale, Properties> locales = Maps.newConcurrentMap();
     protected String path;
     protected String[] codes;
     protected LogUtil log;
-
-    /**
-     * Init the LocaleManager with a default LogUtil logger.
-     * It is then your job to init path and codes.
-     */
-    public AbstractLocaleManager() {
-        log = new LogUtil();
-    }
 
     /**
      * Init the LocaleManager with default LogUtil logger and
@@ -100,10 +92,10 @@ public abstract class AbstractLocaleManager {
         try (InputStreamReader reader = new InputStreamReader(locale, Charsets.UTF_8)) {
             file.load(reader);
             locales.put(new Locale(key), file);
-            checkNotNull(log).debug("LocaleManager Added: " + key);
+            log.debug("LocaleManager Added: " + key);
         }
         catch (IOException e) {
-            checkNotNull(log).log(e, false);
+            log.log(e, false);
         }
     }
 

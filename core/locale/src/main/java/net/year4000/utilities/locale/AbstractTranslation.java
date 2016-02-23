@@ -6,9 +6,8 @@ package net.year4000.utilities.locale;
 
 import com.google.common.base.Joiner;
 import lombok.Getter;
-import lombok.NonNull;
-import net.year4000.utilities.mc.MessageUtil;
 
+import java.util.Locale;
 import java.util.MissingFormatArgumentException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -20,22 +19,26 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * override the constructor to add the manager when
  * this player is loaded.
  */
-public abstract class LocaleWrapper implements LocaleUtil {
-    public static final String DEFAULT_LOCALE = "en_US";
-    @NonNull
+public abstract class AbstractTranslation implements Translatable {
+    public static final Locale DEFAULT_LOCALE = Locale.US;
+    public static final String DEFAULT_LOCALE_STRING = DEFAULT_LOCALE.toString();
     protected AbstractLocaleManager localeManager;
     @Getter
     protected String locale;
 
+    /** Force the wrapper to create the instance */
+    public AbstractTranslation(AbstractLocaleManager localeManager, String locale) {
+        this.localeManager = checkNotNull(localeManager);
+        this.locale = checkNotNull(locale);
+    }
+
     /** Translate to the specific locale with formatting */
     public String get(String key, Object... args) {
-        checkNotNull(localeManager);
-
-        if (localeManager.getLocales().size() == 0 || !localeManager.isLocale(DEFAULT_LOCALE)) {
+        if (localeManager.getLocales().size() == 0 || !localeManager.isLocale(DEFAULT_LOCALE_STRING)) {
             return "(" + locale + ") " + key + " " + Joiner.on(", ").join(args);
         }
         else if (!localeManager.isLocale(locale)) {
-            locale = DEFAULT_LOCALE;
+            locale = DEFAULT_LOCALE_STRING;
         }
 
         String formatted, missingKey = key + (args.length > 0 ? " " + Joiner.on(", ").join(args) : "");
@@ -47,6 +50,6 @@ public abstract class LocaleWrapper implements LocaleUtil {
             formatted = localeManager.getLocale(locale).getProperty(key, missingKey);
         }
 
-        return MessageUtil.replaceColors(formatted);
+        return formatted;
     }
 }

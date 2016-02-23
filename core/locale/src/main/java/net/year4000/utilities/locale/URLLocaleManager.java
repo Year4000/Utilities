@@ -18,7 +18,6 @@
 package net.year4000.utilities.locale;
 
 import com.google.gson.Gson;
-import lombok.NoArgsConstructor;
 import net.year4000.utilities.LogUtil;
 
 import java.io.IOException;
@@ -26,11 +25,20 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-@NoArgsConstructor
 @SuppressWarnings("unused")
 public class URLLocaleManager extends AbstractLocaleManager {
     public static final String LOCALES_JSON = "locales.json";
     private static final Gson gson = new Gson();
+
+    /** Load the url manager from the default url path */
+    public URLLocaleManager(URL url) {
+        this(url, parseJson(url + LOCALES_JSON));
+    }
+
+    /** Load the url manager from the default url path */
+    public URLLocaleManager(String url) {
+        this(url, parseJson(url + LOCALES_JSON));
+    }
 
     /**
      * Load the locale files once created.
@@ -83,12 +91,12 @@ public class URLLocaleManager extends AbstractLocaleManager {
     }
 
     /** Load all the locales from the url location. */
+    @Override
     protected void loadLocales() {
         for (String code : codes) {
             try {
                 URLConnection url = new URL(path + code + EXTENSION).openConnection();
                 url.setUseCaches(false);
-                url.setDoInput(true);
                 url.setDoInput(true);
                 url.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36");
                 url.connect();

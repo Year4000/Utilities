@@ -1,5 +1,6 @@
 package net.year4000.utilities.locale;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -7,9 +8,9 @@ import java.util.function.Function;
  *
  * @param <A> The actor to grab the locale for.
  */
-public interface LocaleKeys<A> extends Function<A, LocaleUtil> {
+public interface LocaleKeys<A> extends Function<Optional<A>, Translatable> {
     /** Translate the object to the specific string */
-    default String get(A actor, Object... args) {
+    default String get(Optional<A> actor, Object... args) {
         if (this instanceof Enum) {
             return apply(actor).get(Enum.class.cast(this), args);
         }
@@ -19,7 +20,12 @@ public interface LocaleKeys<A> extends Function<A, LocaleUtil> {
     }
 
     /** Translate the object to the specific string */
+    default String get(A actor, Object... args) {
+        return get(Optional.ofNullable(actor), args);
+    }
+
+    /** Translate the object to the specific string */
     default String get(Object... args) {
-        return get(null, args);
+        return get(Optional.empty(), args);
     }
 }

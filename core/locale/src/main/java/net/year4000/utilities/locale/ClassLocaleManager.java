@@ -17,12 +17,10 @@
 
 package net.year4000.utilities.locale;
 
-import lombok.NoArgsConstructor;
 import net.year4000.utilities.LogUtil;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@NoArgsConstructor
 @SuppressWarnings("unused")
 public class ClassLocaleManager extends AbstractLocaleManager {
     private Class clazz;
@@ -45,11 +43,8 @@ public class ClassLocaleManager extends AbstractLocaleManager {
      * @param locales The locale codes to use.
      */
     public ClassLocaleManager(Class clazz, String path, String... locales) {
+        super(path, locales);
         this.clazz = checkNotNull(clazz);
-        this.path = checkNotNull(path);
-        this.codes = checkNotNull(locales);
-
-        loadLocales();
     }
 
     /**
@@ -64,6 +59,7 @@ public class ClassLocaleManager extends AbstractLocaleManager {
     }
 
     /** Load all the locales that are in the folder */
+    @Override
     public void loadLocales() {
         try {
             for (String locale : codes) {
