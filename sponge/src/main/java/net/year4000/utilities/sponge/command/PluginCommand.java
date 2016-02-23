@@ -14,6 +14,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public final class PluginCommand implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        List<SimpleContainer> collection = plugins();
+        List<PluginContainer> collection = plugins();
         int size = collection.size();
         Text prefix = Text.of(YELLOW, "Plugins ");
         Text count = Text.of(GRAY, "(", YELLOW, collection.size(), GRAY, ")", DARK_GRAY, ": ");
@@ -48,35 +49,27 @@ public final class PluginCommand implements CommandExecutor {
     }
 
     /** Convert the SimpleContainer to a pretty text */
-    public Text toText(SimpleContainer container) {
+    public Text toText(PluginContainer plugin) {
         List<Text> texts = Lists.newArrayList();
-        String prefix = String.valueOf(container.clazz.getPackage());
+        String prefix = plugin.getInstance().orElseGet(Object::new).getClass().getName();
+        Text display = Text.of(GREEN, plugin.getName());
+        Text version = Text.of(AQUA, "Version", DARK_GRAY, ": ", GREEN, plugin.getVersion());
         String[] packages = prefix.split("\\.", prefix.split("\\.").length - 1);
 
         for (String parts : packages) {
             texts.add(Text.of(AQUA, parts.charAt(0), GRAY, "."));
         }
 
-        texts.add(Text.of(GREEN, container.name));
-        return Text.join(texts);
+        texts.add(Text.of(GREEN, prefix.substring(prefix.lastIndexOf(".") + 1)));
+        return Text.join(texts).toBuilder()
+            .onHover(TextActions.showText(Text.join(display, Text.NEW_LINE, version)))
+            .build();
     }
 
     /** Get the collection of active plugins */
-    public List<SimpleContainer> plugins() {
+    public List<PluginContainer> plugins() {
         return Sponge.getPluginManager().getPlugins().stream()
             .filter(plugin -> plugin.getInstance().isPresent())
-            .map(SimpleContainer::new)
             .collect(Collectors.toList());
-    }
-
-    /** A Simple Container to map the Plugin Container */
-    private class SimpleContainer {
-        Class<?> clazz;
-        String name;
-
-        SimpleContainer(PluginContainer container) {
-            this.clazz = container.getInstance().orElseThrow(IllegalStateException::new).getClass();
-            this.name = clazz.getName();
-        }
     }
 }
