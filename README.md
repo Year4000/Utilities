@@ -1,33 +1,37 @@
-Utilities [![Build Status](https://travis-ci.org/Year4000/Utilities.svg)](https://travis-ci.org/Year4000/Utilities)
----------
+# Utilities [![Build Status](https://travis-ci.org/Year4000/Utilities.svg)](https://travis-ci.org/Year4000/Utilities)
 
 The original [Utilities] created by ewized is ported over for [Year4000].
 This project is a modify version used for projects made for [Year4000].
-It may contain extra projects that are shad in to the jar that you may not need.
+Utilities was designed to be modular this allows for support on many different project levels.
 
-API Changes
------------
+
+## API Changes
 
 With this project reflects the codebase on Year4000.
-It our best to maintain backwards compatibility for the moment and it will be removed in newer versions.
-Use Utilities with caution, there is no fact that it will work the same for Year4000.
+It our best to maintain backwards compatibility for the moment and `@Deprecated` will be removed in newer versions.
+Use Utilities with caution, there is no fact that it will work the same as it does for Year4000.
 
-Shaded Projects
----------------
+## Building
 
-This project contains other projects that has been shaded in are bellow.
+To build this project all you need to run is gradle.
+The default tasks will handle picky things.
+It is recommended to use `--daemon` this will allow for faster compiling.
+For even faster compiling you can select a module to build `-p core`.
+This will compile every thing that it needs and nothing else.
 
-- zip4j [github.com/dmp/zip4j](https://github.com/dmp/zip4j)
-- Google's Guava [code.google.com/p/guava-libraries](https://code.google.com/p/guava-libraries/)
-- Google's Gson [code.google.com/p/google-gson](https://code.google.com/p/google-gson/)
+> gradle --daemon
 
-Issues
-------
+## Output
+
+The output of each core module is generally inside `build/libs` though core modules shade other modules.
+When there is more than one jar the suffix of `-all.jar` contains shaded jar, this is the one you want.
+
+## Issues
 
 Report issues at our meta discussion, [Meta](https://github.com/Year4000/Meta).
 
-License
--------
+## License
+
 This project is licensed under the [GNU General Public License][license], version 3.
 
 Copyright &copy; 2016 Year4000 [www.year4000.net][year4000]
