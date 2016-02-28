@@ -28,7 +28,7 @@ public abstract class AbstractSpongePlugin {
 
     /** Simple way of letting child grab the current instance */
     @SuppressWarnings("unchecked")
-    static <T extends AbstractSpongePlugin> T instance() throws IllegalStateException {
+    protected static <T extends AbstractSpongePlugin> T instance() throws IllegalStateException {
         return (T) Optional.ofNullable(plugin).orElseThrow(IllegalStateException::new);
     }
 
