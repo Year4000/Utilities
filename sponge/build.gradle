@@ -17,7 +17,7 @@ jar {
 }
 
 build.dependsOn shadowJar {
-    baseName = utilities.name
+    baseName = utilities.name.toLowerCase()
     version = utilities.version
 
     dependencies {

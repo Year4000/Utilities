@@ -14,7 +14,6 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 jar {
-    baseName = rootProject.name.toLowerCase()
     manifest {
         attributes 'Implementation-Title': utilities.name
         attributes 'Implementation-Version': utilities.version
