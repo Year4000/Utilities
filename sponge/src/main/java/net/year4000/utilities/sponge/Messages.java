@@ -31,6 +31,12 @@ public enum Messages implements LocaleKeys<CommandSource> {
     CMD_FLY_MODE,
     CMD_FLY_ON,
     CMD_FLY_OFF,
+
+    // System Command
+    CMD_CPU_TOTAL,
+    CMD_MEMORY_TOTAL,
+    CMD_MEMORY_FREE,
+    CMD_MEMORY_MAX,
     ;
 
     public static final Text SUCCESS = Text.of(GRAY, " [", DARK_GREEN, "!", GRAY, "]", GREEN, " ");
