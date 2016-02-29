@@ -5,6 +5,7 @@
 package net.year4000.utilities.sponge;
 
 import net.year4000.utilities.Tokens;
+import net.year4000.utilities.sponge.command.ChunksCommand;
 import net.year4000.utilities.sponge.command.FlyCommand;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import org.spongepowered.api.event.Listener;
@@ -23,5 +24,6 @@ public final class UtilitiesPlugin extends AbstractSpongePlugin {
     public void onUtilitiesInit(GameInitializationEvent event) {
         PluginCommand.register(this);
         FlyCommand.register(this);
+        ChunksCommand.register(this);
     }
 }
