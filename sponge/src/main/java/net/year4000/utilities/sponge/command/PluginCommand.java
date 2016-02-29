@@ -24,11 +24,17 @@ import static net.year4000.utilities.sponge.Messages.*;
 
 
 public final class PluginCommand implements CommandExecutor {
-    public static final String[] ALIAS = {"plugins", "pl"};
-    public static final CommandSpec COMMAND_SPEC = CommandSpec.builder()
+    private static final String[] ALIAS = {"plugins", "pl"};
+    private static final CommandSpec COMMAND_SPEC = CommandSpec.builder()
         .description(Text.of("View the running plugins on this server."))
+        .permission("utilities.command.plugins")
         .executor(new PluginCommand())
         .build();
+
+    /** Register this command with the manager */
+    public static void register(Object object) {
+        Sponge.getCommandManager().register(object, COMMAND_SPEC, ALIAS);
+    }
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
@@ -42,7 +48,7 @@ public final class PluginCommand implements CommandExecutor {
             plugins.add(toText(collection.get(i), src));
 
             if (i < size - 1) {
-                plugins.add(Text.of(DARK_GRAY, ", "));
+                plugins.add(Text.of(YELLOW, ", "));
             }
         }
 
@@ -59,7 +65,7 @@ public final class PluginCommand implements CommandExecutor {
         String[] packages = prefix.split("\\.", prefix.split("\\.").length - 1);
 
         for (String parts : packages) {
-            texts.add(Text.of(AQUA, parts.charAt(0), GRAY, "."));
+            texts.add(Text.of(GRAY, parts.charAt(0), DARK_GRAY, "."));
         }
 
         texts.add(Text.of(GREEN, prefix.substring(prefix.lastIndexOf(".") + 1)));

@@ -9,8 +9,11 @@ import net.year4000.utilities.locale.LocaleKeys;
 import net.year4000.utilities.locale.Translatable;
 import net.year4000.utilities.locale.URLLocaleManager;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.text.Text;
 
 import java.util.Optional;
+
+import static org.spongepowered.api.text.format.TextColors.*;
 
 public enum Messages implements LocaleKeys<CommandSource> {
     // Locale Header
@@ -18,9 +21,21 @@ public enum Messages implements LocaleKeys<CommandSource> {
     LOCALE_NAME,
 
     // Commands
+    CMD_ERROR_PLAYER,
+
+    // Plugins Command
     CMD_PLUGINS,
     CMD_VERSION,
+
+    // Fly Command
+    CMD_FLY_MODE,
+    CMD_FLY_ON,
+    CMD_FLY_OFF,
     ;
+
+    public static final Text SUCCESS = Text.of(GRAY, " [", DARK_GREEN, "!", GRAY, "]", GREEN, " ");
+    public static final Text NOTICE = Text.of(GRAY, " [", GOLD, "!", GRAY, "]", YELLOW, " ");
+    public static final Text ERROR = Text.of(GRAY, " [", DARK_RED, "!", GRAY, "]", RED, " ");
 
     @Override
     public Translatable apply(Optional<CommandSource> player) {
