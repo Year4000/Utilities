@@ -4,7 +4,6 @@
 
 package net.year4000.utilities.sponge;
 
-import com.google.common.base.Joiner;
 import lombok.Getter;
 import net.year4000.utilities.locale.AbstractLocaleManager;
 import net.year4000.utilities.locale.Translatable;
@@ -42,20 +41,22 @@ public class SpongeLocale implements Translatable<Text> {
 
     @Override
     public Text get(String key, Object... args) {
+        // No locales format like this
         if (localeManager.getLocales().size() == 0 || !localeManager.isLocale(DEFAULT_LOCALE)) {
-            return Text.of(
-                GRAY, "(", YELLOW, locale, GRAY, ") ",
-                DARK_GREEN, key, GREEN, " ",
-                Joiner.on(", ").join(args)
-            );
+            Text base = Text.of(GRAY, "(", YELLOW, locale, GRAY, ") ", DARK_GREEN, key, GREEN, " ");
+            return Text.join(base, appender(args, Text.of(GRAY, ", ", GREEN)));
         }
 
-        String missingKey = key + (args.length > 0 ? " " + Joiner.on(", ").join(args) : "");
-        String translation = localeManager.getLocale(locale).getProperty(key, missingKey);
-        Text result;
+        String translation = localeManager.getLocale(locale).getProperty(key);
+
+        // If no translation format like this
+        if (translation == null) {
+            Text base = Text.of(DARK_GREEN, key, GREEN, " ");
+            return Text.join(base, appender(args, Text.of(GRAY, ", ", GREEN)));
+        }
 
         try {
-            result = Text.of();
+            Text.Builder builder = Text.builder();
             String[] split = translation.split("\\{\\}"); // The var that we are replacing {}
             boolean arg = false;
             int countArg = 0;
@@ -64,27 +65,41 @@ public class SpongeLocale implements Translatable<Text> {
             for (int i = 0 ; i < split.length + args.length; i++) {
                 // Part of the message create text and join
                 if (arg = !arg) {
-                    result = result.toBuilder()
-                        .append(FORMATTING_CODE.deserialize(split[countSplit++]))
-                        .build();
+                    builder.append(function(split[countSplit++])).build();
                 }
                 else {
-                    Object argPart = args[countArg++];
-                    if (argPart instanceof Text) {
-                        result = result.toBuilder().append((Text) argPart).build();
-                    }
-                    else {
-                        result = result.toBuilder()
-                            .append(FORMATTING_CODE.deserialize(argPart.toString()))
-                            .build();
-                    }
+                    builder.append(function(args[countArg++])).build();
                 }
             }
+            return builder.build();
         }
         catch (MissingFormatArgumentException | ArrayIndexOutOfBoundsException error) {
             return FORMATTING_CODE.deserialize(translation);
         }
+    }
 
-        return result;
+    /** Convert the Object to a text object while formatting color codes */
+    private Text function(Object object) {
+        return object instanceof Text ? (Text) object : FORMATTING_CODE.deserialize(object.toString());
+    }
+
+    /** Append Object array to a Text object */
+    private Text appender(Object... args) {
+        return appender(args, null);
+    }
+
+    /** Append Object array to a Text object */
+    private Text appender(Object[] args, Text separator) {
+        Text.Builder builder = Text.builder();
+
+        for (Object part : args) {
+            if (separator != null && !builder.equals(Text.builder())) {
+                builder.append(separator);
+            }
+
+            builder.append(function(part));
+        }
+
+        return builder.build();
     }
 }
