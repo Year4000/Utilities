@@ -31,6 +31,8 @@ public enum Messages implements LocaleKeys<CommandSource, Text> {
     CMD_FLY_OFF,
 
     // System Command
+    CMD_SYSTEM,
+    CMD_UPTIME,
     CMD_CPU_TOTAL,
     CMD_MEMORY_TOTAL,
     CMD_MEMORY_FREE,
