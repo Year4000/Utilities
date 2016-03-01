@@ -18,7 +18,7 @@ public class LocaleTest {
         Assert.assertTrue(manager.getLocales().size() > 0);
 
         manager.getLocales().forEach((code, property) -> {
-            Translatable locale = (key, args) -> String.format(property.getProperty(key), args);
+            Translatable<String> locale = (key, args) -> String.format(property.getProperty(key), args);
             Assert.assertEquals(locale.get("locale.code").toLowerCase(), code.toString());
         });
     }
