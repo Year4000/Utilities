@@ -29,6 +29,7 @@ public class Utilities extends BukkitPlugin {
     @Override
     public void onLoad() {
         inst = this;
+        Messages.LOCALE_NAME.get(); // Trigger a download from server now so it can cache it
     }
 
     @Override

@@ -21,6 +21,7 @@ public final class UtilitiesPlugin extends AbstractSpongePlugin {
 
     @Listener
     public void onUtilitiesInit(GameInitializationEvent event) {
+        Messages.LOCALE_NAME.get(); // Trigger a download from server now so it can cache it
         PluginCommand.register(this);
         FlyCommand.register(this);
     }

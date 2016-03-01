@@ -30,7 +30,6 @@ import java.util.*;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.*;
-import static net.year4000.utilities.locale.AbstractLocaleManager.toLanguage;
 
 @ToString
 @EqualsAndHashCode(of = {"uuid"})
@@ -116,7 +115,7 @@ public abstract class AbstractGUI implements Runnable {
         checkState(populatedMenu, "Must run AbstractGUI::populateMenu() before AbstractGUI::getInventory(Locale)");
         checkState(generate, "Must run AbstractGUI::run() before AbstractGUI::getInventory(Locale)");
 
-        Locale language = toLanguage(locale);
+        Locale language = locale.stripExtensions();
         locale = menus.containsKey(locale) ? locale : menus.containsKey(language) ? language : menus.keySet().iterator().next();
         return menus.get(locale).getInventory();
     }

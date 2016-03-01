@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.spongepowered.api.text.format.TextColors.*;
 
-public enum Messages implements LocaleKeys<CommandSource> {
+public enum Messages implements LocaleKeys<CommandSource, Text> {
     // Locale Header
     LOCALE_CODE,
     LOCALE_NAME,
@@ -38,7 +38,7 @@ public enum Messages implements LocaleKeys<CommandSource> {
     public static final Text ERROR = Text.of(GRAY, " [", DARK_RED, "!", GRAY, "]", RED, " ");
 
     @Override
-    public Translatable apply(Optional<CommandSource> player) {
+    public Translatable<Text> apply(Optional<CommandSource> player) {
         if (player.isPresent()) {
             return new SpongeLocale(Factory.inst.get(), player.get());
         }

@@ -11,7 +11,7 @@ import net.year4000.utilities.locale.URLLocaleManager;
 import java.util.Locale;
 import java.util.Optional;
 
-public enum Messages implements LocaleKeys<Locale> {
+public enum Messages implements LocaleKeys<Locale, String> {
     // Locale Header
     LOCALE_CODE,
     LOCALE_NAME,
@@ -24,7 +24,7 @@ public enum Messages implements LocaleKeys<Locale> {
     ;
 
     @Override
-    public Translatable apply(Optional<Locale> locale) {
+    public Translatable<String> apply(Optional<Locale> locale) {
         return new BungeeLocale(Factory.inst.get(), locale);
     }
 
