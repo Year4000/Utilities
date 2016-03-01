@@ -8,6 +8,7 @@ import net.year4000.utilities.Tokens;
 import net.year4000.utilities.sponge.command.ChunksCommand;
 import net.year4000.utilities.sponge.command.FlyCommand;
 import net.year4000.utilities.sponge.command.PluginCommand;
+import net.year4000.utilities.sponge.command.SystemCommand;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -22,8 +23,10 @@ public final class UtilitiesPlugin extends AbstractSpongePlugin {
 
     @Listener
     public void onUtilitiesInit(GameInitializationEvent event) {
+        Messages.Factory.inst.get(); // Trigger a download from server now so it can cache it for later
         PluginCommand.register(this);
         FlyCommand.register(this);
         ChunksCommand.register(this);
+        SystemCommand.register(this);
     }
 }
