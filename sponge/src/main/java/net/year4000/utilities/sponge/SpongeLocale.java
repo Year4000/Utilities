@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static net.year4000.utilities.locale.AbstractLocaleManager.DEFAULT_LOCALE;
 import static org.spongepowered.api.text.format.TextColors.*;
+import static org.spongepowered.api.text.serializer.TextSerializers.FORMATTING_CODE;
 
 public class SpongeLocale implements Translatable<Text> {
     private AbstractLocaleManager localeManager;
@@ -51,15 +52,39 @@ public class SpongeLocale implements Translatable<Text> {
 
         String missingKey = key + (args.length > 0 ? " " + Joiner.on(", ").join(args) : "");
         String translation = localeManager.getLocale(locale).getProperty(key, missingKey);
-        Text formatted;
+        Text result;
 
         try {
-            formatted = Text.builder(translation).build(args);
+            result = Text.of();
+            String[] split = translation.split("\\{\\}"); // The var that we are replacing {}
+            boolean arg = false;
+            int countArg = 0;
+            int countSplit = 0;
+
+            for (int i = 0 ; i < split.length + args.length; i++) {
+                // Part of the message create text and join
+                if (arg = !arg) {
+                    result = result.toBuilder()
+                        .append(FORMATTING_CODE.deserialize(split[countSplit++]))
+                        .build();
+                }
+                else {
+                    Object argPart = args[countArg++];
+                    if (argPart instanceof Text) {
+                        result = result.toBuilder().append((Text) argPart).build();
+                    }
+                    else {
+                        result = result.toBuilder()
+                            .append(FORMATTING_CODE.deserialize(argPart.toString()))
+                            .build();
+                    }
+                }
+            }
         }
-        catch (MissingFormatArgumentException error) {
-            formatted = Text.of(translation);
+        catch (MissingFormatArgumentException | ArrayIndexOutOfBoundsException error) {
+            return FORMATTING_CODE.deserialize(translation);
         }
 
-        return formatted;
+        return result;
     }
 }

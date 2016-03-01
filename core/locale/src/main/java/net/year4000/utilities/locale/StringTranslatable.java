@@ -13,25 +13,18 @@ import java.util.MissingFormatArgumentException;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static net.year4000.utilities.locale.AbstractLocaleManager.DEFAULT_LOCALE;
 
-/**
- * Abstract layout to add simple translation keys.
- * To get started with this you must populate
- * the LocaleManager with your own manager. Then
- * override the constructor to add the manager when
- * this player is loaded.
- */
-public abstract class AbstractStringTranslation implements Translatable<String> {
+public class StringTranslatable implements Translatable<String> {
     protected AbstractLocaleManager localeManager;
     @Getter
     protected Locale locale;
 
     /** Force the wrapper to create the instance */
-    public AbstractStringTranslation(AbstractLocaleManager localeManager, String locale) {
+    public StringTranslatable(AbstractLocaleManager localeManager, String locale) {
         this(localeManager, new Locale(locale));
     }
 
     /** Force the wrapper to create the instance */
-    public AbstractStringTranslation(AbstractLocaleManager localeManager, Locale locale) {
+    public StringTranslatable(AbstractLocaleManager localeManager, Locale locale) {
         this.localeManager = checkNotNull(localeManager);
         this.locale = checkNotNull(locale);
     }
