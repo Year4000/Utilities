@@ -18,7 +18,7 @@
 package net.year4000.utilities.bukkit;
 
 import net.year4000.utilities.locale.AbstractLocaleManager;
-import net.year4000.utilities.locale.AbstractStringTranslation;
+import net.year4000.utilities.locale.StringTranslatable;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -26,7 +26,7 @@ import java.util.Optional;
 import static net.year4000.utilities.locale.AbstractLocaleManager.DEFAULT_LOCALE;
 
 @SuppressWarnings("unused")
-public class BukkitLocale extends AbstractStringTranslation {
+public class BukkitLocale extends StringTranslatable {
     /** Start creating locales for the specific player's locale */
     public BukkitLocale(AbstractLocaleManager localeManager, Optional<Locale> locale) {
         super(localeManager, locale.orElse(DEFAULT_LOCALE).toString());

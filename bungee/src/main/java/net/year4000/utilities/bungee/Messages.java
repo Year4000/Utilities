@@ -30,7 +30,7 @@ public enum Messages implements LocaleKeys<Locale, String> {
 
     /** The factory to handle Locale Managers */
     public static class Factory extends URLLocaleManager {
-        private static QuickCache<Factory> inst = QuickCache.builder(Messages.Factory.class).build();
+        static QuickCache<Factory> inst = QuickCache.builder(Messages.Factory.class).build();
 
         public Factory() {
             super("https://raw.githubusercontent.com/Year4000/Locales/master/utilities/");
