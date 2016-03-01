@@ -18,7 +18,7 @@
 package net.year4000.utilities.bungee;
 
 import net.year4000.utilities.locale.AbstractLocaleManager;
-import net.year4000.utilities.locale.AbstractTranslation;
+import net.year4000.utilities.locale.StringTranslatable;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -26,7 +26,7 @@ import java.util.Optional;
 import static net.year4000.utilities.locale.AbstractLocaleManager.DEFAULT_LOCALE;
 
 @SuppressWarnings("unused")
-public class BungeeLocale extends AbstractTranslation {
+public class BungeeLocale extends StringTranslatable {
     /** Start creating locales for the specific player's locale */
     public BungeeLocale(AbstractLocaleManager localeManager, Optional<Locale> locale) {
         super(localeManager, locale.orElse(DEFAULT_LOCALE).toString());

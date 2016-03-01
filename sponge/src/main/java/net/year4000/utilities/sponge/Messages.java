@@ -5,9 +5,7 @@
 package net.year4000.utilities.sponge;
 
 import net.year4000.utilities.cache.QuickCache;
-import net.year4000.utilities.locale.LocaleKeys;
-import net.year4000.utilities.locale.Translatable;
-import net.year4000.utilities.locale.URLLocaleManager;
+import net.year4000.utilities.locale.*;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 
@@ -15,7 +13,7 @@ import java.util.Optional;
 
 import static org.spongepowered.api.text.format.TextColors.*;
 
-public enum Messages implements LocaleKeys<CommandSource> {
+public enum Messages implements LocaleKeys<CommandSource, Text> {
     // Locale Header
     LOCALE_CODE,
     LOCALE_NAME,
@@ -44,7 +42,7 @@ public enum Messages implements LocaleKeys<CommandSource> {
     public static final Text ERROR = Text.of(GRAY, " [", DARK_RED, "!", GRAY, "]", RED, " ");
 
     @Override
-    public Translatable apply(Optional<CommandSource> player) {
+    public Translatable<Text> apply(Optional<CommandSource> player) {
         if (player.isPresent()) {
             return new SpongeLocale(Factory.inst.get(), player.get());
         }
@@ -54,7 +52,7 @@ public enum Messages implements LocaleKeys<CommandSource> {
 
     /** The factory to handle Locale Managers */
     public static class Factory extends URLLocaleManager {
-        private static QuickCache<Messages.Factory> inst = QuickCache.builder(Messages.Factory.class).build();
+        static QuickCache<Messages.Factory> inst = QuickCache.builder(Messages.Factory.class).build();
 
         public Factory() {
             super("https://raw.githubusercontent.com/Year4000/Locales/master/utilities/");

@@ -40,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Data
 @SuppressWarnings("unused")
 public abstract class AbstractLocaleManager {
-    public static final Locale DEFAULT_LOCALE = Locale.US;
+    public static final Locale DEFAULT_LOCALE = new Locale(Locale.US.toString().toLowerCase());
     protected static final String EXTENSION = ".properties";
     @Getter
     private final Map<Locale, Properties> locales = Maps.newConcurrentMap();
@@ -72,12 +72,6 @@ public abstract class AbstractLocaleManager {
         loadLocales();
     }
 
-    /** Converts the locale to a string */
-    public static Locale toLanguage(Locale locale) {
-        String localeString = locale.toString();
-        return new Locale(localeString.contains("_") ? localeString.split("_")[0] : localeString);
-    }
-
     /** The method that will handle the loading mechanics of the locales */
     protected abstract void loadLocales();
 
@@ -91,7 +85,7 @@ public abstract class AbstractLocaleManager {
 
         try (InputStreamReader reader = new InputStreamReader(locale, Charsets.UTF_8)) {
             file.load(reader);
-            locales.put(new Locale(key), file);
+            locales.put(new Locale(key.toLowerCase()), file);
             log.debug("LocaleManager Added: " + key);
         }
         catch (IOException e) {
@@ -102,12 +96,12 @@ public abstract class AbstractLocaleManager {
     /**
      * Check is the requested locale is loaded.
      *
-     * @param localeString The language code in string form.
+     * @param locale The language code in string form.
      * @return true When the language is loaded.
      */
-    public boolean isLocale(String localeString) {
-        Locale locale = new Locale(localeString);
-        return locales.containsKey(locale) || locales.containsKey(toLanguage(locale));
+    public boolean isLocale(Locale locale) {
+        locale = new Locale(locale.toString().toLowerCase());
+        return locales.containsKey(locale) || locales.containsKey(locale.stripExtensions());
     }
 
     /**
@@ -116,18 +110,17 @@ public abstract class AbstractLocaleManager {
      * @param locale The locale code.
      * @return The properties for the locale.
      */
-    public Properties getLocale(String locale) {
-        Locale localeKey = new Locale(locale);
-        Locale backup = Locale.US;
+    public Properties getLocale(Locale locale) {
+        Locale backup = DEFAULT_LOCALE;
 
         for (Locale localeValue : locales.keySet()) {
             // Language matches
-            if (localeValue.equals(toLanguage(localeKey))) {
+            if (localeValue.equals(locale.stripExtensions())) {
                 backup = localeValue;
                 break;
             }
         }
 
-        return locales.getOrDefault(localeKey, locales.getOrDefault(backup, new Properties()));
+        return locales.getOrDefault(locale, locales.getOrDefault(backup, new Properties()));
     }
 }

@@ -29,6 +29,7 @@ public class Utilities extends BukkitPlugin {
     @Override
     public void onLoad() {
         inst = this;
+        Messages.Factory.inst.get(); // Trigger a download from server now so it can cache it for later
     }
 
     @Override
