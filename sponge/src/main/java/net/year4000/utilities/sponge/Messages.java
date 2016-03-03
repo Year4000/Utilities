@@ -34,6 +34,7 @@ public enum Messages implements LocaleKeys<CommandSource, Text> {
     CMD_CHUNKS_UNLOADED,
     CHUNKS_UNLOADING,
     CHUNKS_UNLOADED,
+    CHUNKS_WORLD,
 
     // System Command
     CMD_SYSTEM,

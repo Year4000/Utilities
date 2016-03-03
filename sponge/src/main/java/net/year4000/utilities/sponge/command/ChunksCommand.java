@@ -13,6 +13,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -21,6 +22,8 @@ import org.spongepowered.api.world.World;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static net.year4000.utilities.sponge.Messages.*;
 
 /** View the status of the chunks of each world */
 public final class ChunksCommand implements CommandExecutor {
@@ -38,18 +41,28 @@ public final class ChunksCommand implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        List<Chunk> pendingUnload = Lists.newLinkedList();
-        Sponge.getServer().getWorlds().stream()
-            .map(World::getLoadedChunks)
-            .forEach(iterator -> pendingUnload.addAll(Lists.newLinkedList(iterator)));
-
-        src.sendMessage(Text.of("Chunk Size: ", pendingUnload.size()));
+        List<Chunk> pendingUnload = loadedChunks().subList(1, 5);
+        src.sendMessage(CHUNKS_WORLD.get(src, pendingUnload.size()));
+        pendingUnload.forEach(chunk -> {
+            src.sendMessage(formatWorld(chunk.getWorld(), src));
+        });
         return CommandResult.success();
     }
 
     /** Format the text line for the world */
-    private Text formatWorld(World world) {
-        return Text.EMPTY;
+    private Text formatWorld(World world,CommandSource src) {
+        Text worldPart = Text.builder(world.getName()).onHover(TextActions.showText(Text.of(world.getUniqueId()))).build();
+        Text chunksPart = Text.builder(world.getDimension().getName()).onHover(TextActions.showText(Text.of(world.getDimension().getType().getName()))).build();
+        return CHUNKS_WORLD.get(src, worldPart, chunksPart);
+    }
+
+    /** Get all the loaded chunks at this point in time */
+    private List<Chunk> loadedChunks() {
+        List<Chunk> chunks = Lists.newLinkedList();
+        Sponge.getServer().getWorlds().stream()
+                .map(World::getLoadedChunks)
+                .forEach(iterator -> chunks.addAll(Lists.newLinkedList(iterator)));
+        return chunks;
     }
 
     /** Command to unload all chunks on the server inorder to save memory */
