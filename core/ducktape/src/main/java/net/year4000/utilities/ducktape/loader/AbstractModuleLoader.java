@@ -17,25 +17,36 @@
 
 package net.year4000.utilities.ducktape.loader;
 
+import net.year4000.utilities.ducktape.ModuleLoader;
+import net.year4000.utilities.ducktape.ModuleManager;
+
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractModuleLoader<T extends AbstractModuleLoader> {
+public abstract class AbstractModuleLoader<T extends AbstractModuleLoader> implements ModuleLoader {
     /** The module manager to load the classes into */
-    //protected final ModuleManager manager;
+    protected final ModuleManager manager;
 
     /** The classes that were added in this loader's instance */
     protected final Set<Class<?>> classes = new HashSet<>();
 
-    /*public AbstractModuleLoader(ModuleManager manager) {
+    public AbstractModuleLoader(ModuleManager manager) {
         this.manager = manager;
-    }*/
+    }
 
     /** Add the class to ModuleManager */
-    public abstract T add(Class<?> clazz);
+    @SuppressWarnings("unchecked")
+    public T add(Class<?> clazz) {
+        classes.add(clazz);
+        return (T) this;
+    }
 
     /** Remove the class from ModuleManager */
-    public abstract T remove(Class<?> clazz);
+    @SuppressWarnings("unchecked")
+    public T remove(Class<?> clazz) {
+        classes.remove(clazz);
+        return (T) this;
+    }
 
     /** Format the path */
     public String formatPath(String path) {

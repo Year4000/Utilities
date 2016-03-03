@@ -18,6 +18,7 @@
 package net.year4000.utilities.ducktape.loader;
 
 import groovy.lang.GroovyClassLoader;
+import net.year4000.utilities.ducktape.ModuleManager;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -29,24 +30,8 @@ import java.security.PrivilegedAction;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GroovyModuleLoader extends AbstractModuleLoader<GroovyModuleLoader> {
-    /*public GroovyModuleLoader(ModuleManager manager) {
+    public GroovyModuleLoader(ModuleManager manager) {
         super(manager);
-    }*/
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public GroovyModuleLoader add(Class<?> clazz) {
-        classes.add(clazz);
-        //manager.add(clazz);
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public GroovyModuleLoader remove(Class<?> clazz) {
-        classes.remove(clazz);
-        //manager.remove(clazz);
-        return this;
     }
 
     /** Load any groovy script that ends with .groovy */
@@ -69,8 +54,6 @@ public class GroovyModuleLoader extends AbstractModuleLoader<GroovyModuleLoader>
                 loader.addURL(getClass().getResource("/"));
                 loader.addURL(file.toURI().toURL());
                 Class clazz = loader.parseClass(file);
-
-                //if (!ModuleManager.isModuleClass(clazz)) continue;
 
                 add(clazz);
             }
