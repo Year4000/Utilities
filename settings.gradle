@@ -14,4 +14,4 @@ include 'core:sdk'
 include 'sponge'
 include 'bungee'
 include 'spigot'
-
+include 'spigot:loader'
