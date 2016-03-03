@@ -38,6 +38,7 @@ dependencies {
     compile utilities.project('core')
     compile utilities.project('core:redis')
     compile utilities.project('core:locale')
-    compile utilities.project('sponge:loader')
+    compile utilities.project('core:ducktape')
+    compile utilities.project('sponge:ducktape')
     compile 'org.spongepowered:spongeapi:3.1.0-SNAPSHOT'
 }
