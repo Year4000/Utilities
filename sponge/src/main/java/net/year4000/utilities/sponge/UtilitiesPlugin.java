@@ -8,16 +8,24 @@ import net.year4000.utilities.Tokens;
 import net.year4000.utilities.sponge.command.FlyCommand;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
+import net.year4000.utilities.sponge.ducktape.SpongeModuleManager;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
 @Plugin(id = "utilities", name = "Utilities", version = Tokens.FULL_VERSION)
 public final class UtilitiesPlugin extends AbstractSpongePlugin {
+    private final SpongeModuleManager moduleManager = new SpongeModuleManager();
 
     /** Get the instance of Utilities */
     public static UtilitiesPlugin get() {
         return instance();
+    }
+
+    @Listener
+    public void onConstruct(GameConstructionEvent event) {
+        moduleManager.injectModules();
     }
 
     @Listener
