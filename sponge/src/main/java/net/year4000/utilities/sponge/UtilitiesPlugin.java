@@ -5,15 +5,12 @@
 package net.year4000.utilities.sponge;
 
 import net.year4000.utilities.Tokens;
-import net.year4000.utilities.ducktape.ModuleManager;
 import net.year4000.utilities.sponge.command.FlyCommand;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
-
-import java.io.File;
 
 @Plugin(id = "utilities", name = "Utilities", version = Tokens.FULL_VERSION)
 public final class UtilitiesPlugin extends AbstractSpongePlugin {
@@ -29,11 +26,5 @@ public final class UtilitiesPlugin extends AbstractSpongePlugin {
         PluginCommand.register(this);
         FlyCommand.register(this);
         SystemCommand.register(this);
-
-        new ModuleManager().loadAll(new File("~/y4k-git/minecraft/mods/").toPath(), collection -> {
-            collection.forEach(clazz -> {
-                logger.info(clazz.toString());
-            });
-        });
     }
 }

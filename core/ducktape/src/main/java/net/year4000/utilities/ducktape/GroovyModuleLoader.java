@@ -43,11 +43,11 @@ public class GroovyModuleLoader implements ModuleLoader {
     @Override
     public Collection<Class<?>> load(Path dir) throws IOException {
         Set<Class<?>> classes = Sets.newLinkedHashSet();
-        Class<?> clazzLoader = GroovyModuleLoader.class;
+        Class<?> clazzLoader = ModuleManager.class;
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(checkNotNull(dir))) {
             for (Path path : stream) {
-                if (!path.endsWith(".groovy")) {
+                if (!path.toString().endsWith(".groovy")) {
                     continue;
                 }
 
