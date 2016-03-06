@@ -10,5 +10,4 @@ apply from: utilities.file('gradle/utilities.gradle')
 
 dependencies {
     compile utilities.project('core')
-    compile utilities.project('core:minecraft')
 }
