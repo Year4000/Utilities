@@ -4,10 +4,13 @@ import com.google.gson.JsonObject;
 import junit.framework.Assert;
 import lombok.extern.java.Log;
 import net.year4000.utilities.URLBuilder;
+import net.year4000.utilities.net.HttpFetcher;
+import org.junit.Ignore;
 import org.junit.Test;
 
 @Log
 public class HttpFetcherTest {
+    private static final HttpFetcher fetcher = HttpFetcher.builder().build();
     private static final String URL = "https://api.year4000.net";
     private static final String OFFLINE = "502 Bad Gateway";
 
@@ -19,16 +22,16 @@ public class HttpFetcherTest {
 
             switch (method) {
                 case GET:
-                    response = HttpFetcher.get(url, JsonObject.class);
+                    response = fetcher.get(url, JsonObject.class);
                     break;
                 case POST:
-                    response = HttpFetcher.post(url, null, JsonObject.class);
+                    response = fetcher.post(url, null, JsonObject.class);
                     break;
                 case PUT:
-                    response = HttpFetcher.put(url, null, JsonObject.class);
+                    response = fetcher.put(url, null, JsonObject.class);
                     break;
                 case DELETE:
-                    response = HttpFetcher.delete(url, null, JsonObject.class);
+                    response = fetcher.delete(url, null, JsonObject.class);
                     break;
                 default:
                     throw new EnumConstantNotPresentException(Methods.class, method.toString());
@@ -47,21 +50,25 @@ public class HttpFetcherTest {
     }
 
     @Test
+    @Ignore
     public void getTest() {
         test(Methods.GET);
     }
 
     @Test
+    @Ignore
     public void postTest() {
         test(Methods.POST);
     }
 
     @Test
+    @Ignore
     public void putTest() {
         test(Methods.PUT);
     }
 
     @Test
+    @Ignore
     public void deleteTest() {
         test(Methods.DELETE);
     }
