@@ -1,20 +1,23 @@
-package net.year4000.utilities.sdk;
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
+package net.year4000.utilities;
 
 import com.google.gson.JsonObject;
 import junit.framework.Assert;
 import lombok.extern.java.Log;
-import net.year4000.utilities.URLBuilder;
 import net.year4000.utilities.net.HttpFetcher;
-import org.junit.Ignore;
+import net.year4000.utilities.net.JsonHttpFetcher;
 import org.junit.Test;
 
 @Log
-public class HttpFetcherTest {
-    private static final HttpFetcher fetcher = HttpFetcher.builder().build();
+public class JsonHttpFetcherTest {
+    private static final JsonHttpFetcher fetcher = JsonHttpFetcher.builder().build();
     private static final String URL = "https://api.year4000.net";
     private static final String OFFLINE = "502 Bad Gateway";
 
-    private void test(Methods method) {
+    private void test(HttpFetcher.Methods method) {
         try {
             String code = String.valueOf(System.currentTimeMillis());
             String url = URLBuilder.builder(URL).addPath("test").addQuery("code", code).toString();
@@ -34,7 +37,7 @@ public class HttpFetcherTest {
                     response = fetcher.delete(url, null, JsonObject.class);
                     break;
                 default:
-                    throw new EnumConstantNotPresentException(Methods.class, method.toString());
+                    throw new EnumConstantNotPresentException(HttpFetcher.Methods.class, method.toString());
             }
 
             Assert.assertEquals(code, response.get("code").getAsString());
@@ -50,28 +53,22 @@ public class HttpFetcherTest {
     }
 
     @Test
-    @Ignore
     public void getTest() {
-        test(Methods.GET);
+        test(HttpFetcher.Methods.GET);
     }
 
     @Test
-    @Ignore
     public void postTest() {
-        test(Methods.POST);
+        test(HttpFetcher.Methods.POST);
     }
 
     @Test
-    @Ignore
     public void putTest() {
-        test(Methods.PUT);
+        test(HttpFetcher.Methods.PUT);
     }
 
     @Test
-    @Ignore
     public void deleteTest() {
-        test(Methods.DELETE);
+        test(HttpFetcher.Methods.DELETE);
     }
-
-    private enum Methods {GET, POST, PUT, DELETE}
 }

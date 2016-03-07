@@ -23,7 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
 import net.year4000.utilities.URLBuilder;
-import net.year4000.utilities.net.HttpFetcher;
+import net.year4000.utilities.net.JsonHttpFetcher;
 import net.year4000.utilities.sdk.routes.Route;
 import net.year4000.utilities.sdk.routes.accounts.AccountRoute;
 import net.year4000.utilities.sdk.routes.players.PlayerCountJson;
@@ -37,7 +37,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class API {
-    private static final HttpFetcher fetcher = HttpFetcher.builder().build();
+    private static final JsonHttpFetcher fetcher = JsonHttpFetcher.builder().build();
     public static final String BASE_URL = "https://api.year4000.net/";
     public static final String ACCOUNTS_PATH = "accounts";
     public static final String SERVERS_PATH = "servers";

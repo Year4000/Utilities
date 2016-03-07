@@ -17,6 +17,7 @@
 
 package net.year4000.utilities;
 
+@FunctionalInterface
 public interface Callback<T> {
     /** A simple call back interface */
     void callback(T data, Throwable error);

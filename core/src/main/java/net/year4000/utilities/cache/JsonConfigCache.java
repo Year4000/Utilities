@@ -10,7 +10,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lombok.EqualsAndHashCode;
 import net.year4000.utilities.net.HttpConnection;
-import net.year4000.utilities.net.HttpFetcher;
+import net.year4000.utilities.net.JsonHttpFetcher;
 
 /**
  * Make it simple for a class to constructor the object from a JSON web page.
@@ -35,7 +35,7 @@ public abstract class JsonConfigCache {
                         HttpConnection connection = new HttpConnection(url.value());
 
                         try {
-                            return HttpFetcher.builder().build().get(connection, clazz);
+                            return JsonHttpFetcher.builder().build().get(connection, clazz);
                         }
                         catch (Exception e) {
                             System.err.println(e.toString());

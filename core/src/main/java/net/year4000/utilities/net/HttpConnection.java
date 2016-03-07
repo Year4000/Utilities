@@ -5,9 +5,6 @@
 package net.year4000.utilities.net;
 
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -28,7 +25,6 @@ import java.util.Map;
  */
 @Data
 public class HttpConnection implements Cloneable {
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     private static final int TIMEOUT = 5000;
     private static final String USER_AGENT = "Year4000 Utilities API Interface";
     private final URLBuilder urlBuilder;
@@ -80,18 +76,18 @@ public class HttpConnection implements Cloneable {
     }
 
     /** Send data to the connection https */
-    public static void requestHttps(HttpsURLConnection connection, JsonObject object) throws IOException {
+    public static void requestHttps(HttpsURLConnection connection, String data) throws IOException {
         // Send Data
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
-            GSON.toJson(object, writer);
+            writer.write(data);
         }
     }
 
     /** Send data to the connection https */
-    public static void requestHttp(HttpURLConnection connection, JsonObject object) throws IOException {
+    public static void requestHttp(HttpURLConnection connection, String data) throws IOException {
         // Send Data
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
-            GSON.toJson(object, writer);
+            writer.write(data);
         }
     }
 
