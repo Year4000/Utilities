@@ -7,7 +7,6 @@ package net.year4000.utilities.sdk;
 import lombok.extern.java.Log;
 import net.year4000.utilities.sdk.routes.accounts.AccountRoute;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 @Log
@@ -15,7 +14,6 @@ public class RouteTest {
     private static API api = new API();
 
     @Test
-    @Ignore
     public void accountTest() {
         AccountRoute response = api.getAccount("54c572bba6946f1b42c0bd0e");
         Assert.assertEquals(response.getUsername(), "Year4000");
@@ -23,7 +21,6 @@ public class RouteTest {
     }
 
     @Test
-    @Ignore
     public void accountAsyncTest() {
         api.getAccountAsync("54c572bba6946f1b42c0bd0e", (response, error) -> {
             if (error != null) {
