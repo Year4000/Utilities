@@ -38,5 +38,5 @@ dependencies {
     compile utilities.project('core')
     compile utilities.project('core:redis')
     compile utilities.project('core:locale')
-    compile 'org.spongepowered:spongeapi:3.1.0-SNAPSHOT'
+    compile 'org.spongepowered:spongeapi:4.1.0-SNAPSHOT'
 }
