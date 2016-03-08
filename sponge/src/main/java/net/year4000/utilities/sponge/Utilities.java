@@ -4,19 +4,17 @@
 
 package net.year4000.utilities.sponge;
 
-import net.year4000.utilities.Tokens;
-import net.year4000.utilities.sponge.command.FlyCommand;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
-@Plugin(id = "utilities", name = "Utilities", version = Tokens.FULL_VERSION)
-public final class UtilitiesPlugin extends AbstractSpongePlugin {
+@Plugin(id = "net.year4000.utilities", name = "Utilities")
+public final class Utilities extends AbstractSpongePlugin {
 
     /** Get the instance of Utilities */
-    public static UtilitiesPlugin get() {
+    public static Utilities get() {
         return instance();
     }
 
@@ -24,7 +22,7 @@ public final class UtilitiesPlugin extends AbstractSpongePlugin {
     public void onUtilitiesInit(GameInitializationEvent event) {
         Messages.Factory.inst.get(); // Trigger a download from server now so it can cache it for later
         PluginCommand.register(this);
-        FlyCommand.register(this);
+        // FlyCommand.register(this); todo disable, should be in drip
         SystemCommand.register(this);
     }
 }
