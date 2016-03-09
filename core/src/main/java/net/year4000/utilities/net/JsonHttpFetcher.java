@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,9 +45,10 @@ public class JsonHttpFetcher extends AbstractHttpFetcher<JsonObject> {
     }
 
     /** {@inheritDoc} */
-    public static class Builder extends AbstractHttpFetcher.AbstractBuilder<JsonHttpFetcher> {
+    public static class Builder extends AbstractHttpFetcher.AbstractBuilder<JsonHttpFetcher, Builder> {
         private Optional<Gson> gson = Optional.empty();
 
+        /** The Gson object used for handling JSON requests */
         public Builder gson(Gson gson) {
             this.gson = Optional.ofNullable(gson);
             return this;

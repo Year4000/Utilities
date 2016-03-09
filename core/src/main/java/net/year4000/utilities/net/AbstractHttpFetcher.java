@@ -225,22 +225,26 @@ public abstract class AbstractHttpFetcher<D> implements HttpFetcher<D> {
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     protected @interface ContentType {
+        /** The content type that will be used when sending data to the server */
         String value();
     }
 
     /** A abstract builder that will help in creating {@link AbstractBuilder} */
-    public abstract static class AbstractBuilder<T> implements Builder<T> {
+    @SuppressWarnings("unchecked")
+    public abstract static class AbstractBuilder<T, R extends AbstractBuilder> implements Builder<T> {
         protected Optional<ExecutorService> executorService = Optional.empty();
         protected Optional<Integer> maxTries = Optional.empty();
 
-        public AbstractBuilder executorService(ExecutorService executorService) {
+        /** Set the executor service for the callback function */
+        public R executorService(ExecutorService executorService) {
             this.executorService = Optional.ofNullable(executorService);
-            return this;
+            return (R) this;
         }
 
-        public AbstractBuilder maxTries(int maxTries) {
-            this.maxTries = Optional.of(maxTries < 1 ? 1 : maxTries);
-            return this;
+        /** Set the max tries to fetch a resource before throwing an error */
+        public R maxTries(int maxTries) {
+            this.maxTries = Optional.of(Math.max(1, maxTries));
+            return (R) this;
         }
     }
 }
