@@ -19,6 +19,7 @@ plugins {
 
 apply plugin: 'org.spongepowered.plugin'
 apply from: utilities.file('gradle/utilities.gradle')
+apply from: utilities.file('gradle/sponge.gradle')
 
 jar {
     manifest {

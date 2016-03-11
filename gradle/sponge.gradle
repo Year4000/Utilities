@@ -1,0 +1,103 @@
+import com.google.gson.Gson
+
+import java.util.stream.Collectors
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.code.gson:gson:2.5'
+    }
+}
+
+apply plugin: SpongePlugin
+
+class SpongePlugin implements Plugin<Project> {
+    static File MINECRAFT_HOME = new File(System.getProperty('user.home'), '.minecraft');
+    static Gson GSON = new Gson();
+
+    void apply(Project project) {
+        project.extensions.create('spongestarter', SpongeExtension)
+
+        /** Start the forge client */
+        project.task('startClient') << {
+            new SpongeForgeClient().start();
+        }
+    }
+}
+
+class SpongeExtension {
+
+}
+
+/** Sponge starter runs the needed things to start a sponge instance */
+interface SpongeStarter {
+    void start()
+}
+
+class SpongeForgeClient implements SpongeStarter {
+
+    @Override
+    void start() {
+        File versions = new File(SpongePlugin.MINECRAFT_HOME, 'versions')
+        File forge = versions.listFiles()[0]
+        MinecraftVersion version = make(forge)
+        List<String> libs = generateLibs(version).libs;
+        libs.add('versions/' + version.inheritsFrom + '/' + version.inheritsFrom + '.jar')
+        println libs.stream().collect(Collectors.joining(":"))
+        println generateLibs(make(forge)).natives.stream().collect(Collectors.joining(":"))
+    }
+
+    /** Convert the json file to MinecraftVersion object */
+    MinecraftVersion make(File file) {
+        FileInputStream stream = new FileInputStream(new File(file, file.name + ".json"))
+        InputStreamReader reader = new InputStreamReader(stream)
+        MinecraftVersion version = SpongePlugin.GSON.fromJson(reader, MinecraftVersion)
+        reader.close();
+        return version;
+    }
+
+    /** Generate a list of libs minecraft needs */
+    Libs generateLibs(MinecraftVersion object) {
+        Libs libs = new Libs()
+        if (object.inheritsFrom != null) {
+            File path = new File(new File(SpongePlugin.MINECRAFT_HOME, 'versions'), object.inheritsFrom)
+            MinecraftVersion version = make(path)
+            Libs parent = generateLibs(version)
+            libs.libs.addAll(parent.libs)
+            libs.natives.addAll(parent.natives)
+        }
+
+        Collections.reverse(object.libraries)
+        object.libraries.forEach({lib ->
+            String libName = 'libraries/' + libName((String) lib.get('name'))
+            if (lib.containsKey('natives')) {
+                libs.natives.addFirst(libName)
+            } else {
+                libs.libs.addFirst(libName)
+            }
+        })
+
+        return libs;
+    }
+
+    /** Convert the name name to a libary path */
+    String libName(String name) {
+        Objects.requireNonNull(name, "Name must not be null.")
+        String[] parts = name.split(":")
+        return parts[0].replace(".", "/") + "/" + parts[1] + "/" + parts[2] + "/" + parts[1] + "-" + parts[2] + ".jar"
+    }
+
+    class MinecraftVersion {
+        String inheritsFrom;
+        String minecraftArguments;
+        String mainClass;
+        List<Map<String, Object>> libraries;
+    }
+
+    class Libs {
+        List<String> libs = new LinkedList<>();
+        List<String> natives = new LinkedList<>();
+    }
+}
