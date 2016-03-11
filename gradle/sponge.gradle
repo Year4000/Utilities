@@ -14,7 +14,24 @@ buildscript {
 apply plugin: SpongePlugin
 
 class SpongePlugin implements Plugin<Project> {
-    static File MINECRAFT_HOME = new File(System.getProperty('user.home'), '.minecraft');
+    static File MINECRAFT_HOME;
+    {
+        switch (OS.detect()) {
+            case OS.LINUX:
+                MINECRAFT_HOME = new File(System.getProperty('user.home'), '.minecraft');
+                break;
+            case OS.MAC:
+                MINECRAFT_HOME = new File(System.getProperty('user.home'), '/Library/Application Support/minecraft');
+                break;
+            default:
+                MINECRAFT_HOME = null;
+        }
+
+        // Ensure user has a copy of Minecraft
+        if (MINECRAFT_HOME == null || !MINECRAFT_HOME.exists()) {
+            throw new Throwable('Minecraft path does not exists, you must have a copy of Minecraft')
+        }
+    }
     static Gson GSON = new Gson();
 
     void apply(Project project) {
@@ -22,8 +39,26 @@ class SpongePlugin implements Plugin<Project> {
 
         /** Start the forge client */
         project.task('startClient') << {
+            println MINECRAFT_HOME
             new SpongeForgeClient().start();
         }
+    }
+}
+
+final enum OS {
+    LINUX,
+    MAC,
+    WINDOWS;
+
+    /** Simple way of detecting the current of of the java runtime */
+    static OS detect() {
+        def name = System.getProperty("os.name").toLowerCase();
+
+        if (name.contains('linux')) return LINUX;
+        if (name.contains('mac')) return MAC;
+        if (name.contains('windows')) return WINDOWS;
+
+        throw new Throwable('Could not detect os, report this issue.')
     }
 }
 
