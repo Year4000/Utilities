@@ -1,6 +1,7 @@
 import com.google.gson.Gson
-
-import java.util.stream.Collectors
+import groovy.transform.ToString
+import java.util.Optional as Optionals
+import static SpongePlugin.PS
 
 buildscript {
     repositories {
@@ -14,17 +15,23 @@ buildscript {
 apply plugin: SpongePlugin
 
 class SpongePlugin implements Plugin<Project> {
-    static File MINECRAFT_HOME;
-    {
+    static final Gson GSON = new Gson();
+    static final String PS;
+    static final File MINECRAFT_HOME;
+    static {
+        def home = System.getProperty('user.home')
         switch (OS.detect()) {
             case OS.LINUX:
-                MINECRAFT_HOME = new File(System.getProperty('user.home'), '.minecraft');
+                MINECRAFT_HOME = new File(home, '.minecraft');
+                PS = '/'
                 break;
             case OS.MAC:
-                MINECRAFT_HOME = new File(System.getProperty('user.home'), '/Library/Application Support/minecraft');
+                MINECRAFT_HOME = new File(home, '/Library/Application Support/minecraft');
+                PS = '/'
                 break;
-            default:
-                MINECRAFT_HOME = null;
+            case OS.WINDOWS:
+                MINECRAFT_HOME = new File(home, 'Application Data\\.minecraft');
+                PS = '\\'
         }
 
         // Ensure user has a copy of Minecraft
@@ -32,39 +39,25 @@ class SpongePlugin implements Plugin<Project> {
             throw new Throwable('Minecraft path does not exists, you must have a copy of Minecraft')
         }
     }
-    static Gson GSON = new Gson();
 
     void apply(Project project) {
         project.extensions.create('spongestarter', SpongeExtension)
 
         /** Start the forge client */
         project.task('startClient') << {
-            println MINECRAFT_HOME
+            println 'starting forge client'
             new SpongeForgeClient().start();
+
+            // Find Forge
+            // Generate Libs
+            // Generate Natives
+            // Extract Natives based on OS
+            // Start Minecraft client
         }
     }
 }
 
-final enum OS {
-    LINUX,
-    MAC,
-    WINDOWS;
-
-    /** Simple way of detecting the current of of the java runtime */
-    static OS detect() {
-        def name = System.getProperty("os.name").toLowerCase();
-
-        if (name.contains('linux')) return LINUX;
-        if (name.contains('mac')) return MAC;
-        if (name.contains('windows')) return WINDOWS;
-
-        throw new Throwable('Could not detect os, report this issue.')
-    }
-}
-
-class SpongeExtension {
-
-}
+class SpongeExtension {}
 
 /** Sponge starter runs the needed things to start a sponge instance */
 interface SpongeStarter {
@@ -72,67 +65,134 @@ interface SpongeStarter {
 }
 
 class SpongeForgeClient implements SpongeStarter {
+    private class ClassPaths extends Tuples.Pair<LinkedList<String>, LinkedList<String>> {
+        def libs = a
+        def natives = b
+
+        ClassPaths() { super(new LinkedList<String>(), new LinkedList<String>()) }
+    }
 
     @Override
     void start() {
         File versions = new File(SpongePlugin.MINECRAFT_HOME, 'versions')
-        File forge = versions.listFiles()[0]
-        MinecraftVersion version = make(forge)
-        List<String> libs = generateLibs(version).libs;
-        libs.add('versions/' + version.inheritsFrom + '/' + version.inheritsFrom + '.jar')
-        println libs.stream().collect(Collectors.joining(":"))
-        println generateLibs(make(forge)).natives.stream().collect(Collectors.joining(":"))
+        Optionals<File> forge = Arrays.asList(versions.listFiles()).stream()
+                .filter({file -> file.name.contains('forge')})
+                .sorted().sorted(Comparator.reverseOrder())
+                .findFirst()
+
+        if (!forge.isPresent()) {
+            throw new Throwable('You do not have forge please install forge')
+        }
+
+        MinecraftVersion version = makeMCVersion forge.get()
+        ClassPaths classPaths = generateLibs version;
+        classPaths.libs.get().add('versions' + PS + version.inheritsFrom + PS + version.inheritsFrom + '.jar')
+    }
+
+    /** Extract the jars to the selected path */
+    private void extractJars(List<String> paths, File extractTo) {
+        extractTo.mkdirs()
     }
 
     /** Convert the json file to MinecraftVersion object */
-    MinecraftVersion make(File file) {
-        FileInputStream stream = new FileInputStream(new File(file, file.name + ".json"))
+    private MinecraftVersion makeMCVersion(File file) {
+        FileInputStream stream = new FileInputStream(new File(file, file.name + '.json'))
         InputStreamReader reader = new InputStreamReader(stream)
-        MinecraftVersion version = SpongePlugin.GSON.fromJson(reader, MinecraftVersion)
+        MinecraftVersion version = SpongePlugin.GSON.fromJson reader, MinecraftVersion
         reader.close();
         return version;
     }
 
-    /** Generate a list of libs minecraft needs */
-    Libs generateLibs(MinecraftVersion object) {
-        Libs libs = new Libs()
+    /** Generate a list of ClassPaths minecraft needs */
+    private ClassPaths generateLibs(MinecraftVersion object) {
+        ClassPaths classPaths = new ClassPaths();
+
         if (object.inheritsFrom != null) {
             File path = new File(new File(SpongePlugin.MINECRAFT_HOME, 'versions'), object.inheritsFrom)
-            MinecraftVersion version = make(path)
-            Libs parent = generateLibs(version)
-            libs.libs.addAll(parent.libs)
-            libs.natives.addAll(parent.natives)
+            MinecraftVersion version = makeMCVersion path
+            ClassPaths parent = generateLibs version
+            classPaths.libs.get().addAll parent.libs.get()
+            classPaths.natives.get().addAll parent.natives.get()
         }
 
-        Collections.reverse(object.libraries)
-        object.libraries.forEach({lib ->
-            String libName = 'libraries/' + libName((String) lib.get('name'))
-            if (lib.containsKey('natives')) {
-                libs.natives.addFirst(libName)
-            } else {
-                libs.libs.addFirst(libName)
-            }
-        })
+        Collections.reverse object.libraries
 
-        return libs;
+        object.libraries.each {
+            String libName = 'libraries' + PS + libName((String) it.get('name'))
+            if (it.containsKey('natives')) {
+                classPaths.natives.get().addFirst libName
+            } else {
+                classPaths.libs.get().addFirst libName
+            }
+        }
+
+        return classPaths;
     }
 
     /** Convert the name name to a libary path */
-    String libName(String name) {
-        Objects.requireNonNull(name, "Name must not be null.")
-        String[] parts = name.split(":")
-        return parts[0].replace(".", "/") + "/" + parts[1] + "/" + parts[2] + "/" + parts[1] + "-" + parts[2] + ".jar"
+    private String libName(String name) {
+        String[] parts =  Objects.requireNonNull(name, 'Name must not be null').split(':')
+        return "${parts[0].replace('.', PS)}$PS${parts[2]}$PS${parts[1]}-${parts[2]}.jar"
     }
 
-    class MinecraftVersion {
+    @ToString(includeNames=true)
+    private class MinecraftVersion {
         String inheritsFrom;
         String minecraftArguments;
         String mainClass;
         List<Map<String, Object>> libraries;
     }
+}
 
-    class Libs {
-        List<String> libs = new LinkedList<>();
-        List<String> natives = new LinkedList<>();
+// Utils for Above Script
+
+/** Simple way of detecting the current OS of the jvm runtime */
+final enum OS {
+    LINUX,
+    MAC,
+    WINDOWS
+
+    static OS detect() {
+        def name = System.getProperty("os.name")?.toLowerCase()
+
+        if (name.contains('linux')) return LINUX
+        if (name.contains('mac')) return MAC
+        if (name.contains('windows')) return WINDOWS
+
+        throw new Throwable('Could not detect os, report this issue.')
+    }
+}
+
+/** A class that helps with returing tuple vales with multiple types */
+final class Tuples {
+    /** A class for the use of pair */
+    final static class TupleValue<V> {
+        private V value
+
+        /** Get the current value, could be null */
+        V get() { value }
+
+        /** Get or else the current value */
+        V getOrElse(V value) { (V) this.value ?: value }
+
+        /** Set the current value of this tuple */
+        void set(V value) { this.value = value }
+
+        @Override
+        String toString() { "TupleValue(${value})" }
+    }
+
+    /** Represents a tuple pair */
+    static class Pair<A, B> {
+        final TupleValue<A> a;
+        final TupleValue<B> b;
+
+        Pair(A a, B b) {
+            this.a = new TupleValue<>(value: a)
+            this.b = new TupleValue<>(value: b)
+        }
+
+        @Override
+        String toString() { "Pair(${a?.get()}, ${b?.get()})" }
     }
 }
