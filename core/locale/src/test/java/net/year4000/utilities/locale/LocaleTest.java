@@ -4,7 +4,7 @@
 
 package net.year4000.utilities.locale;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import lombok.extern.java.Log;
 import org.junit.Ignore;
 import org.junit.Test;
