@@ -37,11 +37,6 @@ class SpongePlugin implements Plugin<Project> {
             case OS.WINDOWS:
                 MINECRAFT_HOME = new File(home, 'Application Data\\.minecraft');
         }
-
-        // Ensure user has a copy of Minecraft
-        if (MINECRAFT_HOME == null || !MINECRAFT_HOME.exists()) {
-            throw new Throwable('Minecraft path does not exists, you must have a copy of Minecraft')
-        }
     }
 
     void apply(Project project) {
@@ -74,13 +69,21 @@ class SpongeForgeClient implements Runnable {
 
     @Override
     void run() {
+        // Ensure user has a copy of Minecraft
+        if (!MINECRAFT_HOME.exists()) {
+            throw new Throwable('Minecraft path does not exists, you must have a copy of Minecraft')
+        }
+
         File versions = new File(SpongePlugin.MINECRAFT_HOME, 'versions')
         Optionals<File> forge = Arrays.asList(versions.listFiles()).stream()
                 .filter({file -> file.name.contains('forge')})
                 .sorted().sorted(Comparator.reverseOrder())
                 .findFirst()
 
-        if (!forge.isPresent()) throw new Throwable('You do not have forge please install forge')
+        // Ensure user has a copy of MinecraftForge
+        if (!forge.isPresent()) {
+            throw new Throwable('You do not have forge please install forge')
+        }
 
         MinecraftVersion version = makeMCVersion forge.get()
         ClassPaths classPaths = generateLibs version;
