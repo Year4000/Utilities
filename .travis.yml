@@ -3,4 +3,5 @@ jdk:
   - oraclejdk8
 notifications:
   email: false
+  irc: "irc.esper.net#year4000"
 services: redis
