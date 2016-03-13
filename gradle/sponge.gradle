@@ -1,7 +1,12 @@
 import com.google.gson.Gson
 import groovy.transform.ToString
+import net.lingala.zip4j.core.ZipFile
 import java.util.Optional as Optionals
+import java.util.stream.Collectors
+
+import static SpongePlugin.MINECRAFT_HOME
 import static SpongePlugin.PS
+import static SpongePlugin.GSON
 
 buildscript {
     repositories {
@@ -9,6 +14,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.google.code.gson:gson:2.5'
+        classpath 'net.lingala.zip4j:zip4j:1.3.2'
     }
 }
 
@@ -16,22 +22,20 @@ apply plugin: SpongePlugin
 
 class SpongePlugin implements Plugin<Project> {
     static final Gson GSON = new Gson();
-    static final String PS;
+    static final OS PLATFORM = OS.detect();
+    static final String PS = File.separator;
     static final File MINECRAFT_HOME;
     static {
         def home = System.getProperty('user.home')
-        switch (OS.detect()) {
+        switch (PLATFORM) {
             case OS.LINUX:
                 MINECRAFT_HOME = new File(home, '.minecraft');
-                PS = '/'
                 break;
-            case OS.MAC:
+            case OS.OSX:
                 MINECRAFT_HOME = new File(home, '/Library/Application Support/minecraft');
-                PS = '/'
                 break;
             case OS.WINDOWS:
                 MINECRAFT_HOME = new File(home, 'Application Data\\.minecraft');
-                PS = '\\'
         }
 
         // Ensure user has a copy of Minecraft
@@ -46,7 +50,7 @@ class SpongePlugin implements Plugin<Project> {
         /** Start the forge client */
         project.task('startClient') << {
             println 'starting forge client'
-            new SpongeForgeClient().start();
+            new SpongeForgeClient().run();
 
             // Find Forge
             // Generate Libs
@@ -60,11 +64,7 @@ class SpongePlugin implements Plugin<Project> {
 class SpongeExtension {}
 
 /** Sponge starter runs the needed things to start a sponge instance */
-interface SpongeStarter {
-    void start()
-}
-
-class SpongeForgeClient implements SpongeStarter {
+class SpongeForgeClient implements Runnable {
     private class ClassPaths extends Tuples.Pair<LinkedList<String>, LinkedList<String>> {
         def libs = a
         def natives = b
@@ -73,42 +73,110 @@ class SpongeForgeClient implements SpongeStarter {
     }
 
     @Override
-    void start() {
+    void run() {
         File versions = new File(SpongePlugin.MINECRAFT_HOME, 'versions')
         Optionals<File> forge = Arrays.asList(versions.listFiles()).stream()
                 .filter({file -> file.name.contains('forge')})
                 .sorted().sorted(Comparator.reverseOrder())
                 .findFirst()
 
-        if (!forge.isPresent()) {
-            throw new Throwable('You do not have forge please install forge')
-        }
+        if (!forge.isPresent()) throw new Throwable('You do not have forge please install forge')
 
         MinecraftVersion version = makeMCVersion forge.get()
         ClassPaths classPaths = generateLibs version;
         classPaths.libs.get().add('versions' + PS + version.inheritsFrom + PS + version.inheritsFrom + '.jar')
+        def classpath = classPaths.libs.get().stream().collect(Collectors.joining(File.pathSeparator))
+        extractJars classPaths.natives.get(), new File(MINECRAFT_HOME, 'natives')
+        String[] args = minecraftArguments(version, classpath, 'Player', '', '')
+        new ProcessBuilder().with {
+            command(args)
+            directory(MINECRAFT_HOME)
+            inheritIO()
+            start().waitFor()
+        }
+    }
+
+    /** Create a string array of the arguments including var filtering */
+    private List<String> minecraftArguments(MinecraftVersion version, String classpath, String... login) {
+        Objects.requireNonNull(version)
+        String[] argParts = version.minecraftArguments.split(' ')
+        def minecraftArgs = [
+            'java',
+            '-Djava.library.path=natives/',
+            // todo launcher java args
+            '-cp',
+            classpath,
+            version.mainClass
+        ]
+        def varMap = [
+            assets_index_name: version.assets,
+            version_name: version.id,
+            game_directory: MINECRAFT_HOME.toString(),
+            assets_root: 'assets/',
+            version_type: version.type,
+            user_type: 'mojang',
+            user_properties: '{}',
+            auth_player_name: login[0],
+            auth_access_token: login[1],
+            auth_uuid: login[2]
+        ]
+
+        argParts.each {
+            if (it.startsWith('${') && it.endsWith('}')) {
+                def var = it.substring(2, it.size() - 1)
+                if (varMap[var] == null) {
+                    minecraftArgs.remove(minecraftArgs.size() - 1)
+                } else {
+                    minecraftArgs.add varMap[var]
+                }
+            } else {
+                minecraftArgs.add it
+            }
+        }
+
+        return minecraftArgs
     }
 
     /** Extract the jars to the selected path */
     private void extractJars(List<String> paths, File extractTo) {
+        Objects.requireNonNull(paths)
+        Objects.requireNonNull(extractTo)
+        extractTo.delete()
         extractTo.mkdirs()
+        def errored = false
+
+        paths.each {
+            def file = new File(MINECRAFT_HOME, it)
+            if (file.exists()) {
+                new ZipFile(file).extractAll extractTo.getPath()
+            } else {
+                println 'no file by this name: ' + file.name
+                errored = true
+            }
+        }
+
+        if (errored) {
+            println 'There were jars not found, if problems occur its because of this'
+        }
     }
 
     /** Convert the json file to MinecraftVersion object */
     private MinecraftVersion makeMCVersion(File file) {
+        Objects.requireNonNull(file)
         FileInputStream stream = new FileInputStream(new File(file, file.name + '.json'))
         InputStreamReader reader = new InputStreamReader(stream)
-        MinecraftVersion version = SpongePlugin.GSON.fromJson reader, MinecraftVersion
+        MinecraftVersion version = GSON.fromJson reader, MinecraftVersion
         reader.close();
         return version;
     }
 
     /** Generate a list of ClassPaths minecraft needs */
     private ClassPaths generateLibs(MinecraftVersion object) {
+        Objects.requireNonNull(object)
         ClassPaths classPaths = new ClassPaths();
 
         if (object.inheritsFrom != null) {
-            File path = new File(new File(SpongePlugin.MINECRAFT_HOME, 'versions'), object.inheritsFrom)
+            File path = new File(new File(MINECRAFT_HOME, 'versions'), object.inheritsFrom)
             MinecraftVersion version = makeMCVersion path
             ClassPaths parent = generateLibs version
             classPaths.libs.get().addAll parent.libs.get()
@@ -120,7 +188,9 @@ class SpongeForgeClient implements SpongeStarter {
         object.libraries.each {
             String libName = 'libraries' + PS + libName((String) it.get('name'))
             if (it.containsKey('natives')) {
-                classPaths.natives.get().addFirst libName
+                def platform = OS.detect().name().toLowerCase()
+                def nativeName = libName.substring(0, libName.lastIndexOf('.jar')) + '-natives-' + platform + '.jar'
+                classPaths.natives.get().addFirst nativeName
             } else {
                 classPaths.libs.get().addFirst libName
             }
@@ -132,15 +202,18 @@ class SpongeForgeClient implements SpongeStarter {
     /** Convert the name name to a libary path */
     private String libName(String name) {
         String[] parts =  Objects.requireNonNull(name, 'Name must not be null').split(':')
-        return "${parts[0].replace('.', PS)}$PS${parts[2]}$PS${parts[1]}-${parts[2]}.jar"
+        return "${parts[0].replace('.', PS)}$PS${parts[1]}$PS${parts[2]}$PS${parts[1]}-${parts[2]}.jar"
     }
 
     @ToString(includeNames=true)
     private class MinecraftVersion {
-        String inheritsFrom;
-        String minecraftArguments;
-        String mainClass;
-        List<Map<String, Object>> libraries;
+        String id
+        String type
+        String inheritsFrom
+        String assets
+        String minecraftArguments
+        String mainClass
+        List<Map<String, Object>> libraries
     }
 }
 
@@ -149,15 +222,15 @@ class SpongeForgeClient implements SpongeStarter {
 /** Simple way of detecting the current OS of the jvm runtime */
 final enum OS {
     LINUX,
-    MAC,
+    OSX,
     WINDOWS
 
     static OS detect() {
         def name = System.getProperty("os.name")?.toLowerCase()
 
         if (name.contains('linux')) return LINUX
-        if (name.contains('mac')) return MAC
-        if (name.contains('windows')) return WINDOWS
+        else if (name.contains('mac') || name.contains('osx')) return OSX
+        else if (name.contains('windows')) return WINDOWS
 
         throw new Throwable('Could not detect os, report this issue.')
     }
