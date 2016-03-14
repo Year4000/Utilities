@@ -90,7 +90,7 @@ class SpongeForgeClient implements Runnable {
         classPaths.libs.get().add('versions' + PS + version.inheritsFrom + PS + version.inheritsFrom + '.jar')
         def classpath = classPaths.libs.get().stream().collect(Collectors.joining(File.pathSeparator))
         extractJars classPaths.natives.get(), new File(MINECRAFT_HOME, 'natives')
-        String[] args = minecraftArguments(version, classpath, 'Player', '', '')
+        String[] args = minecraftArguments(version, classpath, 'Player', ' ', '')
         new ProcessBuilder().with {
             command(args)
             directory(MINECRAFT_HOME)
