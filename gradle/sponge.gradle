@@ -55,7 +55,7 @@ class SpongeExtension {}
 class SpongeForgeClient extends DefaultTask {
 
     @TaskAction
-    def startClient() {
+    def startForgeClient() {
         // Ensure user has a copy of Minecraft
         if (!MINECRAFT_HOME.exists()) {
             throw new Throwable('Minecraft path does not exists, you must have a copy of Minecraft')
@@ -176,23 +176,19 @@ class SpongeForgeClient extends DefaultTask {
         Collections.reverse object.libraries
 
         object.libraries.each {
-            String libName = 'libraries' + PS + libName((String) it.get('name'))
+            String[] parts = ((String) it.get('name')).split(':')
+            String library = "libraries$PS${parts[0].replace('.', PS)}$PS${parts[1]}$PS${parts[2]}$PS${parts[1]}-${parts[2]}.jar"
+
             if (it.containsKey('natives')) {
                 def platform = OS.detect().name().toLowerCase()
-                def nativeName = libName.substring(0, libName.lastIndexOf('.jar')) + '-natives-' + platform + '.jar'
+                def nativeName = library.substring(0, library.lastIndexOf('.jar')) + '-natives-' + platform + '.jar'
                 classPaths.natives.get().addFirst nativeName
             } else {
-                classPaths.libs.get().addFirst libName
+                classPaths.libs.get().addFirst library
             }
         }
 
         return classPaths;
-    }
-
-    /** Convert the name name to a libary path */
-    private def libName(String name) {
-        String[] parts =  Objects.requireNonNull(name, 'Name must not be null').split(':')
-        return "${parts[0].replace('.', PS)}$PS${parts[1]}$PS${parts[2]}$PS${parts[1]}-${parts[2]}.jar"
     }
 
     @ToString(includeNames=true)
