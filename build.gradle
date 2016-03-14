@@ -10,3 +10,9 @@ ext.utilities = project
 
 defaultTasks 'clean', 'build'
 
+idea {
+    module {
+        sourceDirs += file("${projectDir}/gradle/")
+        excludeDirs += file("${projectDir}/gradle/wrapper/")
+    }
+}
