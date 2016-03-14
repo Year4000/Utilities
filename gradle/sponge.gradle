@@ -127,7 +127,7 @@ class SpongeForgeClient implements Runnable {
         argParts.each {
             if (it.startsWith('${') && it.endsWith('}')) {
                 def var = it.substring(2, it.size() - 1)
-                if (varMap[var] == null) {
+                if (varMap[var] == null || varMap[var] == '') {
                     minecraftArgs.remove(minecraftArgs.size() - 1)
                 } else {
                     minecraftArgs.add varMap[var]
