@@ -1,6 +1,7 @@
 import com.google.gson.Gson
 import groovy.transform.ToString
 import net.lingala.zip4j.core.ZipFile
+
 import java.util.Optional as Optionals
 import java.util.stream.Collectors
 
@@ -14,6 +15,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.google.code.gson:gson:2.5'
+        classpath 'com.google.inject:guice:3.0'
         classpath 'net.lingala.zip4j:zip4j:1.3.2'
     }
 }
@@ -21,21 +23,21 @@ buildscript {
 apply plugin: SpongePlugin
 
 class SpongePlugin implements Plugin<Project> {
-    static final Gson GSON = new Gson();
-    static final OS PLATFORM = OS.detect();
-    static final String PS = File.separator;
-    static final File MINECRAFT_HOME;
+    static final Gson GSON = new Gson()
+    static final OS PLATFORM = OS.detect()
+    static final String PS = File.separator
+    static final File MINECRAFT_HOME
     static {
         def home = System.getProperty('user.home')
         switch (PLATFORM) {
             case OS.LINUX:
-                MINECRAFT_HOME = new File(home, '.minecraft');
+                MINECRAFT_HOME = new File(home, '.minecraft')
                 break;
             case OS.OSX:
-                MINECRAFT_HOME = new File(home, '/Library/Application Support/minecraft');
-                break;
+                MINECRAFT_HOME = new File(home, '/Library/Application Support/minecraft')
+                break
             case OS.WINDOWS:
-                MINECRAFT_HOME = new File(home, 'Application Data\\.minecraft');
+                MINECRAFT_HOME = new File(home, 'Application Data\\.minecraft')
         }
     }
 
