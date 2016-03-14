@@ -43,38 +43,23 @@ class SpongePlugin implements Plugin<Project> {
         project.extensions.create('spongestarter', SpongeExtension)
 
         /** Start the forge client */
-        project.task('startClient') << {
-            println 'starting forge client'
-            new SpongeForgeClient().run();
-
-            // Find Forge
-            // Generate Libs
-            // Generate Natives
-            // Extract Natives based on OS
-            // Start Minecraft client
-        }
+        project.tasks.create('startForgeClient', SpongeForgeClient)
     }
 }
 
 class SpongeExtension {}
 
 /** Sponge starter runs the needed things to start a sponge instance */
-class SpongeForgeClient implements Runnable {
-    private class ClassPaths extends Tuples.Pair<LinkedList<String>, LinkedList<String>> {
-        def libs = a
-        def natives = b
+class SpongeForgeClient extends DefaultTask {
 
-        ClassPaths() { super(new LinkedList<String>(), new LinkedList<String>()) }
-    }
-
-    @Override
-    void run() {
+    @TaskAction
+    def startClient() {
         // Ensure user has a copy of Minecraft
         if (!MINECRAFT_HOME.exists()) {
             throw new Throwable('Minecraft path does not exists, you must have a copy of Minecraft')
         }
 
-        File versions = new File(SpongePlugin.MINECRAFT_HOME, 'versions')
+        File versions = new File(MINECRAFT_HOME, 'versions')
         Optionals<File> forge = Arrays.asList(versions.listFiles()).stream()
                 .filter({file -> file.name.contains('forge')})
                 .sorted().sorted(Comparator.reverseOrder())
@@ -141,7 +126,7 @@ class SpongeForgeClient implements Runnable {
     }
 
     /** Extract the jars to the selected path */
-    private void extractJars(List<String> paths, File extractTo) {
+    private def extractJars(List<String> paths, File extractTo) {
         Objects.requireNonNull(paths)
         Objects.requireNonNull(extractTo)
         extractTo.delete()
@@ -203,7 +188,7 @@ class SpongeForgeClient implements Runnable {
     }
 
     /** Convert the name name to a libary path */
-    private String libName(String name) {
+    private def libName(String name) {
         String[] parts =  Objects.requireNonNull(name, 'Name must not be null').split(':')
         return "${parts[0].replace('.', PS)}$PS${parts[1]}$PS${parts[2]}$PS${parts[1]}-${parts[2]}.jar"
     }
@@ -217,6 +202,13 @@ class SpongeForgeClient implements Runnable {
         String minecraftArguments
         String mainClass
         List<Map<String, Object>> libraries
+    }
+
+    private class ClassPaths extends Tuples.Pair<LinkedList<String>, LinkedList<String>> {
+        def libs = a
+        def natives = b
+
+        ClassPaths() { super(new LinkedList<String>(), new LinkedList<String>()) }
     }
 }
 
