@@ -4,6 +4,7 @@
 
 plugins {
     id 'idea'
+    id 'groovy'
 }
 
 ext.utilities = project
@@ -15,4 +16,15 @@ idea {
         sourceDirs += file("${projectDir}/gradle/")
         excludeDirs += file("${projectDir}/gradle/wrapper/")
     }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.google.inject:guice:3.0'
+    compile 'net.lingala.zip4j:zip4j:1.3.2'
 }
