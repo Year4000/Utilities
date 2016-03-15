@@ -96,22 +96,29 @@ class SpongeForgeClient extends DefaultTask {
     /** Get the login details of the client */
     private String[] loginDetails() {
         File profiles = new File(MINECRAFT_HOME, 'launcher_profiles.json')
+        def details = []
+        def info = "(name:${->details[0]}, token:${->details[1]}, uuid:${->details[2]})"
 
         // Use Alex or Steve if launcher_profiles.json does not exist
         if (!profiles.exists()) {
             boolean profile = new Random().nextBoolean()
-            String name = profile ? 'Alex' : 'Steve'
-            String uuid = profile ? 'fffffff0fffffff0fffffff0fffffff1' : 'fffffff0fffffff0fffffff0fffffff0'
-            String token = UUID.randomUUID().toString().replace('-', '')
+            details = [
+                profile ? 'Alex' : 'Steve',
+                UUID.randomUUID().toString().replace('-', ''),
+                profile ? 'fffffff0fffffff0fffffff0fffffff1' : 'fffffff0fffffff0fffffff0fffffff0'
+            ]
+            logger.warn "Profile could not be found using: $info"
 
-            return [name, token, uuid]
+            return details
         }
 
         FileReader reader = new FileReader(profiles)
         LauncherProfiles profile = GSON.fromJson(reader, LauncherProfiles)
         reader.close()
+        details = [profile.displayName(), profile.accessToken(), profile.uuid()]
+        logger.warn "Profile found using: $info"
 
-        return [profile.displayName(), profile.accessToken(), profile.uuid()]
+        return details
     }
 
     /** Create a string array of the arguments including var filtering */
