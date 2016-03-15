@@ -3,6 +3,8 @@ import groovy.transform.ToString
 import net.lingala.zip4j.core.ZipFile
 
 import java.util.Optional as Optionals
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.stream.Collectors
 
 import static SpongePlugin.MINECRAFT_HOME
@@ -26,20 +28,18 @@ class SpongePlugin implements Plugin<Project> {
     static final Gson GSON = new Gson()
     static final OS PLATFORM = OS.detect()
     static final String PS = File.separator
-    static final File MINECRAFT_HOME
-    static {
+    static final File MINECRAFT_HOME = {
         def home = System.getProperty('user.home')
         switch (PLATFORM) {
             case OS.LINUX:
-                MINECRAFT_HOME = new File(home, '.minecraft')
-                break;
+                return new File(home, '.minecraft')
             case OS.OSX:
-                MINECRAFT_HOME = new File(home, '/Library/Application Support/minecraft')
+                return new File(home, '/Library/Application Support/minecraft')
                 break
             case OS.WINDOWS:
-                MINECRAFT_HOME = new File(home, 'Application Data\\.minecraft')
+                return new File(home, 'Application Data\\.minecraft')
         }
-    }
+    }.call()
 
     void apply(Project project) {
         project.extensions.create('spongestarter', SpongeExtension)
@@ -84,12 +84,12 @@ class SpongeForgeClient extends DefaultTask {
         def classpath = classPaths.libs.get().stream().collect(Collectors.joining(File.pathSeparator))
         extractJars classPaths.natives.get(), new File(MINECRAFT_HOME, 'natives')
         String[] args = minecraftArguments(version, classpath, 'Player', ' ', '')
-        new ProcessBuilder().with {
-            command(args)
-            directory(MINECRAFT_HOME)
-            inheritIO()
-            start().waitFor()
-        }
+
+        Process process = new ProcessBuilder(args).directory(MINECRAFT_HOME).start()
+        Runtime.runtime.addShutdownHook { process.destroy() }
+        new StreamToLogger(src: process.inputStream, logger: logger, level: LogLevel.WARN).execute()
+        new StreamToLogger(src: process.errorStream, logger: logger, level: LogLevel.ERROR).execute()
+        process.waitFor()
     }
 
     /** Create a string array of the arguments including var filtering */
@@ -137,31 +137,38 @@ class SpongeForgeClient extends DefaultTask {
     private def extractJars(List<String> paths, File extractTo) {
         Objects.requireNonNull(paths)
         Objects.requireNonNull(extractTo)
-        extractTo.delete()
+
+        if (extractTo.exists()) {
+            extractTo.delete()
+        }
+
         extractTo.mkdirs()
-        def errored = false
+        extractTo.deleteOnExit()
+        def erred = false
 
         paths.each {
             def file = new File(MINECRAFT_HOME, it)
             if (file.exists()) {
                 new ZipFile(file).extractAll extractTo.getPath()
             } else {
-                println 'no file by this name: ' + file.name
-                errored = true
+                getLogger().warn("no file found by the name of: ${file.name}")
+                erred = true
             }
         }
 
-        if (errored) {
-            println 'There were jars not found, if problems occur its because of this'
+        if (erred) {
+            getLogger().warn('There were jars not found, if problems occur its because of this')
         }
     }
 
     /** Convert the json file to MinecraftVersion object */
     private MinecraftVersion makeMCVersion(File file) {
         Objects.requireNonNull(file)
-        FileInputStream stream = new FileInputStream(new File(file, file.name + '.json'))
+        file = new File(file, file.name + '.json')
+        FileInputStream stream = new FileInputStream(file)
         InputStreamReader reader = new InputStreamReader(stream)
         MinecraftVersion version = GSON.fromJson reader, MinecraftVersion
+        getLogger().debug("Reading ${file.name}: ${version}")
         reader.close();
         return version;
     }
@@ -217,6 +224,36 @@ class SpongeForgeClient extends DefaultTask {
 }
 
 // Utils for Above Script
+
+/** Run Streams to Logger */
+final class StreamToLogger implements Runnable {
+    static final ExecutorService EXECUTOR = Executors.newCachedThreadPool()
+    InputStream src
+    Logger logger
+    LogLevel level
+
+    private InputStreamReader reader
+    private BufferedReader bufferedReader
+
+    @Override
+    void run() {
+        if (reader == null && bufferedReader == null) {
+            reader = new InputStreamReader(src)
+            bufferedReader = new BufferedReader(reader)
+        }
+
+        String line = bufferedReader.readLine()
+        if (line != null) {
+            logger.log level, line
+        }
+        EXECUTOR.execute this
+    }
+
+    def execute() {
+        EXECUTOR.execute this
+        Runtime.runtime.addShutdownHook { EXECUTOR.shutdown }
+    }
+}
 
 /** Simple way of detecting the current OS of the jvm runtime */
 final enum OS {
