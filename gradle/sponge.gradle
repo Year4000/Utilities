@@ -85,6 +85,7 @@ class SpongeForgeClient extends DefaultTask {
         extractJars classPaths.natives.get(), new File(MINECRAFT_HOME, 'natives')
         String[] args = minecraftArguments(version, classpath, loginDetails())
 
+        logger.warn 'Starting the Minecraft Client, using settings from the Minecraft Launcher'
         Process process = new ProcessBuilder(args).directory(MINECRAFT_HOME).start()
         Runtime.runtime.addShutdownHook { process.destroy() }
         new StreamToLogger(src: process.inputStream, logger: logger, level: LogLevel.WARN).execute()
@@ -172,13 +173,13 @@ class SpongeForgeClient extends DefaultTask {
             if (file.exists()) {
                 new ZipFile(file).extractAll extractTo.getPath()
             } else {
-                getLogger().warn("no file found by the name of: ${file.name}")
+                logger.debug("no file found by the name of: ${file.name}")
                 erred = true
             }
         }
 
         if (erred) {
-            getLogger().warn('There were jars not found, if problems occur its because of this')
+            logger.warn('There were native jars not found, minecraft may fail to load')
         }
     }
 
@@ -189,7 +190,7 @@ class SpongeForgeClient extends DefaultTask {
         FileInputStream stream = new FileInputStream(file)
         InputStreamReader reader = new InputStreamReader(stream)
         MinecraftVersion version = GSON.fromJson reader, MinecraftVersion
-        getLogger().debug("Reading ${file.name}: ${version}")
+        logger.debug("Reading ${file.name}: ${version}")
         reader.close();
         return version;
     }
