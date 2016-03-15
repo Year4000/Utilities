@@ -58,7 +58,10 @@ class SpongeForgeClient extends DefaultTask {
     def startForgeClient() {
         // Ensure user has a copy of Minecraft
         if (!MINECRAFT_HOME.exists()) {
-            throw new Throwable('Minecraft path does not exists, you must have a copy of Minecraft')
+            throw new Throwable('''
+                Minecraft path does not exists, you MUST have a copy of Minecraft, you can grab it from here;
+                https://minecraft.net/
+            ''')
         }
 
         File versions = new File(MINECRAFT_HOME, 'versions')
@@ -69,7 +72,10 @@ class SpongeForgeClient extends DefaultTask {
 
         // Ensure user has a copy of MinecraftForge
         if (!forge.isPresent()) {
-            throw new Throwable('You do not have forge please install forge')
+            throw new Throwable('''
+                You do not have forge please install forge, you can grab it from here;
+                http://files.minecraftforge.net/
+            ''')
         }
 
         MinecraftVersion version = makeMCVersion forge.get()
