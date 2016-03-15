@@ -60,7 +60,8 @@ class SpongePlugin implements Plugin<Project> {
 }
 
 class SpongeExtension {
-    boolean deleteJar = false
+    /** When set delete the jar when JVM closes */
+    boolean deleteJar = true
 }
 
 /** Sponge starter runs the needed things to start a sponge instance */
