@@ -62,6 +62,9 @@ class SpongePlugin implements Plugin<Project> {
 class SpongeExtension {
     /** When set delete the jar when JVM closes */
     boolean deleteJar = true
+
+    /** The port the debugger will bind on */
+    int debugPort = 5005
 }
 
 /** Sponge starter runs the needed things to start a sponge instance */
@@ -166,6 +169,7 @@ class SpongeForgeClient extends DefaultTask {
         def minecraftArgs = [
             'java',
             '-Djava.library.path=natives/',
+            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${project.spongestarter.debugPort}",
             // todo launcher java args
             '-cp',
             classpath,
