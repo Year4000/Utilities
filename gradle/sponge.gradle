@@ -130,18 +130,18 @@ class SpongeForgeClient extends DefaultTask {
     private String[] loginDetails() {
         File profiles = new File(MINECRAFT_HOME, 'launcher_profiles.json')
         def details = []
+        boolean profileRand = new Random().nextBoolean()
         def info = "(name:${->details[0]}, token:${->details[1]}, uuid:${->details[2]})"
+        def defaultDetails = [
+                profileRand ? 'Alex' : 'Steve',
+                UUID.randomUUID().toString().replace('-', ''),
+                profileRand ? 'fffffff0fffffff0fffffff0fffffff1' : 'fffffff0fffffff0fffffff0fffffff0'
+        ]
 
         // Use Alex or Steve if launcher_profiles.json does not exist
         if (!profiles.exists()) {
-            boolean profile = new Random().nextBoolean()
-            details = [
-                profile ? 'Alex' : 'Steve',
-                UUID.randomUUID().toString().replace('-', ''),
-                profile ? 'fffffff0fffffff0fffffff0fffffff1' : 'fffffff0fffffff0fffffff0fffffff0'
-            ]
+            details = defaultDetails
             logger.lifecycle "Profile could not be found using: $info"
-
             return details
         }
 
@@ -149,6 +149,11 @@ class SpongeForgeClient extends DefaultTask {
         LauncherProfiles profile = GSON.fromJson(reader, LauncherProfiles)
         reader.close()
         details = [profile.displayName(), profile.accessToken(), profile.uuid()]
+
+        if (profile.displayName() == null) {
+            details = defaultDetails
+        }
+
         logger.lifecycle "Profile found using: $info"
 
         return details
