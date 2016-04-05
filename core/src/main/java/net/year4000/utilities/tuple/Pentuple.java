@@ -5,7 +5,7 @@
 package net.year4000.utilities.tuple;
 
 /** Represents a Pentuple Tuple of objects */
-public class Pentuple<A, B, C, D, E> {
+public final class Pentuple<A, B, C, D, E> {
     public final TupleValue<A> a;
     public final TupleValue<B> b;
     public final TupleValue<C> c;
