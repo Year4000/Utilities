@@ -4,25 +4,35 @@ import net.year4000.utilities.value.Value;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ValueTest {
+    private static final List<Value<? extends Number>> FULL_NUMBER_VALUES = Arrays.asList(
+        Value.parseByte("0"),
+        Value.parseDouble("0.0"),
+        Value.parseFloat("0.0"),
+        Value.parseInteger("0"),
+        Value.parseShort("0")
+    );
+    private static final List<Value<? extends Number>> EMPTY_NUMBER_VALUES = Arrays.asList(
+        Value.parseByte(""),
+        Value.parseDouble(""),
+        Value.parseFloat(""),
+        Value.parseInteger(""),
+        Value.parseShort("")
+    );
+
     /** Test the value creations of for numbers */
     @Test
     public void parseNumberNotNullTest() {
-        Assert.assertNotNull(Value.parseByte("0").get());
-        Assert.assertNotNull(Value.parseDouble("0.0").get());
-        Assert.assertNotNull(Value.parseFloat("0.0").get());
-        Assert.assertNotNull(Value.parseInteger("0").get());
-        Assert.assertNotNull(Value.parseShort("0").get());
+        FULL_NUMBER_VALUES.forEach(value -> Assert.assertNotNull(value.get()));
     }
 
     /** Test the value creations of for numbers */
     @Test
     public void parseNumbersNullTest() {
-        Assert.assertNull(Value.parseByte("").get());
-        Assert.assertNull(Value.parseDouble("").get());
-        Assert.assertNull(Value.parseFloat("").get());
-        Assert.assertNull(Value.parseInteger("").get());
-        Assert.assertNull(Value.parseShort("").get());
+        EMPTY_NUMBER_VALUES.forEach(value -> Assert.assertNull(value.get()));
     }
 
     /** Test the values of getOrElse */
