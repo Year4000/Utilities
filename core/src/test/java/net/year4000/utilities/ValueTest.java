@@ -51,4 +51,11 @@ public class ValueTest {
         FULL_NUMBER_VALUES.forEach(value -> Assert.assertFalse(value.isEmpty()));
         EMPTY_NUMBER_VALUES.forEach(value -> Assert.assertTrue(value.isEmpty()));
     }
+
+    @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+    @Test
+    public void areEqualTest() {
+        Assert.assertTrue(Value.of("Equal").equals("Equal"));
+        Assert.assertTrue(Value.of("Equal").equals(Value.of("Equal")));
+    }
 }
