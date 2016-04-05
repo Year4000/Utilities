@@ -20,15 +20,16 @@ public class RouteTest {
         Assert.assertEquals(response.getUUID(), "96e51f12-2c2f-42a6-a2d0-045d1eb4b5b2");
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void accountAsyncTest() {
         api.getAccountAsync("54c572bba6946f1b42c0bd0e", (response, error) -> {
-            if (error != null) {
-                throw new RuntimeException(error);
+            if (error.isPresent() || !response.isPresent()) {
+                throw new RuntimeException(error.orElse(null));
             }
 
-            Assert.assertEquals(response.getUsername(), "Year4000");
-            Assert.assertEquals(response.getUUID(), "96e51f12-2c2f-42a6-a2d0-045d1eb4b5b2");
+            Assert.assertEquals(response.get().getUsername(), "Year4000");
+            Assert.assertEquals(response.get().getUUID(), "96e51f12-2c2f-42a6-a2d0-045d1eb4b5b2");
         });
     }
 }

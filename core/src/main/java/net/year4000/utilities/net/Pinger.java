@@ -64,10 +64,10 @@ public final class Pinger {
 
     public void fetchDataAsync(Callback<StatusResponse> callback) {
         try {
-            callback.callback(fetchData(), null);
+            callback.callback(fetchData());
         }
-        catch (Exception e) {
-            callback.callback(null, e);
+        catch (Exception error) {
+            callback.callback(error);
         }
     }
 

@@ -17,18 +17,26 @@
 
 package net.year4000.utilities;
 
+import java.util.Optional;
+
 @FunctionalInterface
 public interface Callback<T> {
-    /** A simple call back interface */
-    void callback(T data, Throwable error);
+    /** The class back method that is exposed to the user */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    void callback(Optional<T> data, Optional<Throwable> error);
 
-    /** A simple call back interface */
-    default void callback(T data) {
-        callback(data, null);
+    /** Provide a wrapper for the callback values */
+    default void callback(T data, Throwable error) {
+        callback(Optional.of(data), Optional.of(error));
     }
 
-    /** A simple call back interface */
+    /** Only wrap the data and use empty for the error */
+    default void callback(T data) {
+        callback(Optional.of(data), Optional.empty());
+    }
+
+    /** Only wrap the error and use empty for the data */
     default void callback(Throwable error) {
-        callback(null, error);
+        callback(Optional.empty(), Optional.of(error));
     }
 }
