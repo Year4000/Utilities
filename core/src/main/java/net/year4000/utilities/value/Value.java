@@ -71,11 +71,13 @@ public interface Value<V> {
         }
     }
 
-    /** Does the value instance contain a non null value */
-    boolean isEmpty();
-
     /** Get the value of this instance could be null */
     V get();
+
+    /** Does the value instance contain a non null value */
+    default boolean isEmpty() {
+        return get() == null;
+    }
 
     /** Get the value of this instance if its present for return the argument could be null */
     default V getOrElse(V value) {

@@ -11,12 +11,6 @@ public class ImmutableValue<V> implements Value<V> {
         this.value = value;
     }
 
-    /** Does the value instance contain a non null value */
-    @Override
-    public boolean isEmpty() {
-        return value == null;
-    }
-
     /** Get the value of this instance could be null */
     @Override
     public V get() {

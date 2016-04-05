@@ -41,4 +41,14 @@ public class ValueTest {
         Assert.assertEquals(Value.of("").getOrElse("Joshua"), "Joshua");
         Assert.assertEquals(Value.of("Joshua").getOrElse(""), "Joshua");
     }
+
+    @Test
+    public void isEmptyTest() {
+        Assert.assertTrue(Value.empty().isEmpty());
+        Assert.assertTrue(Value.of("").isEmpty());
+        Assert.assertFalse(Value.of(new Object()).isEmpty());
+        Assert.assertFalse(Value.of("String").isEmpty());
+        FULL_NUMBER_VALUES.forEach(value -> Assert.assertFalse(value.isEmpty()));
+        EMPTY_NUMBER_VALUES.forEach(value -> Assert.assertTrue(value.isEmpty()));
+    }
 }
