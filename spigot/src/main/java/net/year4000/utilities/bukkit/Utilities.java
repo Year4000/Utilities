@@ -17,14 +17,16 @@
 
 package net.year4000.utilities.bukkit;
 
-import lombok.Getter;
 import net.year4000.utilities.bukkit.bossbar.BarAPIListener;
 import net.year4000.utilities.bukkit.bossbar.BossBar;
 import org.bukkit.Bukkit;
 
 public class Utilities extends BukkitPlugin {
-    @Getter
     private static Utilities inst;
+
+    public static Utilities getInst() {
+        return Utilities.inst;
+    }
 
     @Override
     public void onLoad() {

@@ -21,14 +21,9 @@
 
 package net.year4000.utilities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Data
-@AllArgsConstructor
 @SuppressWarnings("unused")
 public final class LogUtil {
     protected Logger logger;
@@ -49,6 +44,13 @@ public final class LogUtil {
 
     public LogUtil(Logger logger, Level level) {
         this(logger, level, Boolean.valueOf(System.getProperty("debug")));
+    }
+
+    @java.beans.ConstructorProperties({"logger", "level", "debug"})
+    public LogUtil(Logger logger, Level level, boolean debug) {
+        this.logger = logger;
+        this.level = level;
+        this.debug = debug;
     }
 
     /** Logs a message to the console */
@@ -100,5 +102,58 @@ public final class LogUtil {
     /** Strip possible args from breaking things */
     private String stripArgs(String message) {
         return message.replaceAll("%([a-z]|[A-Z])", "");
+    }
+
+    public Logger getLogger() {
+        return this.logger;
+    }
+
+    public Level getLevel() {
+        return this.level;
+    }
+
+    public boolean isDebug() {
+        return this.debug;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof LogUtil)) return false;
+        final LogUtil other = (LogUtil) o;
+        final Object this$logger = this.logger;
+        final Object other$logger = other.logger;
+        if (this$logger == null ? other$logger != null : !this$logger.equals(other$logger)) return false;
+        final Object this$level = this.level;
+        final Object other$level = other.level;
+        if (this$level == null ? other$level != null : !this$level.equals(other$level)) return false;
+        if (this.debug != other.debug) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $logger = this.logger;
+        result = result * PRIME + ($logger == null ? 0 : $logger.hashCode());
+        final Object $level = this.level;
+        result = result * PRIME + ($level == null ? 0 : $level.hashCode());
+        result = result * PRIME + (this.debug ? 79 : 97);
+        return result;
+    }
+
+    public String toString() {
+        return "net.year4000.utilities.LogUtil(logger=" + this.logger + ", level=" + this.level + ", debug=" + this.debug + ")";
     }
 }

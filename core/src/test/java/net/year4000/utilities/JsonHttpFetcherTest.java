@@ -6,16 +6,17 @@ package net.year4000.utilities;
 
 import com.google.gson.JsonObject;
 import junit.framework.Assert;
-import lombok.extern.java.Log;
 import net.year4000.utilities.net.HttpFetcher;
 import net.year4000.utilities.net.JsonHttpFetcher;
 import org.junit.Test;
 
-@Log
+import java.util.logging.Logger;
+
 public class JsonHttpFetcherTest {
     private static final JsonHttpFetcher fetcher = JsonHttpFetcher.builder().build();
     private static final String URL = "https://api.year4000.net";
     private static final String OFFLINE = "502 Bad Gateway";
+    private static final Logger log = Logger.getLogger(JsonHttpFetcherTest.class.getName());
 
     private void test(HttpFetcher.Methods method) {
         try {

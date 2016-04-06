@@ -5,10 +5,6 @@
 package net.year4000.utilities.net;
 
 import com.google.common.collect.Maps;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import net.year4000.utilities.URLBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -23,7 +19,6 @@ import java.util.Map;
 /**
  * The connection used to use along side HttpFetcher.
  */
-@Data
 public class HttpConnection implements Cloneable {
     private static final int TIMEOUT = 5000;
     private static final String USER_AGENT = "Year4000 Utilities API Interface";
@@ -33,8 +28,6 @@ public class HttpConnection implements Cloneable {
     private String userAgent = null;
     private int timeout = -1;
     // Connection
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
     private HttpURLConnection urlConnection;
 
     public HttpConnection(String url) {
@@ -128,5 +121,79 @@ public class HttpConnection implements Cloneable {
     /** Clone this object just runs the copy constructor */
     public HttpConnection clone() {
         return new HttpConnection(this);
+    }
+
+    public URLBuilder getUrlBuilder() {
+        return this.urlBuilder;
+    }
+
+    public Map<String, String> getHeaders() {
+        return this.headers;
+    }
+
+    public String getUserAgent() {
+        return this.userAgent;
+    }
+
+    public int getTimeout() {
+        return this.timeout;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof HttpConnection)) return false;
+        final HttpConnection other = (HttpConnection) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$urlBuilder = this.urlBuilder;
+        final Object other$urlBuilder = other.urlBuilder;
+        if (this$urlBuilder == null ? other$urlBuilder != null : !this$urlBuilder.equals(other$urlBuilder))
+            return false;
+        final Object this$headers = this.headers;
+        final Object other$headers = other.headers;
+        if (this$headers == null ? other$headers != null : !this$headers.equals(other$headers)) return false;
+        final Object this$userAgent = this.userAgent;
+        final Object other$userAgent = other.userAgent;
+        if (this$userAgent == null ? other$userAgent != null : !this$userAgent.equals(other$userAgent)) return false;
+        if (this.timeout != other.timeout) return false;
+        final Object this$urlConnection = this.urlConnection;
+        final Object other$urlConnection = other.urlConnection;
+        if (this$urlConnection == null ? other$urlConnection != null : !this$urlConnection.equals(other$urlConnection))
+            return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $urlBuilder = this.urlBuilder;
+        result = result * PRIME + ($urlBuilder == null ? 0 : $urlBuilder.hashCode());
+        final Object $headers = this.headers;
+        result = result * PRIME + ($headers == null ? 0 : $headers.hashCode());
+        final Object $userAgent = this.userAgent;
+        result = result * PRIME + ($userAgent == null ? 0 : $userAgent.hashCode());
+        result = result * PRIME + this.timeout;
+        final Object $urlConnection = this.urlConnection;
+        result = result * PRIME + ($urlConnection == null ? 0 : $urlConnection.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof HttpConnection;
+    }
+
+    public String toString() {
+        return "net.year4000.utilities.net.HttpConnection(urlBuilder=" + this.urlBuilder + ", headers=" + this.headers + ", userAgent=" + this.userAgent + ", timeout=" + this.timeout + ", urlConnection=" + this.urlConnection + ")";
     }
 }

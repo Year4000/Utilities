@@ -18,13 +18,13 @@
 package net.year4000.utilities.sdk.routes.players;
 
 import com.google.common.collect.ImmutableMap;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.year4000.utilities.sdk.routes.Route;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PlayerCountRoute extends Route<PlayerCountJson> {
+    private PlayerCountRoute() {
+    }
+
     /** Get the player count of the network */
     public PlayerCountJson.Count getNetworkPlayerCount() {
         return response.getNetwork();

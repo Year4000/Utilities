@@ -5,15 +5,16 @@
 package net.year4000.utilities.locale;
 
 import org.junit.Assert;
-import lombok.extern.java.Log;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
+import java.util.logging.Logger;
 
-@Log
 public class LocaleTest {
+    private static final Logger log = Logger.getLogger(LocaleTest.class.getName());
+
     private static void test(AbstractLocaleManager manager) {
         Assert.assertTrue(manager.getLocales().size() > 0);
 

@@ -7,7 +7,6 @@ package net.year4000.utilities;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.extern.java.Log;
 import net.year4000.utilities.net.Pinger;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,10 +14,11 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Set;
+import java.util.logging.Logger;
 
-@Log
 public class PingerTest {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final Logger log = Logger.getLogger(PingerTest.class.getName());
     private static final LogUtil logutil = new LogUtil(log, Boolean.parseBoolean(System.getProperty("test.debug")));
     private static final Set<String> OK_ERRORS = Sets.newHashSet(
         "connect timed out",

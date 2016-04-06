@@ -18,9 +18,6 @@
 package net.year4000.utilities.bukkit.gui;
 
 import com.google.common.collect.Sets;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
 import net.year4000.utilities.bukkit.ItemUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -37,11 +34,8 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@ToString
-@EqualsAndHashCode
 public class GUIManager implements Listener {
     private Set<AbstractGUI> menus = Sets.newHashSet();
-    @Setter
     private Function<Player, Locale> locale = (player) -> Locale.US;
 
     /** Add a menu to the GUIManger to be listen by an action */
@@ -107,5 +101,41 @@ public class GUIManager implements Listener {
                 return;
             }
         }
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof GUIManager)) return false;
+        final GUIManager other = (GUIManager) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$menus = this.getMenus();
+        final Object other$menus = other.getMenus();
+        if (this$menus == null ? other$menus != null : !this$menus.equals(other$menus)) return false;
+        final Object this$locale = this.locale;
+        final Object other$locale = other.locale;
+        if (this$locale == null ? other$locale != null : !this$locale.equals(other$locale)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $menus = this.getMenus();
+        result = result * PRIME + ($menus == null ? 0 : $menus.hashCode());
+        final Object $locale = this.locale;
+        result = result * PRIME + ($locale == null ? 0 : $locale.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof GUIManager;
+    }
+
+    public String toString() {
+        return "net.year4000.utilities.bukkit.gui.GUIManager(menus=" + this.getMenus() + ", locale=" + this.locale + ")";
+    }
+
+    public void setLocale(Function<Player, Locale> locale) {
+        this.locale = locale;
     }
 }

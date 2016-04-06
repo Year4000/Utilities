@@ -18,18 +18,18 @@
 package net.year4000.utilities;
 
 import com.google.common.base.Joiner;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class URLBuilder {
     private String url = "";
     private List<String> paths = new LinkedList<>();
     private Map<String, String> queries = new LinkedHashMap<>();
+
+    private URLBuilder() {
+    }
 
     /** Create a url builder */
     public static URLBuilder builder(String base) {

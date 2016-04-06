@@ -21,10 +21,6 @@ import com.sk89q.bungee.util.BungeeCommandsManager;
 import com.sk89q.bungee.util.CommandExecutor;
 import com.sk89q.bungee.util.CommandRegistration;
 import com.sk89q.minecraft.util.commands.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -40,11 +36,8 @@ import static net.year4000.utilities.bungee.Messages.*;
  * This is a wrapper for BungeeCord plugins, this will allow for
  * quick and creation of common tasks.
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
 @SuppressWarnings("unused")
 public class BungeePlugin extends Plugin implements CommandExecutor<CommandSender> {
-    @Getter(AccessLevel.PRIVATE)
     private static BungeePlugin inst;
     private final BungeeCommandsManager commands = new BungeeCommandsManager();
     public LogUtil log = new LogUtil(ProxyServer.getInstance().getLogger());
@@ -75,6 +68,10 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
     /** Print out the stack trace */
     public static void log(Exception e, boolean simple) {
         getInst().log.log(e, simple);
+    }
+
+    private static BungeePlugin getInst() {
+        return BungeePlugin.inst;
     }
 
     // Logger Stuff //
@@ -142,5 +139,55 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
                 }
             }
         }
+    }
+
+    public BungeeCommandsManager getCommands() {
+        return this.commands;
+    }
+
+    public LogUtil getLog() {
+        return this.log;
+    }
+
+    public boolean isDebug() {
+        return this.debug;
+    }
+
+    public void setLog(LogUtil log) {
+        this.log = log;
+    }
+
+    public String toString() {
+        return "net.year4000.utilities.bungee.BungeePlugin(commands=" + this.commands + ", log=" + this.log + ", debug=" + this.debug + ")";
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof BungeePlugin)) return false;
+        final BungeePlugin other = (BungeePlugin) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$commands = this.getCommands();
+        final Object other$commands = other.getCommands();
+        if (this$commands == null ? other$commands != null : !this$commands.equals(other$commands)) return false;
+        final Object this$log = this.getLog();
+        final Object other$log = other.getLog();
+        if (this$log == null ? other$log != null : !this$log.equals(other$log)) return false;
+        if (this.isDebug() != other.isDebug()) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $commands = this.getCommands();
+        result = result * PRIME + ($commands == null ? 0 : $commands.hashCode());
+        final Object $log = this.getLog();
+        result = result * PRIME + ($log == null ? 0 : $log.hashCode());
+        result = result * PRIME + (this.isDebug() ? 79 : 97);
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof BungeePlugin;
     }
 }

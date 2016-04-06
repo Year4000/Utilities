@@ -20,8 +20,9 @@ import org.spongepowered.api.text.action.TextActions;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static net.year4000.utilities.sponge.Messages.CMD_PLUGINS;
+import static net.year4000.utilities.sponge.Messages.CMD_VERSION;
 import static org.spongepowered.api.text.format.TextColors.*;
-import static net.year4000.utilities.sponge.Messages.*;
 
 
 public final class PluginCommand implements CommandExecutor {

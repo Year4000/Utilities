@@ -9,9 +9,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.google.common.collect.Maps;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import net.year4000.utilities.URLBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -92,7 +89,6 @@ public class ResourcePacks implements Closeable {
         manager.removePacketListener(adapter);
     }
 
-    @EqualsAndHashCode(callSuper = false)
     public static class PackAdapter extends PacketAdapter {
         private final String code; // Used for equals and hashCode
 
@@ -115,16 +111,76 @@ public class ResourcePacks implements Closeable {
 
             wrapper.ifPresent(packWrapper -> packWrapper.consumer.accept(event.getPlayer(), resource.getResult()));
         }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof PackAdapter)) return false;
+            final PackAdapter other = (PackAdapter) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$code = this.code;
+            final Object other$code = other.code;
+            if (this$code == null ? other$code != null : !this$code.equals(other$code)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $code = this.code;
+            result = result * PRIME + ($code == null ? 0 : $code.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof PackAdapter;
+        }
     }
 
     /** A class that wraps the BiConsumer of the packet listener */
-    @AllArgsConstructor
-    @EqualsAndHashCode(of = {"url", "hash"})
-    @ToString
     private class PackWrapper {
         private Player player;
         private String url;
         private String hash;
         private BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer;
+
+        @java.beans.ConstructorProperties({"player", "url", "hash", "consumer"})
+        public PackWrapper(Player player, String url, String hash, BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer) {
+            this.player = player;
+            this.url = url;
+            this.hash = hash;
+            this.consumer = consumer;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof PackWrapper)) return false;
+            final PackWrapper other = (PackWrapper) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$url = this.url;
+            final Object other$url = other.url;
+            if (this$url == null ? other$url != null : !this$url.equals(other$url)) return false;
+            final Object this$hash = this.hash;
+            final Object other$hash = other.hash;
+            if (this$hash == null ? other$hash != null : !this$hash.equals(other$hash)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $url = this.url;
+            result = result * PRIME + ($url == null ? 0 : $url.hashCode());
+            final Object $hash = this.hash;
+            result = result * PRIME + ($hash == null ? 0 : $hash.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof PackWrapper;
+        }
+
+        public String toString() {
+            return "net.year4000.utilities.bukkit.protocol.ResourcePacks.PackWrapper(player=" + this.player + ", url=" + this.url + ", hash=" + this.hash + ", consumer=" + this.consumer + ")";
+        }
     }
 }

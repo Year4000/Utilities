@@ -17,11 +17,12 @@
 
 package net.year4000.utilities.bungee;
 
-import lombok.Getter;
-
 public class Utilities extends BungeePlugin {
-    @Getter
     private static Utilities inst;
+
+    public static Utilities getInst() {
+        return Utilities.inst;
+    }
 
     @Override
     public void onLoad() {

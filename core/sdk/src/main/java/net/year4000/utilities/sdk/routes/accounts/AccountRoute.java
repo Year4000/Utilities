@@ -18,12 +18,12 @@
 package net.year4000.utilities.sdk.routes.accounts;
 
 import com.google.gson.JsonObject;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import net.year4000.utilities.sdk.routes.Route;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountRoute extends Route<JsonObject> {
+    private AccountRoute() {
+    }
+
     /** Get the username of this account */
     public String getRank() {
         return response.get("rank").getAsString();

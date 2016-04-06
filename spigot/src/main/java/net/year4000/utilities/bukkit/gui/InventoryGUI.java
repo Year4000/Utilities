@@ -18,9 +18,6 @@
 package net.year4000.utilities.bukkit.gui;
 
 import com.google.common.base.Ascii;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 import net.year4000.utilities.bukkit.BukkitUtil;
 import net.year4000.utilities.bukkit.ItemUtil;
 import net.year4000.utilities.mc.MessageUtil;
@@ -31,12 +28,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-@ToString(of = {"uuid", "size", "title", "icons"})
-@EqualsAndHashCode(of = {"uuid", "size", "title"})
 public final class InventoryGUI implements InventoryHolder {
     public static final int COLS = 9;
     private final UUID uuid = UUID.randomUUID();
-    @Getter
     private Inventory inventory;
     private IconView[][] icons;
     private String title;
@@ -83,5 +77,38 @@ public final class InventoryGUI implements InventoryHolder {
         }
 
         return inventory;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof InventoryGUI)) return false;
+        final InventoryGUI other = (InventoryGUI) o;
+        final Object this$uuid = this.uuid;
+        final Object other$uuid = other.uuid;
+        if (this$uuid == null ? other$uuid != null : !this$uuid.equals(other$uuid)) return false;
+        final Object this$title = this.title;
+        final Object other$title = other.title;
+        if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+        if (this.size != other.size) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $uuid = this.uuid;
+        result = result * PRIME + ($uuid == null ? 0 : $uuid.hashCode());
+        final Object $title = this.title;
+        result = result * PRIME + ($title == null ? 0 : $title.hashCode());
+        result = result * PRIME + this.size;
+        return result;
+    }
+
+    public String toString() {
+        return "net.year4000.utilities.bukkit.gui.InventoryGUI(uuid=" + this.uuid + ", icons=" + java.util.Arrays.deepToString(this.icons) + ", title=" + this.title + ", size=" + this.size + ")";
+    }
+
+    public Inventory getInventory() {
+        return this.inventory;
     }
 }
