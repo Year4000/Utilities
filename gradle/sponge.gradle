@@ -222,7 +222,7 @@ class SpongeForgeClient extends DefaultTask {
         def erred = false
 
         paths.each {
-            def file = new File(MINECRAFT_HOME, it)
+            def file = new File(it)
             if (file.exists()) {
                 new ZipFile(file).extractAll extractTo.getPath()
             } else {
