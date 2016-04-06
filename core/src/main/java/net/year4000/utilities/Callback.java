@@ -27,7 +27,7 @@ public interface Callback<T> {
 
     /** Provide a wrapper for the callback values */
     default void callback(T data, Throwable error) {
-        callback(Optional.of(data), Optional.of(error));
+        callback(Optional.ofNullable(data), Optional.ofNullable(error));
     }
 
     /** Only wrap the data and use empty for the error */
