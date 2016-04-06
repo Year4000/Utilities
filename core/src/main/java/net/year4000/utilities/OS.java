@@ -1,7 +1,5 @@
 package net.year4000.utilities;
 
-import net.year4000.utilities.value.Value;
-
 /** An enum of the current OS of the running JVM */
 public enum OS {
     LINUX,
@@ -11,7 +9,7 @@ public enum OS {
 
     /** Detect the current OS of the running JVM */
     public static OS detect() throws IllegalStateException {
-        String name = Value.of(System.getProperty("os.name")).getOrElse("").toLowerCase();
+        String name = System.getProperty("os.name", "unknown").toLowerCase();
 
         if (name.contains("linux")) return LINUX;
         else if (name.contains("mac") || name.contains("osx")) return OSX;
