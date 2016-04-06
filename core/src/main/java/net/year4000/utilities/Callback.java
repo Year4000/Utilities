@@ -27,7 +27,14 @@ public interface Callback<T> {
 
     /** Provide a wrapper for the callback values */
     default void callback(T data, Throwable error) {
-        callback(Optional.of(data), Optional.of(error));
+        if (data == null) {
+            callback(error);
+        }
+        else if (error == null) {
+            callback(data);
+        }
+
+        throw new IllegalArgumentException("Both arguments must not be null");
     }
 
     /** Only wrap the data and use empty for the error */
