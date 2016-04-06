@@ -4,21 +4,29 @@
 
 package net.year4000.utilities;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.java.Log;
 import net.year4000.utilities.net.Pinger;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Set;
 
 @Log
 public class PingerTest {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final LogUtil logutil = new LogUtil(log, Boolean.parseBoolean(System.getProperty("test.debug")));
+    private static final Set<String> OK_ERRORS = Sets.newHashSet(
+        "connect timed out",
+        "Connection refused"
+    );
 
     @Test
+    @Ignore
     public void ping() throws IOException {
         try {
             // Year4000 Network
@@ -29,7 +37,7 @@ public class PingerTest {
             logutil.debug(gson.toJson(ping.fetchData(), Pinger.StatusResponse.class));
         }
         catch (IOException e) {
-            if (e.getMessage().contains("connect timed out") || e.getMessage().contains("Connection refused")) {
+            if (OK_ERRORS.contains(e.getMessage())) {
                 logutil.log("Could not contact Year4000, skipping test.");
             }
             else {
