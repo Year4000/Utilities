@@ -1,26 +1,10 @@
 /*
- * Copyright 2015 Year4000.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2016 Year4000. All Rights Reserved.
  */
 
-package net.year4000.utilities.sdk;
+package net.year4000.utilities.net;
 
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -41,7 +25,6 @@ import java.util.Map;
  */
 @Data
 public class HttpConnection implements Cloneable {
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     private static final int TIMEOUT = 5000;
     private static final String USER_AGENT = "Year4000 Utilities API Interface";
     private final URLBuilder urlBuilder;
@@ -93,18 +76,18 @@ public class HttpConnection implements Cloneable {
     }
 
     /** Send data to the connection https */
-    public static void requestHttps(HttpsURLConnection connection, JsonObject object) throws IOException {
+    public static void requestHttps(HttpsURLConnection connection, String data) throws IOException {
         // Send Data
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
-            GSON.toJson(object, writer);
+            writer.write(data);
         }
     }
 
     /** Send data to the connection https */
-    public static void requestHttp(HttpURLConnection connection, JsonObject object) throws IOException {
+    public static void requestHttp(HttpURLConnection connection, String data) throws IOException {
         // Send Data
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
-            GSON.toJson(object, writer);
+            writer.write(data);
         }
     }
 

@@ -1,13 +1,29 @@
 /*
  * Copyright 2016 Year4000. All Rights Reserved.
  */
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'gradle.plugin.org.spongepowered:SpongeGradle:0.5.1'
+    }
+}
 
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
+apply plugin: 'org.spongepowered.plugin'
 apply from: utilities.file('gradle/utilities.gradle')
+apply from: utilities.file('gradle/sponge.gradle')
+
+spongestarter {
+    deleteJar false
+}
 
 jar {
     manifest {
@@ -16,7 +32,7 @@ jar {
     }
 }
 
-build.dependsOn shadowJar {
+assemble.dependsOn shadowJar {
     baseName = utilities.name.toLowerCase()
     version = utilities.version
 
@@ -27,18 +43,10 @@ build.dependsOn shadowJar {
     }
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'sponge'
-        url = 'http://repo.spongepowered.org/maven'
-    }
-}
-
 dependencies {
     compile utilities.project('core')
     compile utilities.project('core:redis')
     compile utilities.project('core:locale')
     compile utilities.project('core:ducktape')
-    compile 'org.spongepowered:spongeapi:3.1.0-SNAPSHOT'
+    compile 'org.spongepowered:spongeapi:4.1.0-SNAPSHOT'
 }

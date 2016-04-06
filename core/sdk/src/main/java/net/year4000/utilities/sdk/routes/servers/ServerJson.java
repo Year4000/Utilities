@@ -18,7 +18,7 @@
 package net.year4000.utilities.sdk.routes.servers;
 
 import lombok.Value;
-import net.year4000.utilities.mc.Pinger;
+import net.year4000.utilities.net.Pinger;
 
 @Value
 public class ServerJson {

@@ -1,37 +1,41 @@
-package net.year4000.utilities.configs;
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
+package net.year4000.utilities.cache;
 
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lombok.EqualsAndHashCode;
-import net.year4000.utilities.sdk.HttpConnection;
-import net.year4000.utilities.sdk.HttpFetcher;
+import net.year4000.utilities.net.HttpConnection;
+import net.year4000.utilities.net.JsonHttpFetcher;
 
 /**
  * Make it simple for a class to constructor the object from a JSON web page.
  */
 @EqualsAndHashCode
-public abstract class JsonConfig {
-    private LoadingCache<Class<? extends JsonConfig>, JsonConfig> cache;
+public abstract class JsonConfigCache {
+    private LoadingCache<Class<? extends JsonConfigCache>, JsonConfigCache> cache;
 
     /** Get the class object */
-    public static <T extends JsonConfig> T getInstance(JsonConfig self) {
-        final ConfigURL url = Preconditions.checkNotNull(self.getClass().getAnnotation(ConfigURL.class));
+    public static <T extends JsonConfigCache> T getInstance(JsonConfigCache self) {
+        final EndPoint url = Preconditions.checkNotNull(self.getClass().getAnnotation(EndPoint.class));
 
         if (self.cache == null) {
-            self.cache = CacheBuilder.<Class<? extends JsonConfig>, JsonConfig>newBuilder()
+            self.cache = CacheBuilder.<Class<? extends JsonConfigCache>, JsonConfigCache>newBuilder()
                 .expireAfterWrite(
                     url.expire(),
                     url.unit()
                 )
-                .build(new CacheLoader<Class<? extends JsonConfig>, JsonConfig>() {
+                .build(new CacheLoader<Class<? extends JsonConfigCache>, JsonConfigCache>() {
                     @Override
-                    public JsonConfig load(Class<? extends JsonConfig> clazz) throws Exception {
+                    public JsonConfigCache load(Class<? extends JsonConfigCache> clazz) throws Exception {
                         HttpConnection connection = new HttpConnection(url.value());
 
                         try {
-                            return HttpFetcher.get(connection, clazz);
+                            return JsonHttpFetcher.builder().build().get(connection, clazz);
                         }
                         catch (Exception e) {
                             System.err.println(e.toString());

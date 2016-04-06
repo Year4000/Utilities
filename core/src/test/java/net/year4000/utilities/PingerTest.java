@@ -2,12 +2,12 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
-package net.year4000.utilities.mc;
+package net.year4000.utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.java.Log;
-import net.year4000.utilities.LogUtil;
+import net.year4000.utilities.net.Pinger;
 import org.junit.Test;
 
 import java.io.IOException;

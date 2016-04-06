@@ -5,6 +5,7 @@
 package net.year4000.utilities.sponge.command;
 
 import com.google.common.collect.Lists;
+import net.year4000.utilities.Mappers;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -59,9 +60,13 @@ public final class PluginCommand implements CommandExecutor {
     /** Convert the SimpleContainer to a pretty text */
     public Text toText(PluginContainer plugin, CommandSource src) {
         List<Text> texts = Lists.newArrayList();
-        String prefix = plugin.getInstance().orElseGet(Object::new).getClass().getName();
+        String prefix = plugin.getInstance()
+            .map(Mappers.object())
+            .orElseGet(Object::new)
+            .getClass()
+            .getName();
         Text display = Text.of(GREEN, plugin.getName());
-        Text version = Text.of(AQUA, CMD_VERSION.get(src), DARK_GRAY, ": ", GREEN, plugin.getVersion());
+        Text version = Text.of(AQUA, CMD_VERSION.get(src), DARK_GRAY, ": ", GREEN, plugin.getVersion().orElse("unknown"));
         String[] packages = prefix.split("\\.", prefix.split("\\.").length - 1);
 
         for (String parts : packages) {

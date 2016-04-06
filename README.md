@@ -1,5 +1,7 @@
 # Utilities [![Build Status](https://travis-ci.org/Year4000/Utilities.svg)](https://travis-ci.org/Year4000/Utilities)
 
+[IRC](https://webchat.esper.net/?channels=year4000): #year4000 on irc.esper.net
+
 The original [Utilities] created by ewized is ported over for [Year4000].
 This project is a modify version used for projects made for Year4000.
 Utilities was designed to be modular this allows for support on many different project levels.

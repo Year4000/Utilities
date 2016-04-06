@@ -37,4 +37,24 @@ public abstract class AbstractSpongePlugin {
     public void onAbstractSpongePluginInit(GameConstructionEvent event) {
         AbstractSpongePlugin.plugin = this;
     }
+
+    /** Log a message using info, use System.out when plugin is not inited */
+    public static void log(Object object, Object... args) {
+        if (plugin == null) {
+            System.out.println(String.format(object.toString(), args));
+        }
+        else {
+            instance().logger.info(object.toString(), args);
+        }
+    }
+
+    /** Debug a message using warn, use System.err when plugin is not inited */
+    public static void debug(Object object, Object... args) {
+        if (plugin == null) {
+            System.err.println(String.format(object.toString(), args));
+        }
+        else {
+            instance().logger.warn(object.toString(), args);
+        }
+    }
 }

@@ -39,9 +39,9 @@ public enum Messages implements LocaleKeys<CommandSource, Text> {
     CMD_MEMORY_MAX,
     ;
 
-    public static final Text SUCCESS = Text.of(GRAY, " [", DARK_GREEN, "!", GRAY, "]", GREEN, " ");
-    public static final Text NOTICE = Text.of(GRAY, " [", GOLD, "!", GRAY, "]", YELLOW, " ");
-    public static final Text ERROR = Text.of(GRAY, " [", DARK_RED, "!", GRAY, "]", RED, " ");
+    public static final Text SUCCESS = Text.of(GRAY, " [", DARK_GREEN, "!", GRAY, "] ", GREEN);
+    public static final Text NOTICE = Text.of(GRAY, " [", GOLD, "!", GRAY, "] ", YELLOW);
+    public static final Text ERROR = Text.of(GRAY, " [", DARK_RED, "!", GRAY, "] ", RED);
 
     @Override
     public Translatable<Text> apply(Optional<CommandSource> player) {

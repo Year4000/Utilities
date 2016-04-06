@@ -2,7 +2,7 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
-package net.year4000.utilities.mc;
+package net.year4000.utilities.net;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -64,10 +64,10 @@ public final class Pinger {
 
     public void fetchDataAsync(Callback<StatusResponse> callback) {
         try {
-            callback.callback(fetchData(), null);
+            callback.callback(fetchData());
         }
-        catch (Exception e) {
-            callback.callback(null, e);
+        catch (Exception error) {
+            callback.callback(error);
         }
     }
 
