@@ -5,7 +5,6 @@
 package net.year4000.utilities.net;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import net.year4000.utilities.Callback;
 import net.year4000.utilities.ObjectHelper;
@@ -15,7 +14,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,8 +28,8 @@ public final class Pinger {
     private int timeout = TIME_OUT;
 
     public Pinger(InetSocketAddress host, int timeout) {
-        this.host = Objects.requireNonNull(host);
-        this.timeout = timeout;
+        this.host = ObjectHelper.nonNull(host, "host");
+        this.timeout = ObjectHelper.isLarger(timeout, 1);
     }
 
     public Pinger() {}
@@ -190,11 +188,11 @@ public final class Pinger {
         private Integer time;
 
         public StatusResponse(String description, Players players, Version version, String favicon, Integer time) {
-            this.description = Objects.requireNonNull(Strings.emptyToNull(description));
-            this.players = Objects.requireNonNull(players);
-            this.version = Objects.requireNonNull(version);
-            this.favicon = Objects.requireNonNull(Strings.emptyToNull(favicon));
-            this.time = Objects.requireNonNull(time);
+            this.description = ObjectHelper.nonNullOrEmpty(description, "description");
+            this.players = ObjectHelper.nonNull(players, "players");
+            this.version = ObjectHelper.nonNull(version, "version");
+            this.favicon = ObjectHelper.nonNullOrEmpty(favicon, "favicon");
+            this.time = ObjectHelper.nonNull(time, "time");
         }
 
         public StatusResponse() {}
@@ -273,9 +271,9 @@ public final class Pinger {
         private List<Player> sample;
 
         public Players(Integer max, Integer online, List<Player> sample) {
-            this.max = Objects.requireNonNull(max);
-            this.online = Objects.requireNonNull(online);
-            this.sample = Objects.requireNonNull(sample);
+            this.max = ObjectHelper.nonNull(max, "max");
+            this.online = ObjectHelper.nonNull(online, "online");
+            this.sample = ObjectHelper.nonNull(sample, "sample");
         }
 
         public Players() {}
@@ -340,8 +338,8 @@ public final class Pinger {
         private String id;
 
         public Player(String name, String id) {
-            this.name = Objects.requireNonNull(Strings.emptyToNull(name));
-            this.id = Objects.requireNonNull(Strings.emptyToNull(id));
+            this.name = ObjectHelper.nonNullOrEmpty(name, "name");
+            this.id = ObjectHelper.nonNullOrEmpty(id, "id");
         }
 
         public Player() {
@@ -388,8 +386,8 @@ public final class Pinger {
         private String protocol;
 
         public Version(String name, String protocol) {
-            this.name = Objects.requireNonNull(Strings.emptyToNull(name));
-            this.protocol = Objects.requireNonNull(Strings.emptyToNull(protocol));
+            this.name = ObjectHelper.nonNullOrEmpty(name, "name");
+            this.protocol = ObjectHelper.nonNullOrEmpty(protocol, "protocol");
         }
 
         public Version() {

@@ -21,7 +21,6 @@
 
 package net.year4000.utilities;
 
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,8 +47,8 @@ public final class LogUtil {
     }
 
     public LogUtil(Logger logger, Level level, boolean debug) {
-        this.logger = Objects.requireNonNull(logger);
-        this.level = Objects.requireNonNull(level);
+        this.logger = ObjectHelper.nonNull(logger, "logger");
+        this.level = ObjectHelper.nonNull(level, "level");
         this.debug = debug;
     }
 

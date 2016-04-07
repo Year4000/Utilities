@@ -20,7 +20,6 @@ package net.year4000.utilities.scheduler;
 import lombok.experimental.NonFinal;
 import net.year4000.utilities.ObjectHelper;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class ThreadedTask implements Runnable {
@@ -33,11 +32,11 @@ public class ThreadedTask implements Runnable {
     private boolean repeat;
 
     ThreadedTask(SchedulerManager manager, int id, Runnable task, int delay, TimeUnit unit, boolean repeat) {
-        this.manager = Objects.requireNonNull(manager);
-        this.id = id;
-        this.task = Objects.requireNonNull(task);
-        this.delay = delay;
-        this.unit = Objects.requireNonNull(unit);
+        this.manager = ObjectHelper.nonNull(manager, "manager");
+        this.id = ObjectHelper.isLarger(id, -1);
+        this.task = ObjectHelper.nonNull(task, "task");
+        this.delay = ObjectHelper.isLarger(delay, -1);
+        this.unit = unit;
         this.repeat = repeat;
     }
 

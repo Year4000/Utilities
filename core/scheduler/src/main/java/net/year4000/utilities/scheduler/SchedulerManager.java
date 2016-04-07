@@ -19,12 +19,11 @@ package net.year4000.utilities.scheduler;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.year4000.utilities.LogUtil;
+import net.year4000.utilities.ObjectHelper;
 
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class SchedulerManager {
     final LogUtil log;
@@ -66,7 +65,8 @@ public final class SchedulerManager {
 
     /** Schedule a task to be ran in the future */
     private ThreadedTask schedule(Runnable task, int delay, TimeUnit unit, boolean repeat) {
-        checkNotNull(task);
+        ObjectHelper.nonNull(task, "task");
+        ObjectHelper.isLarger(delay, -1);
 
         final int position = counter.getAndIncrement();
         ThreadedTask threadedTask = new ThreadedTask(this, position, task, delay, unit, repeat);

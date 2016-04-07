@@ -20,7 +20,6 @@ package net.year4000.utilities.sdk.routes.players;
 import net.year4000.utilities.ObjectHelper;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class PlayerCountJson {
     private Count network;
@@ -28,9 +27,9 @@ public class PlayerCountJson {
     private Map<String, Count> servers;
 
     public PlayerCountJson(Count network, Map<String, Count> groups, Map<String, Count> servers) {
-        this.network = Objects.requireNonNull(network);
-        this.groups = Objects.requireNonNull(groups);
-        this.servers = Objects.requireNonNull(servers);
+        this.network = ObjectHelper.nonNull(network, "network");
+        this.groups = ObjectHelper.nonNull(groups, "groups");
+        this.servers = ObjectHelper.nonNull(servers, "servers");
     }
 
     public Count getNetwork() {

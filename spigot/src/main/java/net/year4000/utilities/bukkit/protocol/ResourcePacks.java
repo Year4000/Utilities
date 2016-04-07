@@ -8,7 +8,6 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import net.year4000.utilities.ObjectHelper;
 import net.year4000.utilities.URLBuilder;
@@ -20,12 +19,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ResourcePacks implements Closeable {
     private static Map<UUID, PackWrapper> packs = Maps.newHashMap();
@@ -35,17 +31,17 @@ public class ResourcePacks implements Closeable {
 
     /** Create an instance of ResourcePacks */
     public ResourcePacks(ProtocolManager manager, Plugin plugin) {
-        this.manager = checkNotNull(manager, "manager");
-        this.plugin = checkNotNull(plugin, "plugin");
+        this.manager = ObjectHelper.nonNull(manager, "manager");
+        this.plugin = ObjectHelper.nonNull(plugin, "plugin");
         this.adapter = new PackAdapter(this);
         this.manager.addPacketListener(adapter);
     }
 
     /** Sends the resource pack to the player */
     public void sendResourcePack(Player player, String url, BiConsumer<Player, EnumWrappers.ResourcePackStatus> results) {
-        checkNotNull(player, "player");
-        checkNotNull(url, "url");
-        checkNotNull(results, "results");
+        ObjectHelper.nonNull(player, "player");
+        ObjectHelper.nonNull(url, "url");
+        ObjectHelper.nonNull(results, "results");
         String hash;
 
         try {
@@ -82,7 +78,7 @@ public class ResourcePacks implements Closeable {
 
     /** Remove listener for the selected player */
     public void removePlayerListener(Player player) {
-        checkNotNull(player, "player");
+        ObjectHelper.nonNull(player, "player");
         packs.remove(player.getUniqueId());
     }
 
@@ -139,10 +135,10 @@ public class ResourcePacks implements Closeable {
         private BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer;
 
         public PackWrapper(Player player, String url, String hash, BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer) {
-            this.player = Objects.requireNonNull(player);
-            this.url = Objects.requireNonNull(Strings.emptyToNull(url));
-            this.hash = Objects.requireNonNull(hash);
-            this.consumer = Objects.requireNonNull(consumer);
+            this.player = ObjectHelper.nonNull(player, "player");
+            this.url = ObjectHelper.nonNullOrEmpty(url, "url");
+            this.hash = ObjectHelper.nonNull(hash, "hash");
+            this.consumer = ObjectHelper.nonNull(consumer, "consumer");
         }
 
         @Override
