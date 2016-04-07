@@ -2,7 +2,7 @@ package net.year4000.utilities.sponge.command;
 
 import com.google.common.collect.Lists;
 import net.year4000.utilities.sponge.Messages;
-import net.year4000.utilities.sponge.UtilitiesPlugin;
+import net.year4000.utilities.sponge.Utilities;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandPermissionException;
@@ -23,7 +23,7 @@ import org.spongepowered.api.world.World;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static net.year4000.utilities.sponge.Messages.*;
+import static net.year4000.utilities.sponge.Messages.CHUNKS_WORLD;
 
 /** View the status of the chunks of each world */
 public final class ChunksCommand implements CommandExecutor {
@@ -89,7 +89,7 @@ public final class ChunksCommand implements CommandExecutor {
                         player.sendMessage(ChatTypes.ACTION_BAR, Text.of(Messages.NOTICE, "Unloading server chunks, use caution when building."));
                     });
                 })
-                .submit(UtilitiesPlugin.get());
+                .submit(Utilities.get());
 
             Sponge.getScheduler().createTaskBuilder()
                 .async()
@@ -115,7 +115,7 @@ public final class ChunksCommand implements CommandExecutor {
                         player.sendMessage(ChatTypes.ACTION_BAR, Text.of(Messages.SUCCESS, TextColors.GOLD, TextStyles.BOLD, "It's OK, you may resume your work."));
                     });
                 })
-                .submit(UtilitiesPlugin.get());
+                .submit(Utilities.get());
 
             return CommandResult.success();
         }

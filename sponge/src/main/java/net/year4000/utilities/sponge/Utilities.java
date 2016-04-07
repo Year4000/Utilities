@@ -5,6 +5,7 @@
 package net.year4000.utilities.sponge;
 
 import net.year4000.utilities.Tokens;
+import net.year4000.utilities.sponge.command.ChunksCommand;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
 import org.spongepowered.api.event.Listener;
@@ -32,5 +33,6 @@ public final class Utilities extends AbstractSpongePlugin {
         PluginCommand.register(this);
         // FlyCommand.register(this); todo disable, should be in drip
         SystemCommand.register(this);
+        ChunksCommand.register(this);
     }
 }
