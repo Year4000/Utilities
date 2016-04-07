@@ -17,6 +17,7 @@
 
 package net.year4000.utilities.bungee;
 
+import com.google.common.base.*;
 import com.sk89q.bungee.util.BungeeCommandsManager;
 import com.sk89q.bungee.util.CommandExecutor;
 import com.sk89q.bungee.util.CommandRegistration;
@@ -29,6 +30,8 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.year4000.utilities.LogUtil;
 
 import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 
 import static net.year4000.utilities.bungee.Messages.*;
 
@@ -157,37 +160,20 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
         this.log = log;
     }
 
+    @Override
     public String toString() {
-        return "net.year4000.utilities.bungee.BungeePlugin(commands=" + this.commands + ", log=" + this.log + ", debug=" + this.debug + ")";
+        return MoreObjects.toStringHelper(BungeePlugin.class)
+            .add("debug", debug)
+            .toString();
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof BungeePlugin)) return false;
-        final BungeePlugin other = (BungeePlugin) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$commands = this.getCommands();
-        final Object other$commands = other.getCommands();
-        if (this$commands == null ? other$commands != null : !this$commands.equals(other$commands)) return false;
-        final Object this$log = this.getLog();
-        final Object other$log = other.getLog();
-        if (this$log == null ? other$log != null : !this$log.equals(other$log)) return false;
-        if (this.isDebug() != other.isDebug()) return false;
-        return true;
+    @Override
+    public boolean equals(Object other) {
+        return other != null && other instanceof BungeePlugin && hashCode() == other.hashCode();
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $commands = this.getCommands();
-        result = result * PRIME + ($commands == null ? 0 : $commands.hashCode());
-        final Object $log = this.getLog();
-        result = result * PRIME + ($log == null ? 0 : $log.hashCode());
-        result = result * PRIME + (this.isDebug() ? 79 : 97);
-        return result;
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof BungeePlugin;
+        return Objects.hash(commands, log, debug);
     }
 }
