@@ -18,6 +18,7 @@
 package net.year4000.utilities.bukkit.gui;
 
 import lombok.experimental.NonFinal;
+import net.year4000.utilities.ObjectHelper;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -82,45 +83,18 @@ public final class ActionMeta {
         return this.cursor;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ActionMeta)) return false;
-        final ActionMeta other = (ActionMeta) o;
-        final Object this$event = this.event;
-        final Object other$event = other.event;
-        if (this$event == null ? other$event != null : !this$event.equals(other$event)) return false;
-        final Object this$locale = this.locale;
-        final Object other$locale = other.locale;
-        if (this$locale == null ? other$locale != null : !this$locale.equals(other$locale)) return false;
-        final Object this$clickType = this.clickType;
-        final Object other$clickType = other.clickType;
-        if (this$clickType == null ? other$clickType != null : !this$clickType.equals(other$clickType)) return false;
-        final Object this$item = this.item;
-        final Object other$item = other.item;
-        if (this$item == null ? other$item != null : !this$item.equals(other$item)) return false;
-        final Object this$cursor = this.cursor;
-        final Object other$cursor = other.cursor;
-        if (this$cursor == null ? other$cursor != null : !this$cursor.equals(other$cursor)) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $event = this.event;
-        result = result * PRIME + ($event == null ? 0 : $event.hashCode());
-        final Object $locale = this.locale;
-        result = result * PRIME + ($locale == null ? 0 : $locale.hashCode());
-        final Object $clickType = this.clickType;
-        result = result * PRIME + ($clickType == null ? 0 : $clickType.hashCode());
-        final Object $item = this.item;
-        result = result * PRIME + ($item == null ? 0 : $item.hashCode());
-        final Object $cursor = this.cursor;
-        result = result * PRIME + ($cursor == null ? 0 : $cursor.hashCode());
-        return result;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.bukkit.gui.ActionMeta(event=" + this.event + ", locale=" + this.locale + ", clickType=" + this.clickType + ", item=" + this.item + ", cursor=" + this.cursor + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 }

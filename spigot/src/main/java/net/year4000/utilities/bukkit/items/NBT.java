@@ -18,6 +18,7 @@
 package net.year4000.utilities.bukkit.items;
 
 import com.google.gson.annotations.SerializedName;
+import net.year4000.utilities.ObjectHelper;
 
 @SuppressWarnings("unused")
 /** NBT data of the item. */
@@ -102,49 +103,19 @@ public class NBT {
         this.display = display;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof NBT)) return false;
-        final NBT other = (NBT) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$title = this.title;
-        final Object other$title = other.title;
-        if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
-        final Object this$author = this.author;
-        final Object other$author = other.author;
-        if (this$author == null ? other$author != null : !this$author.equals(other$author)) return false;
-        if (!java.util.Arrays.deepEquals(this.pages, other.pages)) return false;
-        if (this.unbreakable != other.unbreakable) return false;
-        if (!java.util.Arrays.deepEquals(this.hideFlags, other.hideFlags)) return false;
-        if (!java.util.Arrays.deepEquals(this.enchantments, other.enchantments)) return false;
-        final Object this$display = this.display;
-        final Object other$display = other.display;
-        if (this$display == null ? other$display != null : !this$display.equals(other$display)) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $title = this.title;
-        result = result * PRIME + ($title == null ? 0 : $title.hashCode());
-        final Object $author = this.author;
-        result = result * PRIME + ($author == null ? 0 : $author.hashCode());
-        result = result * PRIME + java.util.Arrays.deepHashCode(this.pages);
-        result = result * PRIME + (this.unbreakable ? 79 : 97);
-        result = result * PRIME + java.util.Arrays.deepHashCode(this.hideFlags);
-        result = result * PRIME + java.util.Arrays.deepHashCode(this.enchantments);
-        final Object $display = this.display;
-        result = result * PRIME + ($display == null ? 0 : $display.hashCode());
-        return result;
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof NBT;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.bukkit.items.NBT(title=" + this.title + ", author=" + this.author + ", pages=" + java.util.Arrays.deepToString(this.pages) + ", unbreakable=" + this.unbreakable + ", hideFlags=" + java.util.Arrays.deepToString(this.hideFlags) + ", enchantments=" + java.util.Arrays.deepToString(this.enchantments) + ", display=" + this.display + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 
     /** The enchants the item will have. */
@@ -174,33 +145,19 @@ public class NBT {
             this.level = level;
         }
 
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Enchantments)) return false;
-            final Enchantments other = (Enchantments) o;
-            if (!other.canEqual((Object) this)) return false;
-            final Object this$name = this.name;
-            final Object other$name = other.name;
-            if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
-            if (this.level != other.level) return false;
-            return true;
-        }
-
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $name = this.name;
-            result = result * PRIME + ($name == null ? 0 : $name.hashCode());
-            result = result * PRIME + this.level;
-            return result;
-        }
-
-        protected boolean canEqual(Object other) {
-            return other instanceof Enchantments;
-        }
-
+        @Override
         public String toString() {
-            return "net.year4000.utilities.bukkit.items.NBT.Enchantments(name=" + this.name + ", level=" + this.level + ")";
+            return ObjectHelper.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return ObjectHelper.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return ObjectHelper.hashCode(this);
         }
     }
 
@@ -242,38 +199,19 @@ public class NBT {
             this.color = color;
         }
 
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Display)) return false;
-            final Display other = (Display) o;
-            if (!other.canEqual((Object) this)) return false;
-            final Object this$name = this.name;
-            final Object other$name = other.name;
-            if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
-            if (!java.util.Arrays.deepEquals(this.lore, other.lore)) return false;
-            final Object this$color = this.color;
-            final Object other$color = other.color;
-            if (this$color == null ? other$color != null : !this$color.equals(other$color)) return false;
-            return true;
-        }
-
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $name = this.name;
-            result = result * PRIME + ($name == null ? 0 : $name.hashCode());
-            result = result * PRIME + java.util.Arrays.deepHashCode(this.lore);
-            final Object $color = this.color;
-            result = result * PRIME + ($color == null ? 0 : $color.hashCode());
-            return result;
-        }
-
-        protected boolean canEqual(Object other) {
-            return other instanceof Display;
-        }
-
+        @Override
         public String toString() {
-            return "net.year4000.utilities.bukkit.items.NBT.Display(name=" + this.name + ", lore=" + java.util.Arrays.deepToString(this.lore) + ", color=" + this.color + ")";
+            return ObjectHelper.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return ObjectHelper.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return ObjectHelper.hashCode(this);
         }
     }
 }

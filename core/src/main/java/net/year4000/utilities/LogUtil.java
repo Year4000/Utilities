@@ -128,32 +128,18 @@ public final class LogUtil {
         this.debug = debug;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof LogUtil)) return false;
-        final LogUtil other = (LogUtil) o;
-        final Object this$logger = this.logger;
-        final Object other$logger = other.logger;
-        if (this$logger == null ? other$logger != null : !this$logger.equals(other$logger)) return false;
-        final Object this$level = this.level;
-        final Object other$level = other.level;
-        if (this$level == null ? other$level != null : !this$level.equals(other$level)) return false;
-        if (this.debug != other.debug) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $logger = this.logger;
-        result = result * PRIME + ($logger == null ? 0 : $logger.hashCode());
-        final Object $level = this.level;
-        result = result * PRIME + ($level == null ? 0 : $level.hashCode());
-        result = result * PRIME + (this.debug ? 79 : 97);
-        return result;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.LogUtil(logger=" + this.logger + ", level=" + this.level + ", debug=" + this.debug + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 }

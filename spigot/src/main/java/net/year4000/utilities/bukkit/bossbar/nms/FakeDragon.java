@@ -1,5 +1,6 @@
 package net.year4000.utilities.bukkit.bossbar.nms;
 
+import net.year4000.utilities.ObjectHelper;
 import net.year4000.utilities.bukkit.bossbar.BarUtil;
 import org.bukkit.Location;
 
@@ -145,55 +146,18 @@ public abstract class FakeDragon {
         this.world = world;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof FakeDragon)) return false;
-        final FakeDragon other = (FakeDragon) o;
-        if (!other.canEqual((Object) this)) return false;
-        if (Float.compare(this.health, other.health) != 0) return false;
-        final Object this$name = this.name;
-        final Object other$name = other.name;
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
-        if (this.x != other.x) return false;
-        if (this.y != other.y) return false;
-        if (this.z != other.z) return false;
-        if (this.pitch != other.pitch) return false;
-        if (this.yaw != other.yaw) return false;
-        if (this.xvel != other.xvel) return false;
-        if (this.yvel != other.yvel) return false;
-        if (this.zvel != other.zvel) return false;
-        if (this.visible != other.visible) return false;
-        final Object this$world = this.world;
-        final Object other$world = other.world;
-        if (this$world == null ? other$world != null : !this$world.equals(other$world)) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        result = result * PRIME + Float.floatToIntBits(this.health);
-        final Object $name = this.name;
-        result = result * PRIME + ($name == null ? 0 : $name.hashCode());
-        result = result * PRIME + this.x;
-        result = result * PRIME + this.y;
-        result = result * PRIME + this.z;
-        result = result * PRIME + this.pitch;
-        result = result * PRIME + this.yaw;
-        result = result * PRIME + this.xvel;
-        result = result * PRIME + this.yvel;
-        result = result * PRIME + this.zvel;
-        result = result * PRIME + (this.visible ? 79 : 97);
-        final Object $world = this.world;
-        result = result * PRIME + ($world == null ? 0 : $world.hashCode());
-        return result;
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof FakeDragon;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.bukkit.bossbar.nms.FakeDragon(health=" + this.health + ", name=" + this.name + ", x=" + this.x + ", y=" + this.y + ", z=" + this.z + ", pitch=" + this.pitch + ", yaw=" + this.yaw + ", xvel=" + this.xvel + ", yvel=" + this.yvel + ", zvel=" + this.zvel + ", visible=" + this.visible + ", world=" + this.world + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 }

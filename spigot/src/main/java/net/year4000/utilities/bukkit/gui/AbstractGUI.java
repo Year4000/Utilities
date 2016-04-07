@@ -20,6 +20,7 @@ package net.year4000.utilities.bukkit.gui;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.year4000.utilities.ObjectHelper;
 import net.year4000.utilities.bukkit.Utilities;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -155,30 +156,18 @@ public abstract class AbstractGUI implements Runnable {
         generate = true;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof AbstractGUI)) return false;
-        final AbstractGUI other = (AbstractGUI) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$uuid = this.uuid;
-        final Object other$uuid = other.uuid;
-        if (this$uuid == null ? other$uuid != null : !this$uuid.equals(other$uuid)) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $uuid = this.uuid;
-        result = result * PRIME + ($uuid == null ? 0 : $uuid.hashCode());
-        return result;
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof AbstractGUI;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.bukkit.gui.AbstractGUI(menus=" + this.menus + ", uuid=" + this.uuid + ", last=" + this.last + ", subMenus=" + this.subMenus + ", populatedMenu=" + this.populatedMenu + ", generate=" + this.generate + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 }

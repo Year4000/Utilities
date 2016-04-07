@@ -5,6 +5,7 @@
 package net.year4000.utilities.net;
 
 import com.google.common.collect.Maps;
+import net.year4000.utilities.ObjectHelper;
 import net.year4000.utilities.URLBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -151,49 +152,18 @@ public class HttpConnection implements Cloneable {
         this.timeout = timeout;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof HttpConnection)) return false;
-        final HttpConnection other = (HttpConnection) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$urlBuilder = this.urlBuilder;
-        final Object other$urlBuilder = other.urlBuilder;
-        if (this$urlBuilder == null ? other$urlBuilder != null : !this$urlBuilder.equals(other$urlBuilder))
-            return false;
-        final Object this$headers = this.headers;
-        final Object other$headers = other.headers;
-        if (this$headers == null ? other$headers != null : !this$headers.equals(other$headers)) return false;
-        final Object this$userAgent = this.userAgent;
-        final Object other$userAgent = other.userAgent;
-        if (this$userAgent == null ? other$userAgent != null : !this$userAgent.equals(other$userAgent)) return false;
-        if (this.timeout != other.timeout) return false;
-        final Object this$urlConnection = this.urlConnection;
-        final Object other$urlConnection = other.urlConnection;
-        if (this$urlConnection == null ? other$urlConnection != null : !this$urlConnection.equals(other$urlConnection))
-            return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $urlBuilder = this.urlBuilder;
-        result = result * PRIME + ($urlBuilder == null ? 0 : $urlBuilder.hashCode());
-        final Object $headers = this.headers;
-        result = result * PRIME + ($headers == null ? 0 : $headers.hashCode());
-        final Object $userAgent = this.userAgent;
-        result = result * PRIME + ($userAgent == null ? 0 : $userAgent.hashCode());
-        result = result * PRIME + this.timeout;
-        final Object $urlConnection = this.urlConnection;
-        result = result * PRIME + ($urlConnection == null ? 0 : $urlConnection.hashCode());
-        return result;
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof HttpConnection;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.net.HttpConnection(urlBuilder=" + this.urlBuilder + ", headers=" + this.headers + ", userAgent=" + this.userAgent + ", timeout=" + this.timeout + ", urlConnection=" + this.urlConnection + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 }

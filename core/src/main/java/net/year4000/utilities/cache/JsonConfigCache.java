@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.year4000.utilities.ObjectHelper;
 import net.year4000.utilities.net.HttpConnection;
 import net.year4000.utilities.net.JsonHttpFetcher;
 
@@ -47,26 +48,18 @@ public abstract class JsonConfigCache {
         return (T) self.cache.getUnchecked(url.config());
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof JsonConfigCache)) return false;
-        final JsonConfigCache other = (JsonConfigCache) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$cache = this.cache;
-        final Object other$cache = other.cache;
-        if (this$cache == null ? other$cache != null : !this$cache.equals(other$cache)) return false;
-        return true;
+    @Override
+    public String toString() {
+        return ObjectHelper.toString(this);
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $cache = this.cache;
-        result = result * PRIME + ($cache == null ? 0 : $cache.hashCode());
-        return result;
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof JsonConfigCache;
+        return ObjectHelper.hashCode(this);
     }
 }

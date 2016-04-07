@@ -17,6 +17,7 @@
 
 package net.year4000.utilities.sdk.routes.servers;
 
+import net.year4000.utilities.ObjectHelper;
 import net.year4000.utilities.net.Pinger;
 
 public class ServerJson {
@@ -48,36 +49,19 @@ public class ServerJson {
         return this.status;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ServerJson)) return false;
-        final ServerJson other = (ServerJson) o;
-        final Object this$name = this.name;
-        final Object other$name = other.name;
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
-        final Object this$group = this.group;
-        final Object other$group = other.group;
-        if (this$group == null ? other$group != null : !this$group.equals(other$group)) return false;
-        final Object this$status = this.status;
-        final Object other$status = other.status;
-        if (this$status == null ? other$status != null : !this$status.equals(other$status)) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $name = this.name;
-        result = result * PRIME + ($name == null ? 0 : $name.hashCode());
-        final Object $group = this.group;
-        result = result * PRIME + ($group == null ? 0 : $group.hashCode());
-        final Object $status = this.status;
-        result = result * PRIME + ($status == null ? 0 : $status.hashCode());
-        return result;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.sdk.routes.servers.ServerJson(name=" + this.name + ", group=" + this.group + ", status=" + this.status + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 
     public static class Group {
@@ -103,31 +87,19 @@ public class ServerJson {
             return this.display;
         }
 
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Group)) return false;
-            final Group other = (Group) o;
-            final Object this$name = this.name;
-            final Object other$name = other.name;
-            if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
-            final Object this$display = this.display;
-            final Object other$display = other.display;
-            if (this$display == null ? other$display != null : !this$display.equals(other$display)) return false;
-            return true;
-        }
-
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $name = this.name;
-            result = result * PRIME + ($name == null ? 0 : $name.hashCode());
-            final Object $display = this.display;
-            result = result * PRIME + ($display == null ? 0 : $display.hashCode());
-            return result;
-        }
-
+        @Override
         public String toString() {
-            return "net.year4000.utilities.sdk.routes.servers.ServerJson.Group(name=" + this.name + ", display=" + this.display + ")";
+            return ObjectHelper.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return ObjectHelper.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return ObjectHelper.hashCode(this);
         }
     }
 }

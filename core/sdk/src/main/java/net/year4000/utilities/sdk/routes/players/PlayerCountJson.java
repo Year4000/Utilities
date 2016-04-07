@@ -17,6 +17,8 @@
 
 package net.year4000.utilities.sdk.routes.players;
 
+import net.year4000.utilities.ObjectHelper;
+
 import java.util.Map;
 
 public class PlayerCountJson {
@@ -43,36 +45,19 @@ public class PlayerCountJson {
         return this.servers;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof PlayerCountJson)) return false;
-        final PlayerCountJson other = (PlayerCountJson) o;
-        final Object this$network = this.network;
-        final Object other$network = other.network;
-        if (this$network == null ? other$network != null : !this$network.equals(other$network)) return false;
-        final Object this$groups = this.groups;
-        final Object other$groups = other.groups;
-        if (this$groups == null ? other$groups != null : !this$groups.equals(other$groups)) return false;
-        final Object this$servers = this.servers;
-        final Object other$servers = other.servers;
-        if (this$servers == null ? other$servers != null : !this$servers.equals(other$servers)) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $network = this.network;
-        result = result * PRIME + ($network == null ? 0 : $network.hashCode());
-        final Object $groups = this.groups;
-        result = result * PRIME + ($groups == null ? 0 : $groups.hashCode());
-        final Object $servers = this.servers;
-        result = result * PRIME + ($servers == null ? 0 : $servers.hashCode());
-        return result;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.sdk.routes.players.PlayerCountJson(network=" + this.network + ", groups=" + this.groups + ", servers=" + this.servers + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 
     public static class Count {
@@ -93,25 +78,19 @@ public class PlayerCountJson {
             return this.max;
         }
 
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Count)) return false;
-            final Count other = (Count) o;
-            if (this.online != other.online) return false;
-            if (this.max != other.max) return false;
-            return true;
-        }
-
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            result = result * PRIME + this.online;
-            result = result * PRIME + this.max;
-            return result;
-        }
-
+        @Override
         public String toString() {
-            return "net.year4000.utilities.sdk.routes.players.PlayerCountJson.Count(online=" + this.online + ", max=" + this.max + ")";
+            return ObjectHelper.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return ObjectHelper.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return ObjectHelper.hashCode(this);
         }
     }
 }

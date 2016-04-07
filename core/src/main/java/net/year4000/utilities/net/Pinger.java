@@ -7,6 +7,7 @@ package net.year4000.utilities.net;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import net.year4000.utilities.Callback;
+import net.year4000.utilities.ObjectHelper;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -166,28 +167,19 @@ public final class Pinger {
         this.timeout = timeout;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof Pinger)) return false;
-        final Pinger other = (Pinger) o;
-        final Object this$host = this.host;
-        final Object other$host = other.host;
-        if (this$host == null ? other$host != null : !this$host.equals(other$host)) return false;
-        if (this.timeout != other.timeout) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $host = this.host;
-        result = result * PRIME + ($host == null ? 0 : $host.hashCode());
-        result = result * PRIME + this.timeout;
-        return result;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.net.Pinger(host=" + this.host + ", timeout=" + this.timeout + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 
     public class StatusResponse {
@@ -261,52 +253,19 @@ public final class Pinger {
             this.time = time;
         }
 
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof StatusResponse)) return false;
-            final StatusResponse other = (StatusResponse) o;
-            if (!other.canEqual((Object) this)) return false;
-            final Object this$description = this.description;
-            final Object other$description = other.description;
-            if (this$description == null ? other$description != null : !this$description.equals(other$description))
-                return false;
-            final Object this$players = this.players;
-            final Object other$players = other.players;
-            if (this$players == null ? other$players != null : !this$players.equals(other$players)) return false;
-            final Object this$version = this.version;
-            final Object other$version = other.version;
-            if (this$version == null ? other$version != null : !this$version.equals(other$version)) return false;
-            final Object this$favicon = this.favicon;
-            final Object other$favicon = other.favicon;
-            if (this$favicon == null ? other$favicon != null : !this$favicon.equals(other$favicon)) return false;
-            final Object this$time = this.time;
-            final Object other$time = other.time;
-            if (this$time == null ? other$time != null : !this$time.equals(other$time)) return false;
-            return true;
-        }
-
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $description = this.description;
-            result = result * PRIME + ($description == null ? 0 : $description.hashCode());
-            final Object $players = this.players;
-            result = result * PRIME + ($players == null ? 0 : $players.hashCode());
-            final Object $version = this.version;
-            result = result * PRIME + ($version == null ? 0 : $version.hashCode());
-            final Object $favicon = this.favicon;
-            result = result * PRIME + ($favicon == null ? 0 : $favicon.hashCode());
-            final Object $time = this.time;
-            result = result * PRIME + ($time == null ? 0 : $time.hashCode());
-            return result;
-        }
-
-        protected boolean canEqual(Object other) {
-            return other instanceof StatusResponse;
-        }
-
+        @Override
         public String toString() {
-            return "net.year4000.utilities.net.Pinger.StatusResponse(description=" + this.description + ", players=" + this.players + ", version=" + this.version + ", favicon=" + this.favicon + ", time=" + this.time + ")";
+            return ObjectHelper.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return ObjectHelper.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return ObjectHelper.hashCode(this);
         }
     }
 
@@ -364,41 +323,19 @@ public final class Pinger {
             this.sample = sample;
         }
 
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Players)) return false;
-            final Players other = (Players) o;
-            if (!other.canEqual((Object) this)) return false;
-            final Object this$max = this.max;
-            final Object other$max = other.max;
-            if (this$max == null ? other$max != null : !this$max.equals(other$max)) return false;
-            final Object this$online = this.online;
-            final Object other$online = other.online;
-            if (this$online == null ? other$online != null : !this$online.equals(other$online)) return false;
-            final Object this$sample = this.sample;
-            final Object other$sample = other.sample;
-            if (this$sample == null ? other$sample != null : !this$sample.equals(other$sample)) return false;
-            return true;
-        }
-
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $max = this.max;
-            result = result * PRIME + ($max == null ? 0 : $max.hashCode());
-            final Object $online = this.online;
-            result = result * PRIME + ($online == null ? 0 : $online.hashCode());
-            final Object $sample = this.sample;
-            result = result * PRIME + ($sample == null ? 0 : $sample.hashCode());
-            return result;
-        }
-
-        protected boolean canEqual(Object other) {
-            return other instanceof Players;
-        }
-
+        @Override
         public String toString() {
-            return "net.year4000.utilities.net.Pinger.Players(max=" + this.max + ", online=" + this.online + ", sample=" + this.sample + ")";
+            return ObjectHelper.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return ObjectHelper.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return ObjectHelper.hashCode(this);
         }
     }
 
@@ -435,36 +372,19 @@ public final class Pinger {
             this.id = id;
         }
 
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Player)) return false;
-            final Player other = (Player) o;
-            if (!other.canEqual((Object) this)) return false;
-            final Object this$name = this.name;
-            final Object other$name = other.name;
-            if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
-            final Object this$id = this.id;
-            final Object other$id = other.id;
-            if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
-            return true;
-        }
-
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $name = this.name;
-            result = result * PRIME + ($name == null ? 0 : $name.hashCode());
-            final Object $id = this.id;
-            result = result * PRIME + ($id == null ? 0 : $id.hashCode());
-            return result;
-        }
-
-        protected boolean canEqual(Object other) {
-            return other instanceof Player;
-        }
-
+        @Override
         public String toString() {
-            return "net.year4000.utilities.net.Pinger.Player(name=" + this.name + ", id=" + this.id + ")";
+            return ObjectHelper.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return ObjectHelper.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return ObjectHelper.hashCode(this);
         }
     }
 
@@ -501,36 +421,19 @@ public final class Pinger {
             this.protocol = protocol;
         }
 
-        public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Version)) return false;
-            final Version other = (Version) o;
-            if (!other.canEqual((Object) this)) return false;
-            final Object this$name = this.name;
-            final Object other$name = other.name;
-            if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
-            final Object this$protocol = this.protocol;
-            final Object other$protocol = other.protocol;
-            if (this$protocol == null ? other$protocol != null : !this$protocol.equals(other$protocol)) return false;
-            return true;
-        }
-
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $name = this.name;
-            result = result * PRIME + ($name == null ? 0 : $name.hashCode());
-            final Object $protocol = this.protocol;
-            result = result * PRIME + ($protocol == null ? 0 : $protocol.hashCode());
-            return result;
-        }
-
-        protected boolean canEqual(Object other) {
-            return other instanceof Version;
-        }
-
+        @Override
         public String toString() {
-            return "net.year4000.utilities.net.Pinger.Version(name=" + this.name + ", protocol=" + this.protocol + ")";
+            return ObjectHelper.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return ObjectHelper.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return ObjectHelper.hashCode(this);
         }
     }
 }

@@ -20,6 +20,7 @@ package net.year4000.utilities.locale;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import net.year4000.utilities.LogUtil;
+import net.year4000.utilities.ObjectHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -144,46 +145,22 @@ public abstract class AbstractLocaleManager {
         this.log = log;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof AbstractLocaleManager)) return false;
-        final AbstractLocaleManager other = (AbstractLocaleManager) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$locales = this.locales;
-        final Object other$locales = other.locales;
-        if (this$locales == null ? other$locales != null : !this$locales.equals(other$locales)) return false;
-        final Object this$path = this.path;
-        final Object other$path = other.path;
-        if (this$path == null ? other$path != null : !this$path.equals(other$path)) return false;
-        if (!java.util.Arrays.deepEquals(this.codes, other.codes)) return false;
-        final Object this$log = this.log;
-        final Object other$log = other.log;
-        if (this$log == null ? other$log != null : !this$log.equals(other$log)) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $locales = this.locales;
-        result = result * PRIME + ($locales == null ? 0 : $locales.hashCode());
-        final Object $path = this.path;
-        result = result * PRIME + ($path == null ? 0 : $path.hashCode());
-        result = result * PRIME + java.util.Arrays.deepHashCode(this.codes);
-        final Object $log = this.log;
-        result = result * PRIME + ($log == null ? 0 : $log.hashCode());
-        return result;
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof AbstractLocaleManager;
-    }
-
-    public String toString() {
-        return "net.year4000.utilities.locale.AbstractLocaleManager(locales=" + this.locales + ", path=" + this.path + ", codes=" + java.util.Arrays.deepToString(this.codes) + ", log=" + this.log + ")";
-    }
-
     public Map<Locale, Properties> getLocales() {
         return this.locales;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 }

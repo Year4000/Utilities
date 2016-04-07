@@ -18,6 +18,7 @@
 package net.year4000.utilities.scheduler;
 
 import lombok.experimental.NonFinal;
+import net.year4000.utilities.ObjectHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -106,41 +107,18 @@ public class ThreadedTask implements Runnable {
         return this.repeat;
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ThreadedTask)) return false;
-        final ThreadedTask other = (ThreadedTask) o;
-        final Object this$manager = this.manager;
-        final Object other$manager = other.manager;
-        if (this$manager == null ? other$manager != null : !this$manager.equals(other$manager)) return false;
-        if (this.id != other.id) return false;
-        final Object this$task = this.task;
-        final Object other$task = other.task;
-        if (this$task == null ? other$task != null : !this$task.equals(other$task)) return false;
-        if (this.delay != other.delay) return false;
-        final Object this$unit = this.unit;
-        final Object other$unit = other.unit;
-        if (this$unit == null ? other$unit != null : !this$unit.equals(other$unit)) return false;
-        if (this.repeat != other.repeat) return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $manager = this.manager;
-        result = result * PRIME + ($manager == null ? 0 : $manager.hashCode());
-        result = result * PRIME + this.id;
-        final Object $task = this.task;
-        result = result * PRIME + ($task == null ? 0 : $task.hashCode());
-        result = result * PRIME + this.delay;
-        final Object $unit = this.unit;
-        result = result * PRIME + ($unit == null ? 0 : $unit.hashCode());
-        result = result * PRIME + (this.repeat ? 79 : 97);
-        return result;
-    }
-
+    @Override
     public String toString() {
-        return "net.year4000.utilities.scheduler.ThreadedTask(manager=" + this.manager + ", id=" + this.id + ", task=" + this.task + ", delay=" + this.delay + ", unit=" + this.unit + ", repeat=" + this.repeat + ")";
+        return ObjectHelper.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return ObjectHelper.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return ObjectHelper.hashCode(this);
     }
 }

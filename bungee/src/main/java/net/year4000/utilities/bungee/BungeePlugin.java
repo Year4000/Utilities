@@ -17,7 +17,6 @@
 
 package net.year4000.utilities.bungee;
 
-import com.google.common.base.*;
 import com.sk89q.bungee.util.BungeeCommandsManager;
 import com.sk89q.bungee.util.CommandExecutor;
 import com.sk89q.bungee.util.CommandRegistration;
@@ -28,10 +27,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.year4000.utilities.LogUtil;
+import net.year4000.utilities.ObjectHelper;
 
 import java.util.*;
-import java.util.Objects;
-import java.util.Optional;
 
 import static net.year4000.utilities.bungee.Messages.*;
 
@@ -162,18 +160,16 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(BungeePlugin.class)
-            .add("debug", debug)
-            .toString();
+        return ObjectHelper.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return other != null && other instanceof BungeePlugin && hashCode() == other.hashCode();
+        return ObjectHelper.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(commands, log, debug);
+        return ObjectHelper.hashCode(this);
     }
 }
