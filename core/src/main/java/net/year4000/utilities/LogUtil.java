@@ -21,6 +21,7 @@
 
 package net.year4000.utilities;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,10 +47,9 @@ public final class LogUtil {
         this(logger, level, Boolean.valueOf(System.getProperty("debug")));
     }
 
-    @java.beans.ConstructorProperties({"logger", "level", "debug"})
     public LogUtil(Logger logger, Level level, boolean debug) {
-        this.logger = logger;
-        this.level = level;
+        this.logger = Objects.requireNonNull(logger);
+        this.level = Objects.requireNonNull(level);
         this.debug = debug;
     }
 

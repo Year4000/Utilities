@@ -26,8 +26,7 @@ import net.year4000.utilities.sdk.routes.Route;
 import java.util.Map;
 
 public class ServersRoute extends Route<Map<String, ServerJson>> {
-    private ServersRoute() {
-    }
+    private ServersRoute() {}
 
     /** Get a immutable version of the map */
     public ImmutableMap<String, ServerJson> getServersMap() {

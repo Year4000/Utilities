@@ -4,8 +4,11 @@
 
 package net.year4000.utilities.sdk;
 
+import com.google.common.base.Strings;
 import net.year4000.utilities.mc.ChatColor;
 import net.year4000.utilities.mc.MessageUtil;
+
+import java.util.Objects;
 
 public abstract class AbstractBadgeManager<P> {
     public static final int MAX_RANK = Badges.values().length;
@@ -56,11 +59,10 @@ public abstract class AbstractBadgeManager<P> {
         private String badge, permission;
         private int rank;
 
-        @java.beans.ConstructorProperties({"color", "badge", "permission", "rank"})
-        private Badges(ChatColor color, String badge, String permission, int rank) {
-            this.color = color;
-            this.badge = badge;
-            this.permission = permission;
+        Badges(ChatColor color, String badge, String permission, int rank) {
+            this.color = Objects.requireNonNull(color);
+            this.badge = Objects.requireNonNull(badge);
+            this.permission = Objects.requireNonNull(Strings.emptyToNull(permission));
             this.rank = rank;
         }
 

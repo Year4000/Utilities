@@ -20,17 +20,17 @@ package net.year4000.utilities.sdk.routes.players;
 import net.year4000.utilities.ObjectHelper;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class PlayerCountJson {
     private Count network;
     private Map<String, Count> groups;
     private Map<String, Count> servers;
 
-    @java.beans.ConstructorProperties({"network", "groups", "servers"})
     public PlayerCountJson(Count network, Map<String, Count> groups, Map<String, Count> servers) {
-        this.network = network;
-        this.groups = groups;
-        this.servers = servers;
+        this.network = Objects.requireNonNull(network);
+        this.groups = Objects.requireNonNull(groups);
+        this.servers = Objects.requireNonNull(servers);
     }
 
     public Count getNetwork() {
@@ -64,7 +64,6 @@ public class PlayerCountJson {
         private int online;
         private int max;
 
-        @java.beans.ConstructorProperties({"online", "max"})
         public Count(int online, int max) {
             this.online = online;
             this.max = max;

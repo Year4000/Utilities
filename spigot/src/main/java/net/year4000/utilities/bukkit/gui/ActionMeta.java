@@ -25,6 +25,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,13 +47,12 @@ public final class ActionMeta {
         setCursor(event.getCursor());
     }
 
-    @java.beans.ConstructorProperties({"event", "locale", "clickType", "item", "cursor"})
     private ActionMeta(InventoryClickEvent event, Locale locale, ClickType clickType, ItemStack item, ItemStack cursor) {
-        this.event = event;
-        this.locale = locale;
-        this.clickType = clickType;
-        this.item = item;
-        this.cursor = cursor;
+        this.event = Objects.requireNonNull(event);
+        this.locale = Objects.requireNonNull(locale);
+        this.clickType = Objects.requireNonNull(clickType);
+        this.item = Objects.requireNonNull(item);
+        this.cursor = Objects.requireNonNull(cursor);
     }
 
     /** Set the item */

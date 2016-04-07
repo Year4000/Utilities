@@ -21,8 +21,7 @@ import com.google.gson.JsonObject;
 import net.year4000.utilities.sdk.routes.Route;
 
 public class AccountRoute extends Route<JsonObject> {
-    private AccountRoute() {
-    }
+    private AccountRoute() {}
 
     /** Get the username of this account */
     public String getRank() {

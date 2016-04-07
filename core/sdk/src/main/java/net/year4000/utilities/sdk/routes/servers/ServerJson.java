@@ -17,19 +17,21 @@
 
 package net.year4000.utilities.sdk.routes.servers;
 
+import com.google.common.base.Strings;
 import net.year4000.utilities.ObjectHelper;
 import net.year4000.utilities.net.Pinger;
+
+import java.util.Objects;
 
 public class ServerJson {
     private String name;
     private Group group;
     private Pinger.StatusResponse status;
 
-    @java.beans.ConstructorProperties({"name", "group", "status"})
     public ServerJson(String name, Group group, Pinger.StatusResponse status) {
-        this.name = name;
-        this.group = group;
-        this.status = status;
+        this.name = Objects.requireNonNull(Strings.emptyToNull(name));
+        this.group = Objects.requireNonNull(group);
+        this.status = Objects.requireNonNull(status);
     }
 
     /** Is this server hidden */
@@ -68,10 +70,9 @@ public class ServerJson {
         private String name;
         private String display;
 
-        @java.beans.ConstructorProperties({"name", "display"})
         public Group(String name, String display) {
-            this.name = name;
-            this.display = display;
+            this.name = Objects.requireNonNull(Strings.emptyToNull(name));
+            this.display = Objects.requireNonNull(Strings.emptyToNull(display));
         }
 
         /** Is this server hidden */

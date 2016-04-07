@@ -5,6 +5,7 @@
 package net.year4000.utilities.net;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import net.year4000.utilities.Callback;
 import net.year4000.utilities.ObjectHelper;
@@ -14,6 +15,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,14 +29,12 @@ public final class Pinger {
     private InetSocketAddress host;
     private int timeout = TIME_OUT;
 
-    @java.beans.ConstructorProperties({"host", "timeout"})
     public Pinger(InetSocketAddress host, int timeout) {
-        this.host = host;
+        this.host = Objects.requireNonNull(host);
         this.timeout = timeout;
     }
 
-    public Pinger() {
-    }
+    public Pinger() {}
 
     public int readVarInt(DataInputStream in) throws IOException {
         int i = 0;
@@ -189,17 +189,15 @@ public final class Pinger {
         private String favicon;
         private Integer time;
 
-        @java.beans.ConstructorProperties({"description", "players", "version", "favicon", "time"})
         public StatusResponse(String description, Players players, Version version, String favicon, Integer time) {
-            this.description = description;
-            this.players = players;
-            this.version = version;
-            this.favicon = favicon;
-            this.time = time;
+            this.description = Objects.requireNonNull(Strings.emptyToNull(description));
+            this.players = Objects.requireNonNull(players);
+            this.version = Objects.requireNonNull(version);
+            this.favicon = Objects.requireNonNull(Strings.emptyToNull(favicon));
+            this.time = Objects.requireNonNull(time);
         }
 
-        public StatusResponse() {
-        }
+        public StatusResponse() {}
 
         public Pinger.StatusResponse copy() {
             Pinger.StatusResponse copy = new StatusResponse();
@@ -274,15 +272,13 @@ public final class Pinger {
         private Integer online;
         private List<Player> sample;
 
-        @java.beans.ConstructorProperties({"max", "online", "sample"})
         public Players(Integer max, Integer online, List<Player> sample) {
-            this.max = max;
-            this.online = online;
-            this.sample = sample;
+            this.max = Objects.requireNonNull(max);
+            this.online = Objects.requireNonNull(online);
+            this.sample = Objects.requireNonNull(sample);
         }
 
-        public Players() {
-        }
+        public Players() {}
 
         public Pinger.Players copy() {
             Players copy = new Players();
@@ -343,10 +339,9 @@ public final class Pinger {
         private String name;
         private String id;
 
-        @java.beans.ConstructorProperties({"name", "id"})
         public Player(String name, String id) {
-            this.name = name;
-            this.id = id;
+            this.name = Objects.requireNonNull(Strings.emptyToNull(name));
+            this.id = Objects.requireNonNull(Strings.emptyToNull(id));
         }
 
         public Player() {
@@ -392,10 +387,9 @@ public final class Pinger {
         private String name;
         private String protocol;
 
-        @java.beans.ConstructorProperties({"name", "protocol"})
         public Version(String name, String protocol) {
-            this.name = name;
-            this.protocol = protocol;
+            this.name = Objects.requireNonNull(Strings.emptyToNull(name));
+            this.protocol = Objects.requireNonNull(Strings.emptyToNull(protocol));
         }
 
         public Version() {

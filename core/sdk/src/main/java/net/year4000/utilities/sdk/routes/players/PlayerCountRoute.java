@@ -22,8 +22,7 @@ import lombok.NonNull;
 import net.year4000.utilities.sdk.routes.Route;
 
 public class PlayerCountRoute extends Route<PlayerCountJson> {
-    private PlayerCountRoute() {
-    }
+    private PlayerCountRoute() {}
 
     /** Get the player count of the network */
     public PlayerCountJson.Count getNetworkPlayerCount() {

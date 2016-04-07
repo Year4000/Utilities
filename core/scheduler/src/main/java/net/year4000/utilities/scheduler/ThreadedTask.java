@@ -20,6 +20,7 @@ package net.year4000.utilities.scheduler;
 import lombok.experimental.NonFinal;
 import net.year4000.utilities.ObjectHelper;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class ThreadedTask implements Runnable {
@@ -31,13 +32,12 @@ public class ThreadedTask implements Runnable {
     @NonFinal
     private boolean repeat;
 
-    @java.beans.ConstructorProperties({"manager", "id", "task", "delay", "unit", "repeat"})
-    public ThreadedTask(SchedulerManager manager, int id, Runnable task, int delay, TimeUnit unit, boolean repeat) {
-        this.manager = manager;
+    ThreadedTask(SchedulerManager manager, int id, Runnable task, int delay, TimeUnit unit, boolean repeat) {
+        this.manager = Objects.requireNonNull(manager);
         this.id = id;
-        this.task = task;
+        this.task = Objects.requireNonNull(task);
         this.delay = delay;
-        this.unit = unit;
+        this.unit = Objects.requireNonNull(unit);
         this.repeat = repeat;
     }
 
@@ -81,30 +81,6 @@ public class ThreadedTask implements Runnable {
                 execute();
             }
         } while (repeat);
-    }
-
-    public SchedulerManager getManager() {
-        return this.manager;
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public Runnable getTask() {
-        return this.task;
-    }
-
-    public int getDelay() {
-        return this.delay;
-    }
-
-    public TimeUnit getUnit() {
-        return this.unit;
-    }
-
-    public boolean isRepeat() {
-        return this.repeat;
     }
 
     @Override

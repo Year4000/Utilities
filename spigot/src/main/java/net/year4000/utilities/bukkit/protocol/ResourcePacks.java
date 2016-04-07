@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import net.year4000.utilities.ObjectHelper;
 import net.year4000.utilities.URLBuilder;
@@ -19,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -136,12 +138,11 @@ public class ResourcePacks implements Closeable {
         private String hash;
         private BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer;
 
-        @java.beans.ConstructorProperties({"player", "url", "hash", "consumer"})
         public PackWrapper(Player player, String url, String hash, BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer) {
-            this.player = player;
-            this.url = url;
-            this.hash = hash;
-            this.consumer = consumer;
+            this.player = Objects.requireNonNull(player);
+            this.url = Objects.requireNonNull(Strings.emptyToNull(url));
+            this.hash = Objects.requireNonNull(hash);
+            this.consumer = Objects.requireNonNull(consumer);
         }
 
         @Override

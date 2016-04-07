@@ -43,13 +43,11 @@ public class API {
     }.getType();
     private String key = null;
 
-    @java.beans.ConstructorProperties({"key"})
     public API(String key) {
         this.key = key;
     }
 
-    public API() {
-    }
+    public API() {}
 
     /** The base url builder for creating API urls */
     public URLBuilder api() {
