@@ -34,8 +34,8 @@ public final class SystemCommand implements CommandExecutor {
         Runtime runtime = Runtime.getRuntime();
         long uptime = ManagementFactory.getRuntimeMXBean().getUptime();
         src.sendMessage(CMD_SYSTEM.get(src));
-        src.sendMessage(CMD_UPTIME.get(src, new TimeUtil(uptime, TimeUnit.MILLISECONDS).prettyOutput("&8:&6")));
-        src.sendMessage(CMD_CPU_TOTAL.get(src, runtime.availableProcessors()));
+        src.sendMessage(CMD_UPTIME.get(src, "&6" + new TimeUtil(uptime, TimeUnit.MILLISECONDS).prettyOutput("&8:&6")));
+        src.sendMessage(CMD_CPU_TOTAL.get(src, Text.of(GOLD, runtime.availableProcessors())));
         src.sendMessage(CMD_MEMORY_FREE.get(src, formatMemory(runtime.freeMemory())));
         src.sendMessage(CMD_MEMORY_MAX.get(src, formatMemory(runtime.maxMemory())));
         src.sendMessage(CMD_MEMORY_TOTAL.get(src, formatMemory(runtime.totalMemory())));
