@@ -197,7 +197,7 @@ public final class ObjectHelper {
             field.setAccessible(true);
             Object value = field.get(instance);
             field.setAccessible(access);
-            return Optional.of(value);
+            return Optional.of(value == null ? "null" : value);
         } catch (IllegalAccessException error) {
             return Optional.empty();
         }
