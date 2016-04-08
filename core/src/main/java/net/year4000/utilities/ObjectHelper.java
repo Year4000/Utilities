@@ -232,7 +232,7 @@ public final class ObjectHelper {
 
     /** Generate a hash code for the list of objects */
     public static int hashCode(Object instance, Object... objects) {
-        int hash = Objects.hashCode(instance.getClass().getSimpleName());
+        int hash = Objects.hashCode(instance.getClass().getName());
         if (objects.length == 0) {
             Field[] fields = instance.getClass().getDeclaredFields();
             for (Field field : fields) {
