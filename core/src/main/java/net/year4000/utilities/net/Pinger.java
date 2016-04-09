@@ -16,10 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author zh32 <zh32 at zh32.de> modify by ewized to add lombok support,
- *         update the code to latest java standards, and various tweaks.
- */
 @SuppressWarnings("unused")
 public final class Pinger {
     public static final int TIME_OUT = (int) TimeUnit.SECONDS.toMillis(5);

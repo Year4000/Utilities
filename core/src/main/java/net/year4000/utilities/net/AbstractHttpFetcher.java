@@ -216,7 +216,7 @@ public abstract class AbstractHttpFetcher<D> implements HttpFetcher<D> {
     /** Make sure the derived class know how to read the data for {@link Type} */
     protected abstract <T> T reader(Reader reader, Type type);
 
-    /** Make sure the derived class know how to read the data for {@link Class<T>} */
+    /** Make sure the derived class know how to read the data for {@link Class} */
     protected abstract <T> T reader(Reader reader, Class<T> type);
 
     /** Allow the data to be serialize by derived class */
