@@ -17,10 +17,6 @@
 
 package net.year4000.utilities.bukkit;
 
-import net.year4000.utilities.bukkit.bossbar.BarAPIListener;
-import net.year4000.utilities.bukkit.bossbar.BossBar;
-import org.bukkit.Bukkit;
-
 public class Utilities extends BukkitPlugin {
     private static Utilities inst;
 
@@ -32,16 +28,5 @@ public class Utilities extends BukkitPlugin {
     public void onLoad() {
         inst = this;
         Messages.Factory.inst.get(); // Trigger a download from server now so it can cache it for later
-    }
-
-    @Override
-    public void onEnable() {
-        // Register boss bar
-        Bukkit.getPluginManager().registerEvents(new BarAPIListener(), this);
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            Bukkit.getOnlinePlayers().forEach(player -> {
-                BossBar.handleTeleport(player, player.getLocation());
-            });
-        }, 20L, 20L);
     }
 }
