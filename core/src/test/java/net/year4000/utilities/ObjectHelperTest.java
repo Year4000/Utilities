@@ -8,6 +8,7 @@ public class ObjectHelperTest {
     private static class MyObject {
         private String bar = "bar";
         private String foo = "foo";
+        private Object empty;
 
         @Override
         public String toString() {

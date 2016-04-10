@@ -106,7 +106,7 @@ class SpongeForgeClient extends DefaultTask {
             logger.debug(any.message)
             buildJar = project.jar.archivePath
         }
-        File forgeClient = new File(project.parent.projectDir, '/run/forge-client/')
+        File forgeClient = new File(project.rootDir, '/run/forge-client/')
         System.setProperty("spongeplugin.mcpath", forgeClient.toString())
         File pluginJarPath = new File(forgeClient, '/mods/')
         File pluginJar = new File(pluginJarPath, buildJar.name)
