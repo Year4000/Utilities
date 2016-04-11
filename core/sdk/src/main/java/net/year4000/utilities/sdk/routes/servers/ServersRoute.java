@@ -20,7 +20,6 @@ package net.year4000.utilities.sdk.routes.servers;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import lombok.NonNull;
 import net.year4000.utilities.sdk.routes.Route;
 
 import java.util.Map;
@@ -39,7 +38,7 @@ public class ServersRoute extends Route<Map<String, ServerJson>> {
     }
 
     /** Get a server object by its name */
-    public ServerJson getServer(@NonNull String server) {
+    public ServerJson getServer(String server) {
         return response.get(server);
     }
 }

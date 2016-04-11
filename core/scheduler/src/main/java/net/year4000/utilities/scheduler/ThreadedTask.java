@@ -17,18 +17,16 @@
 
 package net.year4000.utilities.scheduler;
 
-import lombok.experimental.NonFinal;
 import net.year4000.utilities.Conditions;
 
 import java.util.concurrent.TimeUnit;
 
 public class ThreadedTask implements Runnable {
-    private SchedulerManager manager;
-    private int id;
-    private Runnable task;
-    private int delay;
-    private TimeUnit unit;
-    @NonFinal
+    private final SchedulerManager manager;
+    private final int id;
+    private final Runnable task;
+    private final int delay;
+    private final TimeUnit unit;
     private boolean repeat;
 
     ThreadedTask(SchedulerManager manager, int id, Runnable task, int delay, TimeUnit unit, boolean repeat) {

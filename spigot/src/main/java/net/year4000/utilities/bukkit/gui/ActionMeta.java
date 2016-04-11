@@ -17,7 +17,6 @@
 
 package net.year4000.utilities.bukkit.gui;
 
-import lombok.experimental.NonFinal;
 import net.year4000.utilities.Conditions;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -30,9 +29,7 @@ public final class ActionMeta {
     private final InventoryClickEvent event;
     private final Locale locale;
     private final ClickType clickType;
-    @NonFinal
     private ItemStack item;
-    @NonFinal
     private ItemStack cursor;
 
     /** Populate Action meta from player, locale, and event */

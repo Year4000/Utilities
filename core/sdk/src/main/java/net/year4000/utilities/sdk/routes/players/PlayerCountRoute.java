@@ -18,7 +18,6 @@
 package net.year4000.utilities.sdk.routes.players;
 
 import com.google.common.collect.ImmutableMap;
-import lombok.NonNull;
 import net.year4000.utilities.sdk.routes.Route;
 
 public class PlayerCountRoute extends Route<PlayerCountJson> {
@@ -35,7 +34,7 @@ public class PlayerCountRoute extends Route<PlayerCountJson> {
     }
 
     /** Get the player count of the specific server */
-    public PlayerCountJson.Count getGroupPlayerCount(@NonNull String group) {
+    public PlayerCountJson.Count getGroupPlayerCount(String group) {
         return response.getGroups().get(group);
     }
 
@@ -45,7 +44,7 @@ public class PlayerCountRoute extends Route<PlayerCountJson> {
     }
 
     /** Get the player count of the specific server */
-    public PlayerCountJson.Count getServerPlayerCount(@NonNull String server) {
+    public PlayerCountJson.Count getServerPlayerCount(String server) {
         return response.getServers().get(server);
     }
 }
