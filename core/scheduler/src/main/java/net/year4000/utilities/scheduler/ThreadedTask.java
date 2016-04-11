@@ -18,7 +18,7 @@
 package net.year4000.utilities.scheduler;
 
 import lombok.experimental.NonFinal;
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,10 +32,10 @@ public class ThreadedTask implements Runnable {
     private boolean repeat;
 
     ThreadedTask(SchedulerManager manager, int id, Runnable task, int delay, TimeUnit unit, boolean repeat) {
-        this.manager = ObjectHelper.nonNull(manager, "manager");
-        this.id = ObjectHelper.isLarger(id, -1);
-        this.task = ObjectHelper.nonNull(task, "task");
-        this.delay = ObjectHelper.isLarger(delay, -1);
+        this.manager = Conditions.nonNull(manager, "manager");
+        this.id = Conditions.isLarger(id, -1);
+        this.task = Conditions.nonNull(task, "task");
+        this.delay = Conditions.isLarger(delay, -1);
         this.unit = unit;
         this.repeat = repeat;
     }
@@ -84,16 +84,16 @@ public class ThreadedTask implements Runnable {
 
     @Override
     public String toString() {
-        return ObjectHelper.toString(this);
+        return Conditions.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return ObjectHelper.equals(this, other);
+        return Conditions.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return ObjectHelper.hashCode(this);
+        return Conditions.hashCode(this);
     }
 }

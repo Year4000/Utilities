@@ -20,7 +20,7 @@ package net.year4000.utilities.bukkit.gui;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.bukkit.Utilities;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -158,16 +158,16 @@ public abstract class AbstractGUI implements Runnable {
 
     @Override
     public String toString() {
-        return ObjectHelper.toString(this);
+        return Conditions.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return ObjectHelper.equals(this, other);
+        return Conditions.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return ObjectHelper.hashCode(this);
+        return Conditions.hashCode(this);
     }
 }

@@ -47,8 +47,8 @@ public final class LogUtil {
     }
 
     public LogUtil(Logger logger, Level level, boolean debug) {
-        this.logger = ObjectHelper.nonNull(logger, "logger");
-        this.level = ObjectHelper.nonNull(level, "level");
+        this.logger = Conditions.nonNull(logger, "logger");
+        this.level = Conditions.nonNull(level, "level");
         this.debug = debug;
     }
 
@@ -129,16 +129,16 @@ public final class LogUtil {
 
     @Override
     public String toString() {
-        return ObjectHelper.toString(this);
+        return Conditions.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return ObjectHelper.equals(this, other);
+        return Conditions.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return ObjectHelper.hashCode(this);
+        return Conditions.hashCode(this);
     }
 }

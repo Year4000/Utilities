@@ -9,7 +9,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.google.common.collect.Maps;
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.URLBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -31,17 +31,17 @@ public class ResourcePacks implements Closeable {
 
     /** Create an instance of ResourcePacks */
     public ResourcePacks(ProtocolManager manager, Plugin plugin) {
-        this.manager = ObjectHelper.nonNull(manager, "manager");
-        this.plugin = ObjectHelper.nonNull(plugin, "plugin");
+        this.manager = Conditions.nonNull(manager, "manager");
+        this.plugin = Conditions.nonNull(plugin, "plugin");
         this.adapter = new PackAdapter(this);
         this.manager.addPacketListener(adapter);
     }
 
     /** Sends the resource pack to the player */
     public void sendResourcePack(Player player, String url, BiConsumer<Player, EnumWrappers.ResourcePackStatus> results) {
-        ObjectHelper.nonNull(player, "player");
-        ObjectHelper.nonNull(url, "url");
-        ObjectHelper.nonNull(results, "results");
+        Conditions.nonNull(player, "player");
+        Conditions.nonNull(url, "url");
+        Conditions.nonNull(results, "results");
         String hash;
 
         try {
@@ -78,7 +78,7 @@ public class ResourcePacks implements Closeable {
 
     /** Remove listener for the selected player */
     public void removePlayerListener(Player player) {
-        ObjectHelper.nonNull(player, "player");
+        Conditions.nonNull(player, "player");
         packs.remove(player.getUniqueId());
     }
 
@@ -113,17 +113,17 @@ public class ResourcePacks implements Closeable {
 
         @Override
         public String toString() {
-            return ObjectHelper.toString(this);
+            return Conditions.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return ObjectHelper.equals(this, other);
+            return Conditions.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return ObjectHelper.hashCode(this);
+            return Conditions.hashCode(this);
         }
     }
 
@@ -135,25 +135,25 @@ public class ResourcePacks implements Closeable {
         private BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer;
 
         public PackWrapper(Player player, String url, String hash, BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer) {
-            this.player = ObjectHelper.nonNull(player, "player");
-            this.url = ObjectHelper.nonNullOrEmpty(url, "url");
-            this.hash = ObjectHelper.nonNull(hash, "hash");
-            this.consumer = ObjectHelper.nonNull(consumer, "consumer");
+            this.player = Conditions.nonNull(player, "player");
+            this.url = Conditions.nonNullOrEmpty(url, "url");
+            this.hash = Conditions.nonNull(hash, "hash");
+            this.consumer = Conditions.nonNull(consumer, "consumer");
         }
 
         @Override
         public String toString() {
-            return ObjectHelper.toString(this);
+            return Conditions.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return ObjectHelper.equals(this, other);
+            return Conditions.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return ObjectHelper.hashCode(this);
+            return Conditions.hashCode(this);
         }
     }
 }

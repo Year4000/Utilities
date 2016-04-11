@@ -18,8 +18,8 @@ public final class Reflections {
     @SuppressWarnings("unchecked")
     public static <T> Value<T> field(Object instance, String name) {
         try {
-            Class<?> clazz = ObjectHelper.nonNull(instance, "instance").getClass();
-            Field field = clazz.getDeclaredField(ObjectHelper.nonNullOrEmpty(name, "name"));
+            Class<?> clazz = Conditions.nonNull(instance, "instance").getClass();
+            Field field = clazz.getDeclaredField(Conditions.nonNullOrEmpty(name, "name"));
             boolean state = field.isAccessible();
             field.setAccessible(true);
             T value = (T) field.get(instance);
@@ -33,7 +33,7 @@ public final class Reflections {
     /** Create an instance of the provided object */
     public static <T> Value<T> instance(Class<T> clazz, Object... args) {
         try {
-            Constructor<T> constructor = ObjectHelper.nonNull(clazz, "clazz").getDeclaredConstructor();
+            Constructor<T> constructor = Conditions.nonNull(clazz, "clazz").getDeclaredConstructor();
             if (args.length > 0) {
                 Class<?>[] params = Arrays.asList(args).stream()
                     .map(Object::getClass)

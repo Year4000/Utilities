@@ -17,7 +17,7 @@
 
 package net.year4000.utilities.sdk.routes.servers;
 
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.net.Pinger;
 
 public class ServerJson {
@@ -26,9 +26,9 @@ public class ServerJson {
     private Pinger.StatusResponse status;
 
     public ServerJson(String name, Group group, Pinger.StatusResponse status) {
-        this.name = ObjectHelper.nonNullOrEmpty(name, "name");
-        this.group = ObjectHelper.nonNull(group, "group");
-        this.status = ObjectHelper.nonNull(status, "status");
+        this.name = Conditions.nonNullOrEmpty(name, "name");
+        this.group = Conditions.nonNull(group, "group");
+        this.status = Conditions.nonNull(status, "status");
     }
 
     /** Is this server hidden */
@@ -50,17 +50,17 @@ public class ServerJson {
 
     @Override
     public String toString() {
-        return ObjectHelper.toString(this);
+        return Conditions.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return ObjectHelper.equals(this, other);
+        return Conditions.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return ObjectHelper.hashCode(this);
+        return Conditions.hashCode(this);
     }
 
     public static class Group {
@@ -68,8 +68,8 @@ public class ServerJson {
         private String display;
 
         public Group(String name, String display) {
-            this.name = ObjectHelper.nonNullOrEmpty(name, "name");
-            this.display = ObjectHelper.nonNullOrEmpty(display, "display");
+            this.name = Conditions.nonNullOrEmpty(name, "name");
+            this.display = Conditions.nonNullOrEmpty(display, "display");
         }
 
         /** Is this server hidden */
@@ -87,17 +87,17 @@ public class ServerJson {
 
         @Override
         public String toString() {
-            return ObjectHelper.toString(this);
+            return Conditions.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return ObjectHelper.equals(this, other);
+            return Conditions.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return ObjectHelper.hashCode(this);
+            return Conditions.hashCode(this);
         }
     }
 }

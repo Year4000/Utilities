@@ -1,6 +1,6 @@
 package net.year4000.utilities.value;
 
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 
 import java.util.function.Consumer;
 
@@ -91,7 +91,7 @@ public interface Value<V> {
 
     /** Gets the value of this instance or throw NullPointerException with the provided message */
     default V getOrThrow(String message) {
-        return ObjectHelper.nonNull(get(), message);
+        return Conditions.nonNull(get(), message);
     }
 
     /** Gets the value of this instance or throw NullPointerException */

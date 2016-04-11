@@ -7,7 +7,7 @@ package net.year4000.utilities.net;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import net.year4000.utilities.Callback;
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -24,8 +24,8 @@ public final class Pinger {
     private int timeout = TIME_OUT;
 
     public Pinger(InetSocketAddress host, int timeout) {
-        this.host = ObjectHelper.nonNull(host, "host");
-        this.timeout = ObjectHelper.isLarger(timeout, 1);
+        this.host = Conditions.nonNull(host, "host");
+        this.timeout = Conditions.isLarger(timeout, 1);
     }
 
     public Pinger() {}
@@ -163,17 +163,17 @@ public final class Pinger {
 
     @Override
     public String toString() {
-        return ObjectHelper.toString(this);
+        return Conditions.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return ObjectHelper.equals(this, other);
+        return Conditions.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return ObjectHelper.hashCode(this);
+        return Conditions.hashCode(this);
     }
 
     public class StatusResponse {
@@ -184,11 +184,11 @@ public final class Pinger {
         private Integer time;
 
         public StatusResponse(String description, Players players, Version version, String favicon, Integer time) {
-            this.description = ObjectHelper.nonNullOrEmpty(description, "description");
-            this.players = ObjectHelper.nonNull(players, "players");
-            this.version = ObjectHelper.nonNull(version, "version");
-            this.favicon = ObjectHelper.nonNullOrEmpty(favicon, "favicon");
-            this.time = ObjectHelper.nonNull(time, "time");
+            this.description = Conditions.nonNullOrEmpty(description, "description");
+            this.players = Conditions.nonNull(players, "players");
+            this.version = Conditions.nonNull(version, "version");
+            this.favicon = Conditions.nonNullOrEmpty(favicon, "favicon");
+            this.time = Conditions.nonNull(time, "time");
         }
 
         public StatusResponse() {}
@@ -247,17 +247,17 @@ public final class Pinger {
 
         @Override
         public String toString() {
-            return ObjectHelper.toString(this);
+            return Conditions.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return ObjectHelper.equals(this, other);
+            return Conditions.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return ObjectHelper.hashCode(this);
+            return Conditions.hashCode(this);
         }
     }
 
@@ -267,9 +267,9 @@ public final class Pinger {
         private List<Player> sample;
 
         public Players(Integer max, Integer online, List<Player> sample) {
-            this.max = ObjectHelper.nonNull(max, "max");
-            this.online = ObjectHelper.nonNull(online, "online");
-            this.sample = ObjectHelper.nonNull(sample, "sample");
+            this.max = Conditions.nonNull(max, "max");
+            this.online = Conditions.nonNull(online, "online");
+            this.sample = Conditions.nonNull(sample, "sample");
         }
 
         public Players() {}
@@ -315,17 +315,17 @@ public final class Pinger {
 
         @Override
         public String toString() {
-            return ObjectHelper.toString(this);
+            return Conditions.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return ObjectHelper.equals(this, other);
+            return Conditions.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return ObjectHelper.hashCode(this);
+            return Conditions.hashCode(this);
         }
     }
 
@@ -334,8 +334,8 @@ public final class Pinger {
         private String id;
 
         public Player(String name, String id) {
-            this.name = ObjectHelper.nonNullOrEmpty(name, "name");
-            this.id = ObjectHelper.nonNullOrEmpty(id, "id");
+            this.name = Conditions.nonNullOrEmpty(name, "name");
+            this.id = Conditions.nonNullOrEmpty(id, "id");
         }
 
         public Player() {
@@ -363,17 +363,17 @@ public final class Pinger {
 
         @Override
         public String toString() {
-            return ObjectHelper.toString(this);
+            return Conditions.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return ObjectHelper.equals(this, other);
+            return Conditions.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return ObjectHelper.hashCode(this);
+            return Conditions.hashCode(this);
         }
     }
 
@@ -382,8 +382,8 @@ public final class Pinger {
         private String protocol;
 
         public Version(String name, String protocol) {
-            this.name = ObjectHelper.nonNullOrEmpty(name, "name");
-            this.protocol = ObjectHelper.nonNullOrEmpty(protocol, "protocol");
+            this.name = Conditions.nonNullOrEmpty(name, "name");
+            this.protocol = Conditions.nonNullOrEmpty(protocol, "protocol");
         }
 
         public Version() {
@@ -411,17 +411,17 @@ public final class Pinger {
 
         @Override
         public String toString() {
-            return ObjectHelper.toString(this);
+            return Conditions.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return ObjectHelper.equals(this, other);
+            return Conditions.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return ObjectHelper.hashCode(this);
+            return Conditions.hashCode(this);
         }
     }
 }

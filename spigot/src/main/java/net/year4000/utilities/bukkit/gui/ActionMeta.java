@@ -18,7 +18,7 @@
 package net.year4000.utilities.bukkit.gui;
 
 import lombok.experimental.NonFinal;
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -37,19 +37,19 @@ public final class ActionMeta {
 
     /** Populate Action meta from player, locale, and event */
     public ActionMeta(Locale locale, InventoryClickEvent event) {
-        this.locale = ObjectHelper.nonNull(locale, "locale");
-        this.event = ObjectHelper.nonNull(event, "event");
+        this.locale = Conditions.nonNull(locale, "locale");
+        this.event = Conditions.nonNull(event, "event");
         clickType = event.getClick();
         setItem(event.getCurrentItem());
         setCursor(event.getCursor());
     }
 
     private ActionMeta(InventoryClickEvent event, Locale locale, ClickType clickType, ItemStack item, ItemStack cursor) {
-        this.event = ObjectHelper.nonNull(event, "event");
-        this.locale = ObjectHelper.nonNull(locale, "locale");
-        this.clickType = ObjectHelper.nonNull(clickType, "clickType");
-        this.item = ObjectHelper.nonNull(item, "item");
-        this.cursor = ObjectHelper.nonNull(cursor, "cursor");
+        this.event = Conditions.nonNull(event, "event");
+        this.locale = Conditions.nonNull(locale, "locale");
+        this.clickType = Conditions.nonNull(clickType, "clickType");
+        this.item = Conditions.nonNull(item, "item");
+        this.cursor = Conditions.nonNull(cursor, "cursor");
     }
 
     /** Set the item */
@@ -82,16 +82,16 @@ public final class ActionMeta {
 
     @Override
     public String toString() {
-        return ObjectHelper.toString(this);
+        return Conditions.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return ObjectHelper.equals(this, other);
+        return Conditions.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return ObjectHelper.hashCode(this);
+        return Conditions.hashCode(this);
     }
 }

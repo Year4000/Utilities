@@ -19,7 +19,7 @@ package net.year4000.utilities.scheduler;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.year4000.utilities.LogUtil;
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 
 import java.util.Map;
 import java.util.concurrent.*;
@@ -65,8 +65,8 @@ public final class SchedulerManager {
 
     /** Schedule a task to be ran in the future */
     private ThreadedTask schedule(Runnable task, int delay, TimeUnit unit, boolean repeat) {
-        ObjectHelper.nonNull(task, "task");
-        ObjectHelper.isLarger(delay, -1);
+        Conditions.nonNull(task, "task");
+        Conditions.isLarger(delay, -1);
 
         final int position = counter.getAndIncrement();
         ThreadedTask threadedTask = new ThreadedTask(this, position, task, delay, unit, repeat);

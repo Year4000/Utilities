@@ -1,5 +1,7 @@
 package net.year4000.utilities.value;
 
+import net.year4000.utilities.Conditions;
+
 import java.util.Objects;
 
 /** Simple implementation of the Value */
@@ -25,13 +27,17 @@ public class MutableValue<V> implements Value<V> {
     /** Checks if the value is equal to the provided object, could be the raw value or the wrapped value */
     @Override
     public boolean equals(Object other) {
-        if (other == null && value == null) return true;
-        return other != null && hashCode() == other.hashCode();
+        return (other == null && value == null) || other != null && hashCode() == other.hashCode();
     }
 
     /** Generates the hashcode for the value */
     @Override
     public int hashCode() {
         return Objects.hashCode(value);
+    }
+
+    @Override
+    public String toString() {
+        return Conditions.toString(this);
     }
 }

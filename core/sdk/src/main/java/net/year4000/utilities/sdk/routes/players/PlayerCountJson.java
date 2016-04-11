@@ -17,7 +17,7 @@
 
 package net.year4000.utilities.sdk.routes.players;
 
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 
 import java.util.Map;
 
@@ -27,9 +27,9 @@ public class PlayerCountJson {
     private Map<String, Count> servers;
 
     public PlayerCountJson(Count network, Map<String, Count> groups, Map<String, Count> servers) {
-        this.network = ObjectHelper.nonNull(network, "network");
-        this.groups = ObjectHelper.nonNull(groups, "groups");
-        this.servers = ObjectHelper.nonNull(servers, "servers");
+        this.network = Conditions.nonNull(network, "network");
+        this.groups = Conditions.nonNull(groups, "groups");
+        this.servers = Conditions.nonNull(servers, "servers");
     }
 
     public Count getNetwork() {
@@ -46,17 +46,17 @@ public class PlayerCountJson {
 
     @Override
     public String toString() {
-        return ObjectHelper.toString(this);
+        return Conditions.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return ObjectHelper.equals(this, other);
+        return Conditions.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return ObjectHelper.hashCode(this);
+        return Conditions.hashCode(this);
     }
 
     public static class Count {
@@ -78,17 +78,17 @@ public class PlayerCountJson {
 
         @Override
         public String toString() {
-            return ObjectHelper.toString(this);
+            return Conditions.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return ObjectHelper.equals(this, other);
+            return Conditions.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return ObjectHelper.hashCode(this);
+            return Conditions.hashCode(this);
         }
     }
 }

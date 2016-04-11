@@ -5,7 +5,7 @@
 package net.year4000.utilities.net;
 
 import com.google.common.collect.Maps;
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.URLBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -154,16 +154,16 @@ public class HttpConnection implements Cloneable {
 
     @Override
     public String toString() {
-        return ObjectHelper.toString(this);
+        return Conditions.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return ObjectHelper.equals(this, other);
+        return Conditions.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return ObjectHelper.hashCode(this);
+        return Conditions.hashCode(this);
     }
 }

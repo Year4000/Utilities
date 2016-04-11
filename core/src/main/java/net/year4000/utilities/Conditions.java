@@ -11,8 +11,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 /** Help in the creation of object with helper util methods */
-public final class ObjectHelper {
-    private ObjectHelper() {
+public final class Conditions {
+    private Conditions() {
         UtilityConstructError.raise();
     }
 

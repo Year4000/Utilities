@@ -4,7 +4,7 @@
 
 package net.year4000.utilities.sdk;
 
-import net.year4000.utilities.ObjectHelper;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.mc.ChatColor;
 import net.year4000.utilities.mc.MessageUtil;
 
@@ -58,10 +58,10 @@ public abstract class AbstractBadgeManager<P> {
         private int rank;
 
         Badges(ChatColor color, String badge, String permission, int rank) {
-            this.color = ObjectHelper.nonNull(color, "color");
-            this.badge = ObjectHelper.nonNullOrEmpty(badge, "badge");
-            this.permission = ObjectHelper.nonNullOrEmpty(permission, "permission");
-            this.rank = ObjectHelper.isLarger(rank, -1);
+            this.color = Conditions.nonNull(color, "color");
+            this.badge = Conditions.nonNullOrEmpty(badge, "badge");
+            this.permission = Conditions.nonNullOrEmpty(permission, "permission");
+            this.rank = Conditions.isLarger(rank, -1);
         }
 
         @Override
