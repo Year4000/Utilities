@@ -20,7 +20,7 @@ package net.year4000.utilities;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class JsonBuilderTest {

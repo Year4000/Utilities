@@ -18,26 +18,22 @@
 package net.year4000.utilities;
 
 import com.google.gson.*;
-
-import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import net.year4000.utilities.value.Value;
 
 public final class JsonBuilder {
-    public static JsonBuilder NULL = new JsonBuilder(Type.NULL);
     private Type type;
     private JsonElement element;
     private JsonBuilder parent;
-    private Optional<String> key = Optional.empty();
-    private JsonBuilder(Type type, JsonBuilder parent, Optional<String> key) {
+    private Value<String> key = Value.empty();
+
+    private JsonBuilder(Type type, JsonBuilder parent, Value<String> key) {
         this(type);
-        this.key = checkNotNull(key, "key");
-        this.parent = checkNotNull(parent, "parent");
+        this.key = Conditions.nonNull(key, "key");
+        this.parent = Conditions.nonNull(parent, "parent");
     }
 
     private JsonBuilder(Type type) {
-        this.type = checkNotNull(type, "type");
+        this.type = Conditions.nonNull(type, "type");
 
         switch (type) {
             case OBJECT:
@@ -50,7 +46,7 @@ public final class JsonBuilder {
                 this.element = JsonNull.INSTANCE;
                 break;
             default:
-                checkState(false, "invalid type");
+                Conditions.checkState(type, Type.values());
         }
     }
 
@@ -66,9 +62,9 @@ public final class JsonBuilder {
 
     /** Add a property to object */
     public JsonBuilder addProperty(String key, String value) {
-        checkState(type == Type.OBJECT, "Must be of type Object");
-        checkNotNull(key, "key");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.OBJECT);
+        Conditions.nonNull(key, "key");
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonObject().addProperty(key, value);
 
@@ -77,9 +73,9 @@ public final class JsonBuilder {
 
     /** Add a property to object */
     public JsonBuilder addProperty(String key, Number value) {
-        checkState(type == Type.OBJECT, "Must be of type Object");
-        checkNotNull(key, "key");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.OBJECT);
+        Conditions.nonNull(key, "key");
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonObject().addProperty(key, value);
 
@@ -88,9 +84,9 @@ public final class JsonBuilder {
 
     /** Add a property to object */
     public JsonBuilder addProperty(String key, Character value) {
-        checkState(type == Type.OBJECT, "Must be of type Object");
-        checkNotNull(key, "key");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.OBJECT);
+        Conditions.nonNull(key, "key");
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonObject().addProperty(key, value);
 
@@ -99,9 +95,9 @@ public final class JsonBuilder {
 
     /** Add a property to object */
     public JsonBuilder addProperty(String key, Boolean value) {
-        checkState(type == Type.OBJECT, "Must be of type Object");
-        checkNotNull(key, "key");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.OBJECT);
+        Conditions.nonNull(key, "key");
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonObject().addProperty(key, value);
 
@@ -110,9 +106,9 @@ public final class JsonBuilder {
 
     /** Add JsonObject to Object */
     public JsonBuilder addProperty(String key, JsonObject value) {
-        checkState(type == Type.OBJECT, "Must be of type Object");
-        checkNotNull(key, "key");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.OBJECT);
+        Conditions.nonNull(key, "key");
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonObject().add(key, value);
 
@@ -121,8 +117,8 @@ public final class JsonBuilder {
 
     /** Add a property to array */
     public JsonBuilder addValue(Number value) {
-        checkState(type == Type.ARRAY, "Must be of type Array");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.ARRAY);
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonArray().add(new JsonPrimitive(value));
 
@@ -131,8 +127,8 @@ public final class JsonBuilder {
 
     /** Add a property to array */
     public JsonBuilder addValue(Boolean value) {
-        checkState(type == Type.ARRAY, "Must be of type Array");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.ARRAY);
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonArray().add(new JsonPrimitive(value));
 
@@ -141,8 +137,8 @@ public final class JsonBuilder {
 
     /** Add a property to array */
     public JsonBuilder addValue(String value) {
-        checkState(type == Type.ARRAY, "Must be of type Array");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.ARRAY);
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonArray().add(new JsonPrimitive(value));
 
@@ -151,8 +147,8 @@ public final class JsonBuilder {
 
     /** Add a property to array */
     public JsonBuilder addValue(Character value) {
-        checkState(type == Type.ARRAY, "Must be of type Array");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.ARRAY);
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonArray().add(new JsonPrimitive(value));
 
@@ -161,8 +157,8 @@ public final class JsonBuilder {
 
     /** Add JsonObject to Array */
     public JsonBuilder addValue(JsonObject value) {
-        checkState(type == Type.ARRAY, "Must be of type Array");
-        checkNotNull(value, "value");
+        Conditions.checkState(type, Type.ARRAY);
+        Conditions.nonNull(value, "value");
 
         element.getAsJsonArray().add(value);
 
@@ -170,54 +166,54 @@ public final class JsonBuilder {
     }
 
     /** Internal JsonObject add */
-    private JsonBuilder add(Type type, Optional<String> name) {
+    private JsonBuilder add(Type type, Value<String> name) {
         return new JsonBuilder(type, this, name);
     }
 
     /** Add JsonArray to object */
     public JsonBuilder addJsonArray(String key) {
-        checkState(type == Type.OBJECT, "Must be of type Object");
-        checkNotNull(key, "key");
+        Conditions.checkState(type, Type.OBJECT);
+        Conditions.nonNull(key, "key");
 
-        return add(Type.ARRAY, Optional.of(key));
+        return add(Type.ARRAY, Value.of(key));
     }
 
     /** Add JsonArray to Array */
     public JsonBuilder addJsonArray() {
-        checkState(type == Type.ARRAY, "Must be of type Array");
+        Conditions.checkState(type, Type.ARRAY);
 
-        return add(Type.ARRAY, Optional.empty());
+        return add(Type.ARRAY, Value.empty());
     }
 
     /** Add JsonObject to object */
     public JsonBuilder addJsonObject(String key) {
-        checkState(type == Type.OBJECT, "Must be of type Object");
-        checkNotNull(key, "key");
+        Conditions.checkState(type, Type.OBJECT);
+        Conditions.nonNull(key, "key");
 
-        return add(Type.OBJECT, Optional.of(key));
+        return add(Type.OBJECT, Value.of(key));
     }
 
     /** Add JsonObject to Array */
     public JsonBuilder addJsonObject() {
-        checkState(type == Type.ARRAY, "Must be of type Array");
+        Conditions.checkState(type, Type.ARRAY);
 
-        return add(Type.OBJECT, Optional.empty());
+        return add(Type.OBJECT, Value.empty());
     }
 
     public JsonBuilder parent() {
-        checkNotNull(parent, "parent");
-        checkNotNull(parent.element, "element");
+        Conditions.nonNull(parent, "parent");
+        Conditions.nonNull(parent.element, "element");
 
         switch (parent.type) {
             case OBJECT:
-                parent.element.getAsJsonObject().add(key.orElse("null"), element);
+                parent.element.getAsJsonObject().add(key.getOrElse("null"), element);
                 break;
             case ARRAY:
                 parent.element.getAsJsonArray().add(element);
                 break;
             default:
-                checkState(false, "invalid type");
-                return NULL;
+                Conditions.checkState(parent.type, Type.OBJECT, Type.ARRAY);
+                return null;
         }
 
         return parent;
@@ -225,13 +221,13 @@ public final class JsonBuilder {
 
     /** Turn this JsonBuilder into JsonObject */
     public JsonObject toJsonObject() {
-        checkState(type == Type.OBJECT, "Must be of type Object");
+        Conditions.checkState(type, Type.OBJECT);
         return element.getAsJsonObject();
     }
 
     /** Turn this JsonBuilder into JsonArray */
     public JsonArray toJsonArray() {
-        checkState(type == Type.ARRAY, "Must be of type Array");
+        Conditions.checkState(type, Type.ARRAY);
         return element.getAsJsonArray();
     }
 
@@ -244,8 +240,7 @@ public final class JsonBuilder {
             case ARRAY:
                 return toJsonArray().toString();
             default:
-                checkState(false, "invalid type");
-                return null;
+                return Conditions.checkState(type, Type.OBJECT, Type.ARRAY).toString();
         }
     }
 
