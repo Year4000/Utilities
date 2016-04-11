@@ -19,6 +19,7 @@ public final class Conditions {
     /** Check that the value is in the states */
     @SafeVarargs
     public static <T extends Enum<?>> T checkState(T value, T... states) {
+        nonNull(value, "value");
         isLarger(states.length, 1);
         for (T state : states) {
             if (state == value) {
