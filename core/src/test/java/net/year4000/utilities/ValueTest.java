@@ -58,4 +58,10 @@ public class ValueTest {
         Assert.assertTrue(Value.of("Equal").equals("Equal"));
         Assert.assertTrue(Value.of("Equal").equals(Value.of("Equal")));
     }
+
+    @Test
+    public void miscTest() {
+        Value.of("foo").getOrThrow();
+        Value.of("bar").ifPresent(value -> {}).ifEmpty(value -> {});
+    }
 }

@@ -1,8 +1,8 @@
 package net.year4000.utilities.value;
 
-import com.google.common.base.Strings;
+import net.year4000.utilities.ObjectHelper;
 
-import java.util.Objects;
+import java.util.function.Consumer;
 
 /** Internal use of Value for various value needs */
 public interface Value<V> {
@@ -18,7 +18,7 @@ public interface Value<V> {
 
     /** Creates an instance of Value for the given String, treat empty strings as null */
     static Value<String> of(String value) {
-        return new ImmutableValue<>(Strings.emptyToNull(value));
+        return new ImmutableValue<>((value == null || value.isEmpty()) ? null : value);
     }
 
     /** Tries to parse the integer from the String and returns the value if its found */
@@ -75,6 +75,11 @@ public interface Value<V> {
     V get();
 
     /** Does the value instance contain a non null value */
+    default boolean isPresent() {
+        return get() != null;
+    }
+
+    /** Does the value instance contain a null value */
     default boolean isEmpty() {
         return get() == null;
     }
@@ -86,11 +91,27 @@ public interface Value<V> {
 
     /** Gets the value of this instance or throw NullPointerException with the provided message */
     default V getOrThrow(String message) {
-        return Objects.requireNonNull(get(), message);
+        return ObjectHelper.nonNull(get(), message);
     }
 
     /** Gets the value of this instance or throw NullPointerException */
     default V getOrThrow() {
-        return Objects.requireNonNull(get());
+        return getOrThrow("null");
+    }
+
+    /** Run a consumer instance on the value if it exists */
+    default Value<V> ifPresent(Consumer<V> consumer) {
+        if (isPresent()) {
+            consumer.accept(get());
+        }
+        return this;
+    }
+
+    /** Run a consumer instance on the value if it is empty */
+    default Value<V> ifEmpty(Consumer<V> consumer) {
+        if (isEmpty()) {
+            consumer.accept(get());
+        }
+        return this;
     }
 }
