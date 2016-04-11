@@ -1,14 +1,11 @@
 package net.year4000.utilities;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 public class URLBuilderTest {
-
-    private static final Logger log = Logger.getLogger(URLBuilderTest.class.getName());
 
     @Test
     public void urls() throws IOException {

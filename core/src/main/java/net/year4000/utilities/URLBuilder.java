@@ -28,11 +28,11 @@ public final class URLBuilder {
     private List<String> paths = new LinkedList<>();
     private Map<String, String> queries = new LinkedHashMap<>();
 
-    private URLBuilder() {
-    }
+    private URLBuilder() {}
 
     /** Create a url builder */
     public static URLBuilder builder(String base) {
+        Conditions.nonNull(base, "base");
         URLBuilder builder = new URLBuilder();
         builder.url = base.startsWith("http://") || base.startsWith("https://") ? base : "http://" + base;
         return builder;
@@ -40,6 +40,7 @@ public final class URLBuilder {
 
     /** Copy a url builder */
     public static URLBuilder builder(URLBuilder builder) {
+        Conditions.nonNull(builder, "builder");
         URLBuilder copy = new URLBuilder();
         copy.url = builder.url;
         copy.paths = new LinkedList<>(builder.paths);
@@ -50,6 +51,7 @@ public final class URLBuilder {
 
     /** Create a URL Builder instance from url */
     public static URLBuilder fromURL(String url) {
+        Conditions.nonNullOrEmpty(url, "url");
         String[] uri = url.startsWith("http://") || url.startsWith("https://") ? url.split("://") : new String[]{"http", url};
         String[] paths = uri[1].contains("/") ? uri[1].split("/") : new String[]{uri[1]};
         URLBuilder copy = URLBuilder.builder(uri[0] + "://" + paths[0]);
@@ -88,12 +90,14 @@ public final class URLBuilder {
 
     /** Add a path to the base url */
     public URLBuilder addPath(String path) {
+        Conditions.nonNull(path, "path"); // Paths can be empty strings
         this.paths.addAll(Arrays.asList(path.split("/")));
         return this;
     }
 
     /** Add a path to the base url */
     public URLBuilder addPath(Number path) {
+        Conditions.nonNull(path, "path");
         return addPath(path.toString());
     }
 
@@ -104,17 +108,22 @@ public final class URLBuilder {
 
     /** Add a query key and value to the base url */
     public URLBuilder addQuery(String key, String value) {
+        Conditions.nonNullOrEmpty(key, "key");
+        Conditions.nonNull(value, "value"); // value can be empty strings
         queries.put(key, value);
         return this;
     }
 
     /** Add a query key and value to the base url */
     public URLBuilder addQuery(String key, Number value) {
+        Conditions.nonNullOrEmpty(key, "key");
+        Conditions.nonNull(value, "value");
         return addQuery(key, value.toString());
     }
 
     /** Add a query key to the base url */
     public URLBuilder addQuery(String key) {
+        Conditions.nonNullOrEmpty(key, "key");
         return addQuery(key, "");
     }
 
@@ -145,5 +154,20 @@ public final class URLBuilder {
         catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Conditions.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Conditions.hashCode(this);
+    }
+
+    @Override
+    public String toString() {
+        return Conditions.toString(this);
     }
 }
