@@ -7,12 +7,15 @@ package net.year4000.utilities.net;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.value.Value;
 
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Condition;
 
 @AbstractHttpFetcher.ContentType("application/json; charset=utf8")
 public class JsonHttpFetcher extends AbstractHttpFetcher<JsonObject> {
@@ -20,7 +23,7 @@ public class JsonHttpFetcher extends AbstractHttpFetcher<JsonObject> {
 
     private JsonHttpFetcher(int maxTries, Gson gson, ExecutorService executorService) {
         super(maxTries, executorService);
-        GSON = gson;
+        GSON = Conditions.nonNull(gson, "gson");
     }
 
     /** Get the builder that will create this HttpFetcher */
@@ -30,35 +33,39 @@ public class JsonHttpFetcher extends AbstractHttpFetcher<JsonObject> {
 
     @Override
     protected <T> T reader(Reader reader, Type type) {
+        Conditions.nonNull(reader, "reader");
+        Conditions.nonNull(type, "type");
         return GSON.fromJson(reader, type);
     }
 
     @Override
     protected <T> T reader(Reader reader, Class<T> type) {
+        Conditions.nonNull(reader, "reader");
+        Conditions.nonNull(type, "type");
         return reader(reader, (Type) type);
     }
 
     @Override
     protected String serialize(JsonObject object) {
-        return GSON.toJson(object);
+        return GSON.toJson(Conditions.nonNull(object, "object"));
     }
 
     /** {@inheritDoc} */
     public static class Builder extends AbstractHttpFetcher.AbstractBuilder<JsonHttpFetcher, Builder> {
-        private Optional<Gson> gson = Optional.empty();
+        private Value<Gson> gson = Value.empty();
 
         /** The Gson object used for handling JSON requests */
         public Builder gson(Gson gson) {
-            this.gson = Optional.ofNullable(gson);
+            this.gson = Value.of(gson);
             return this;
         }
 
         @Override
         public JsonHttpFetcher build() {
             return new JsonHttpFetcher(
-                maxTries.orElse(3),
-                gson.orElse(new GsonBuilder().disableHtmlEscaping().create()),
-                executorService.orElse(Executors.newCachedThreadPool())
+                maxTries.getOrElse(3),
+                gson.getOrElse(new GsonBuilder().disableHtmlEscaping().create()),
+                executorService.getOrElse(Executors.newCachedThreadPool())
             );
         }
     }

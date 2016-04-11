@@ -5,9 +5,9 @@
 package net.year4000.utilities;
 
 import com.google.gson.JsonObject;
-import junit.framework.Assert;
 import net.year4000.utilities.net.HttpFetcher;
 import net.year4000.utilities.net.JsonHttpFetcher;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.logging.Logger;

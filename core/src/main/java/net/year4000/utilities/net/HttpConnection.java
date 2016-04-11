@@ -32,11 +32,12 @@ public class HttpConnection implements Cloneable {
     private HttpURLConnection urlConnection;
 
     public HttpConnection(String url) {
-        urlBuilder = URLBuilder.fromURL(url);
+        urlBuilder = URLBuilder.fromURL(Conditions.nonNullOrEmpty(url, "url"));
     }
 
     /** Copy the supplied http connection */
     private HttpConnection(HttpConnection connection) {
+        Conditions.nonNull(connection, "connection");
         urlBuilder = connection.urlBuilder;
         headers = connection.headers;
         userAgent = connection.userAgent;
@@ -45,7 +46,7 @@ public class HttpConnection implements Cloneable {
 
     /** Response with http */
     public static Reader responseHttp(HttpURLConnection connection) throws IOException {
-        int responseCode = connection.getResponseCode();
+        int responseCode = Conditions.nonNull(connection, "connection").getResponseCode();
 
         // Get Response
         if (responseCode >= HttpURLConnection.HTTP_OK && responseCode <= HttpURLConnection.HTTP_PARTIAL) {
@@ -58,7 +59,7 @@ public class HttpConnection implements Cloneable {
 
     /** Response with https */
     public static Reader responseHttps(HttpsURLConnection connection) throws IOException {
-        int responseCode = connection.getResponseCode();
+        int responseCode = Conditions.nonNull(connection, "connection").getResponseCode();
 
         // Get Response
         if (responseCode >= HttpsURLConnection.HTTP_OK && responseCode <= HttpsURLConnection.HTTP_PARTIAL) {
@@ -71,6 +72,8 @@ public class HttpConnection implements Cloneable {
 
     /** Send data to the connection https */
     public static void requestHttps(HttpsURLConnection connection, String data) throws IOException {
+        Conditions.nonNull(connection, "connection");
+        Conditions.nonNullOrEmpty(data, "data");
         // Send Data
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
             writer.write(data);
@@ -79,6 +82,8 @@ public class HttpConnection implements Cloneable {
 
     /** Send data to the connection https */
     public static void requestHttp(HttpURLConnection connection, String data) throws IOException {
+        Conditions.nonNull(connection, "connection");
+        Conditions.nonNullOrEmpty(data, "data");
         // Send Data
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
             writer.write(data);
@@ -141,15 +146,15 @@ public class HttpConnection implements Cloneable {
     }
 
     public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
+        this.headers = Conditions.nonNull(headers, "headers");
     }
 
     public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
+        this.userAgent = Conditions.nonNullOrEmpty(userAgent, "userAgent");
     }
 
     public void setTimeout(int timeout) {
-        this.timeout = timeout;
+        this.timeout = timeout < 0 ? -1 : timeout;
     }
 
     @Override
