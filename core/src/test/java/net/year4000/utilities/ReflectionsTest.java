@@ -28,6 +28,8 @@ public class ReflectionsTest {
         MyObject object = new MyObject();
         Assert.assertFalse(Reflections.field(object, "foo").isEmpty());
         Assert.assertEquals("bar", Reflections.field(object, "foo").get());
+        Assert.assertTrue(Reflections.field(object, "foo", "foo"));
+        Assert.assertEquals("foo", Reflections.field(object, "foo").get());
     }
 
     @Test

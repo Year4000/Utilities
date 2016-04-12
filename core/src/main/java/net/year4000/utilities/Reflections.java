@@ -44,6 +44,25 @@ public final class Reflections {
         }
     }
 
+    /** Set the value of the specific field if it exists and we can access it */
+    public static boolean field(Object instance, String name, Object set) {
+        return field(Conditions.nonNull(instance, "instance").getClass(), instance, name, set);
+    }
+
+    /** Set the value of the specific field if it exists and we can access it */
+    public static boolean field(Class<?> clazz, Object instance, String name, Object set) {
+        try {
+            Field field = clazz.getDeclaredField(Conditions.nonNullOrEmpty(name, "name"));
+            boolean state = field.isAccessible();
+            field.setAccessible(true);
+            field.set(instance, set);
+            field.setAccessible(state);
+            return true;
+        } catch (ReflectiveOperationException error) {
+            return false;
+        }
+    }
+
     /** Get the value of the specific field if it exists and we can access it */
     @SuppressWarnings("unchecked")
     public static <T> Value<T> field(Object instance, String name) {
