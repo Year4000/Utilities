@@ -61,7 +61,7 @@ public final class Gateways {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (method.isAnnotationPresent(Invoke.class)) {
                 String name = Value.of(method.getAnnotation(Invoke.class).value()).getOrElse(method.getName());
-                Object object = Reflections.invoke(classInstance, instance, name, args).get();
+                Object object = Reflections.invoke(classInstance, instance, name, args).getOrThrow();
                 return handleBridge(method.getAnnotation(Bridge.class), object);
             } else if (method.isAnnotationPresent(Setter.class)) {
                 Conditions.inRange(args.length, 1, 1); // make sure there is only one argument
@@ -69,7 +69,7 @@ public final class Gateways {
                 return Reflections.field(classInstance, instance, name, args[0]);
             } else if (method.isAnnotationPresent(Getter.class)) {
                 String name = Value.of(method.getAnnotation(Getter.class).value()).getOrElse(method.getName());
-                Object object = Reflections.field(classInstance, instance, name).get();
+                Object object = Reflections.field(classInstance, instance, name).getOrThrow();
                 return handleBridge(method.getAnnotation(Bridge.class), object);
             } else if (method.isDefault()) {
                 Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
