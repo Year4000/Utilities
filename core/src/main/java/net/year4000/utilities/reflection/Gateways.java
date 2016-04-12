@@ -61,7 +61,7 @@ public final class Gateways {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (method.isAnnotationPresent(Invoke.class)) {
                 String name = Value.of(method.getAnnotation(Invoke.class).value()).getOrElse(method.getName());
-                Object object = Reflections.invoke(classInstance, instance, name, args).getOrThrow();
+                Object object = Reflections.invoke(classInstance, instance, name, args).get();
                 return handleBridge(method.getAnnotation(Bridge.class), object);
             } else if (method.isAnnotationPresent(Setter.class)) {
                 Conditions.inRange(args.length, 1, 1); // make sure there is only one argument
