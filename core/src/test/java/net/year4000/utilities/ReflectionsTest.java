@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ReflectionsTest {
-    public static class MyObject {
+    private static class MyObject {
         private String foo = "bar";
 
         private MyObject() {}

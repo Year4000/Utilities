@@ -29,8 +29,11 @@ public final class Reflections {
         Conditions.nonNull(instance, "instance");
         Conditions.nonNullOrEmpty(method, "method");
         try {
-            Class<?>[] types = Stream.of(args).map(Object::getClass).toArray(Class<?>[]::new);
-            Method invoke = clazz.getDeclaredMethod(method, types);
+            Method invoke = clazz.getDeclaredMethod(method);
+            if (args != null && args.length > 0) {
+                Class<?>[] types = Stream.of(args).map(Object::getClass).toArray(Class<?>[]::new);
+                invoke = clazz.getDeclaredMethod(method, types);
+            }
             boolean state = invoke.isAccessible();
             invoke.setAccessible(true);
             Object inst = invoke.invoke(instance, args);
@@ -66,7 +69,7 @@ public final class Reflections {
     public static <T> Value<T> instance(Class<T> clazz, Object... args) {
         try {
             Constructor<T> constructor = Conditions.nonNull(clazz, "clazz").getDeclaredConstructor();
-            if (args.length > 0) {
+            if (args != null && args.length > 0) {
                 Class<?>[] params = Stream.of(args).map(Object::getClass).toArray(Class<?>[]::new);
                 constructor = clazz.getDeclaredConstructor(params);
             }
