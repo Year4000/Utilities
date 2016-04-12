@@ -60,6 +60,7 @@ public final class Gateways {
                 Object object = Reflections.invoke(classInstance, instance, name, args).get();
                 return handleBridge(method.getAnnotation(Bridge.class), object);
             } else if (method.isAnnotationPresent(Setter.class)) {
+                Conditions.inRange(args.length, 1, 1); // make sure there is only one argument
                 String name = Value.of(method.getAnnotation(Setter.class).value()).getOrElse(method.getName());
                 return Reflections.field(classInstance, instance, name, args[0]);
             } else if (method.isAnnotationPresent(Getter.class)) {
