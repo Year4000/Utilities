@@ -6,6 +6,8 @@ import net.year4000.utilities.Reflections;
 import net.year4000.utilities.utils.UtilityConstructError;
 import net.year4000.utilities.value.Value;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
@@ -25,17 +27,19 @@ public final class Gateways {
         if (instance == null) {
             return null;
         }
-        return Reflection.newProxy(proxy, new Tunnel<>(proxy, instance));
+        return Reflection.newProxy(proxy, new Tunnel(proxy, instance));
     }
 
     /** Create a tunnel of the object and the under lying code */
-    private static class Tunnel<T> implements InvocationHandler {
+    private static class Tunnel implements InvocationHandler {
+        private final Class<?> proxyClass;
         private final Class<?> classInstance;
         private final Object instance;
 
-        Tunnel(Class<T> clazz, Object instance) {
+        Tunnel(Class<?> clazz, Object instance) {
             this.instance = Conditions.nonNull(instance, "instance");
             this.classInstance = reflectiveClass(clazz);
+            this.proxyClass = clazz;
         }
 
         /** Grab the class instance of the reflective class */
@@ -67,11 +71,17 @@ public final class Gateways {
                 String name = Value.of(method.getAnnotation(Getter.class).value()).getOrElse(method.getName());
                 Object object = Reflections.field(classInstance, instance, name).get();
                 return handleBridge(method.getAnnotation(Bridge.class), object);
-            }/* else if (method.isDefault()) {
-                return Reflections.invoke(proxy, method.getName(), args);
-            }*/
+            } else if (method.isDefault()) {
+                Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+                constructor.setAccessible(true);
+                return constructor.newInstance(proxyClass, MethodHandles.Lookup.PRIVATE)
+                    .unreflectSpecial(method, proxyClass)
+                    .bindTo(proxy)
+                    .invokeWithArguments(args);
+            }
 
-            return null;
+            // Special cases
+            return Reflections.invoke(Object.class, instance, method.getName()).getOrThrow();
         }
     }
 }
