@@ -11,6 +11,10 @@ public class ReflectionsTest {
         private MyObject() {}
 
         private MyObject(String foo) {}
+
+        private String foo() {
+            return "bar";
+        }
     }
 
     @Test
@@ -37,5 +41,13 @@ public class ReflectionsTest {
         Value<Class<?>> complex = Reflections.clazz(clazz, false, ReflectionsTest.class.getClassLoader());
         Assert.assertTrue(complex.isPresent());
         Assert.assertEquals(MyObject.class, complex.get());
+    }
+
+    @Test
+    public void methodTest() {
+        MyObject object = new MyObject();
+        Value<Object> value = Reflections.invoke(object, "foo");
+        Assert.assertTrue(value.isPresent());
+        Assert.assertEquals(object.foo(), value.get());
     }
 }

@@ -9,13 +9,38 @@ import net.year4000.utilities.value.Value;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** A set of tools for handling reflections */
 public final class Reflections {
     private Reflections() {
         UtilityConstructError.raise();
+    }
+
+    /** Invoke the method from the instance, return a value if a return type exists and a non error */
+    public static Value<Object> invoke(Object instance, String method, Object... args) {
+        return invoke(Conditions.nonNull(instance, "instance").getClass(), instance, method, args);
+    }
+
+    /** Invoke the method from the instance, return a value if a return type exists and a non error */
+    public static Value<Object> invoke(Class<?> clazz, Object instance, String method, Object... args) {
+        Conditions.nonNull(clazz, "clazz");
+        Conditions.nonNull(instance, "instance");
+        Conditions.nonNullOrEmpty(method, "method");
+        try {
+            Class<?>[] types = Stream.of(args).map(Object::getClass).toArray(Class<?>[]::new);
+            Method invoke = clazz.getDeclaredMethod(method, types);
+            boolean state = invoke.isAccessible();
+            invoke.setAccessible(true);
+            Object inst = invoke.invoke(instance, args);
+            invoke.setAccessible(state);
+            return Value.of(inst);
+        } catch (ReflectiveOperationException error) {
+            return Value.empty();
+        }
     }
 
     /** Get the value of the specific field if it exists and we can access it */
