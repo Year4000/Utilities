@@ -21,8 +21,13 @@ public final class Reflections {
     /** Get the value of the specific field if it exists and we can access it */
     @SuppressWarnings("unchecked")
     public static <T> Value<T> field(Object instance, String name) {
+        return field(Conditions.nonNull(instance, "instance").getClass(), instance, name);
+    }
+
+    /** Get the value of the specific field if it exists and we can access it */
+    @SuppressWarnings("unchecked")
+    public static <T> Value<T> field(Class<?> clazz, Object instance, String name) {
         try {
-            Class<?> clazz = Conditions.nonNull(instance, "instance").getClass();
             Field field = clazz.getDeclaredField(Conditions.nonNullOrEmpty(name, "name"));
             boolean state = field.isAccessible();
             field.setAccessible(true);
