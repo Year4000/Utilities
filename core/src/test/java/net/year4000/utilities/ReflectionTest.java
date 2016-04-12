@@ -2,7 +2,6 @@ package net.year4000.utilities;
 
 import net.year4000.utilities.reflection.*;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ReflectionTest {
@@ -64,7 +63,6 @@ public class ReflectionTest {
     }
 
     @Test
-    @Ignore
     public void defaultTest() {
         ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
         Assert.assertEquals("world", proxy.hello());

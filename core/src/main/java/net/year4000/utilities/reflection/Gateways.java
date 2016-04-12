@@ -69,7 +69,7 @@ public final class Gateways {
                 return Reflections.field(classInstance, instance, name, args[0]);
             } else if (method.isAnnotationPresent(Getter.class)) {
                 String name = Value.of(method.getAnnotation(Getter.class).value()).getOrElse(method.getName());
-                Object object = Reflections.field(classInstance, instance, name).getOrThrow();
+                Object object = Reflections.field(classInstance, instance, name).get();
                 return handleBridge(method.getAnnotation(Bridge.class), object);
             } else if (method.isDefault()) {
                 Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
