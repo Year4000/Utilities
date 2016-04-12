@@ -22,7 +22,9 @@ public final class Gateways {
     /** Creates a proxy instance between the interface class {@code proxy} with bridged class {@code instance} */
     public static <T> T proxy(Class<T> proxy, Object instance) {
         Conditions.nonNull(proxy, "proxy");
-        Conditions.nonNull(instance, "instance");
+        if (instance == null) {
+            return null;
+        }
         return Reflection.newProxy(proxy, new Tunnel<>(proxy, instance));
     }
 
@@ -43,17 +45,27 @@ public final class Gateways {
             return Conditions.nonNull(value.get(), "value");
         }
 
+        /** Handle the bridge between objects and its proxy */
+        private Object handleBridge(Bridge bridge, Object instance) {
+            if (bridge == null || instance == null) {
+                return instance;
+            }
+            return Gateways.proxy(bridge.value(), instance);
+        }
+
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (method.isAnnotationPresent(Invoke.class)) {
                 String name = Value.of(method.getAnnotation(Invoke.class).value()).getOrElse(method.getName());
-                return Reflections.invoke(classInstance, instance, name, args).get();
+                Object object = Reflections.invoke(classInstance, instance, name, args).get();
+                return handleBridge(method.getAnnotation(Bridge.class), object);
             } else if (method.isAnnotationPresent(Setter.class)) {
                 String name = Value.of(method.getAnnotation(Setter.class).value()).getOrElse(method.getName());
                 return Reflections.field(classInstance, instance, name, args[0]);
             } else if (method.isAnnotationPresent(Getter.class)) {
                 String name = Value.of(method.getAnnotation(Getter.class).value()).getOrElse(method.getName());
-                return Reflections.field(classInstance, instance, name).get();
+                Object object = Reflections.field(classInstance, instance, name).get();
+                return handleBridge(method.getAnnotation(Bridge.class), object);
             }/* else if (method.isDefault()) {
                 return Reflections.invoke(proxy, method.getName(), args);
             }*/

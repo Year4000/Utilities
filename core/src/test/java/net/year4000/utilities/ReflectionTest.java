@@ -9,9 +9,11 @@ public class ReflectionTest {
     private static final String FOO = "foo";
     private static final String BAR = "bar";
     private static final String FOO_BAR = "foo bar";
+    private static final MyObject OBJECT = new MyObject();
 
     private final static class MyObject {
         private String foo = FOO;
+        private MyObject object = OBJECT;
 
         private String method() {
             return FOO_BAR;
@@ -23,6 +25,9 @@ public class ReflectionTest {
         @Setter void foo(String value);
         @Getter String foo();
         @Invoke String method();
+
+        @Getter @Bridge(ProxyMyObject.class) ProxyMyObject object();
+        @Setter void object(ProxyMyObject object);
 
         default String hello() {
             return "world";
@@ -47,6 +52,15 @@ public class ReflectionTest {
         Assert.assertNotEquals(BAR, proxy.foo());
         proxy.foo(BAR);
         Assert.assertEquals(BAR, proxy.foo());
+    }
+
+    @Test
+    public void bridgeTest() {
+        ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
+        ProxyMyObject object = proxy.object();
+        Assert.assertEquals(proxy.foo(), object.foo());
+        object.object(null);
+        Assert.assertNull(object.object());
     }
 
     @Test
