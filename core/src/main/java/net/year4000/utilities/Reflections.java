@@ -54,4 +54,27 @@ public final class Reflections {
             return Value.empty();
         }
     }
+
+    /** Get the class object from the name */
+    public static Value<Class<?>> clazz(String name) {
+        Conditions.nonNullOrEmpty(name, "name");
+        try {
+            Class<?> clazz = Class.forName(name);
+            return Value.of(clazz);
+        } catch (ReflectiveOperationException error) {
+            return Value.empty();
+        }
+    }
+
+    /** Get the class object from the name */
+    public static Value<Class<?>> clazz(String name, boolean init, ClassLoader loader) {
+        Conditions.nonNullOrEmpty(name, "name");
+        Conditions.nonNull(loader, "loader");
+        try {
+            Class<?> clazz = Class.forName(name, init, loader);
+            return Value.of(clazz);
+        } catch (ReflectiveOperationException error) {
+            return Value.empty();
+        }
+    }
 }
