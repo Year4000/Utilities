@@ -139,7 +139,7 @@ public final class PacketTypes {
     public static final PacketType STATUS_CLIENT_PONG = type(STATUS, CLIENT, 0x01);
     // Server
     public static final PacketType STATUS_SERVER_REQUEST = type(STATUS, SERVER, 0x00);
-    public static final PacketType STATUS_SERVER_PING = type(STATUS, SERVER, 0x00);
+    public static final PacketType STATUS_SERVER_PING = type(STATUS, SERVER, 0x01);
 
 
     // Login Packets
