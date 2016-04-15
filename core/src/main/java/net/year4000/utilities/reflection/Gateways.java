@@ -27,10 +27,15 @@ public final class Gateways {
     /** Creates a proxy instance between the interface class {@code proxy} with bridged class {@code instance} */
     public static <T> T proxy(Class<T> proxy, Object instance) {
         Conditions.nonNull(proxy, "proxy");
-        if (instance == null) {
-            return null;
+        if (instance == null) { // static proxy
+            return Reflection.newProxy(proxy, new Tunnel(proxy));
         }
         return Reflection.newProxy(proxy, new Tunnel(proxy, instance));
+    }
+
+    /** Creates a static proxy instance between the interface class {@code proxy} */
+    public static <T> T proxy(Class<T> proxy) {
+        return proxy(proxy, null);
     }
 
     /** Create a tunnel of the object and the under lying code */
@@ -40,8 +45,16 @@ public final class Gateways {
         private final Class<?> classInstance;
         private final Object instance;
 
+        // Normal proxy with an instance
         Tunnel(Class<?> clazz, Object instance) {
             this.instance = Conditions.nonNull(instance, "instance");
+            this.classInstance = reflectiveClass(clazz);
+            this.proxyClass = clazz;
+        }
+
+        // Static proxy that access statics only
+        Tunnel(Class<?> clazz) {
+            this.instance = null; // static proxy
             this.classInstance = reflectiveClass(clazz);
             this.proxyClass = clazz;
         }
@@ -49,15 +62,19 @@ public final class Gateways {
         /** Grab the class instance of the reflective class */
         private Class<?> reflectiveClass(Class<?> proxy) {
             Proxied proxied = Conditions.nonNull(proxy.getAnnotation(Proxied.class), "@Proxied");
-            Value<Class<?>> value = Reflections.clazz(proxied.value(), proxied.init(), proxy.getClassLoader());
-            return Conditions.nonNull(value.get(), "value");
+            return Reflections.clazz(proxied.value(), proxied.init(), proxy.getClassLoader()).getOrThrow("value");
         }
 
         /** Handle the bridge between objects and its proxy */
         private MethodHandler handleBridge(Method method, MethodHandler handler) {
             if (method.isAnnotationPresent(Bridge.class)) {
                 final Class<?> bridge = method.getAnnotation(Bridge.class).value();
-                return (instance, args) -> Gateways.proxy(bridge, handler.handle(instance, args));
+                return (instance, args) -> {
+                    // null return types should just return null
+                    Object returnInst = handler.handle(instance, args);
+                    if (returnInst == null) return null;
+                    return Gateways.proxy(bridge, handler.handle(instance, args));
+                };
             }
             return handler;
         }
