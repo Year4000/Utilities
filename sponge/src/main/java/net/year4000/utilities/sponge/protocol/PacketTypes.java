@@ -2,8 +2,8 @@ package net.year4000.utilities.sponge.protocol;
 
 import net.year4000.utilities.utils.UtilityConstructError;
 
-import static net.year4000.utilities.sponge.protocol.PacketTypes.BindingType.*;
-import static net.year4000.utilities.sponge.protocol.PacketTypes.Type.*;
+import static net.year4000.utilities.sponge.protocol.PacketTypes.Binding.*;
+import static net.year4000.utilities.sponge.protocol.PacketTypes.State.*;
 
 /** A enumeration of all the type of packets Minecraft 1.9.2 can handle */
 public final class PacketTypes {
@@ -12,15 +12,15 @@ public final class PacketTypes {
     }
 
     /** Create the packet type */
-    public static PacketType type(Type type, BindingType binding, int id) {
-        return new PacketType(); // todo
+    public static PacketType type(State type, Binding binding, int id) {
+        return new PacketType(id, binding.ordinal(), type.ordinal());
     }
 
-    // Which way the packets are binded to
-    enum BindingType {CLIENT, SERVER}
+    // Which way the packets are bounded to
+    enum Binding {CLIENT, SERVER}
 
     // The type of packet they are
-    enum Type {PLAY, STATUS, LOGIN}
+    enum State {PLAY, STATUS, LOGIN}
 
     // Play Packets
     // Client
