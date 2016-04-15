@@ -26,7 +26,6 @@ public final class Reflections {
     /** Invoke the method from the instance, return a value if a return type exists and a non error */
     public static Value<Object> invoke(Class<?> clazz, Object instance, String method, Object... args) {
         Conditions.nonNull(clazz, "clazz");
-        Conditions.nonNull(instance, "instance");
         Conditions.nonNullOrEmpty(method, "method");
         try {
             Method invoke = clazz.getDeclaredMethod(method);
@@ -51,6 +50,7 @@ public final class Reflections {
 
     /** Set the value of the specific field if it exists and we can access it */
     public static boolean field(Class<?> clazz, Object instance, String name, Object set) {
+        Conditions.nonNull(clazz, "clazz");
         try {
             Field field = clazz.getDeclaredField(Conditions.nonNullOrEmpty(name, "name"));
             boolean state = field.isAccessible();
