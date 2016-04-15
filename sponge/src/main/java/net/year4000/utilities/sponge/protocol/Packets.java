@@ -11,10 +11,10 @@ public interface Packets {
     }
 
     /** Send a selected packet to the player */
-    void sendPacket(Player player, Object packet);
+    void sendPacket(Player player, Packet packet);
 
     /** Send the packet to all the players */
-    default void sendPacket(Object packet) {
+    default void sendPacket(Packet packet) {
         Sponge.getServer().getOnlinePlayers().forEach(player -> sendPacket(player, packet));
     }
 }
