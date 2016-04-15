@@ -12,15 +12,15 @@ public final class PacketTypes {
     }
 
     /** Create the packet type */
-    public static PacketType type(State type, Binding binding, int id) {
-        return new PacketType(id, binding.ordinal(), type.ordinal());
+    public static PacketType type(State state, Binding binding, int id) {
+        return new PacketType(id, state.ordinal(), binding.ordinal());
     }
 
-    // Which way the packets are bounded to
-    enum Binding {CLIENT, SERVER}
+    /** Which way the packets are bounded to */
+    public enum Binding {SERVER, CLIENT}
 
-    // The type of packet they are
-    enum State {PLAY, STATUS, LOGIN}
+    /** The type of packet they are */
+    public enum State {PLAY, STATUS, LOGIN}
 
     // Play Packets
     // Client

@@ -16,7 +16,6 @@ final class PipelineHandles {
     static class PacketSerializer extends MessageToMessageEncoder<Packet> {
         @Override
         protected void encode(ChannelHandlerContext ctx, Packet msg, List<Object> out) throws Exception {
-            // todo copy packet values into mcPacket
             out.add(msg.mcPacket());
         }
     }
