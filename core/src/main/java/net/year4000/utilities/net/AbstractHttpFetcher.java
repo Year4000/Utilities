@@ -18,8 +18,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 /** This HttpFetcher will fetch a Http Request */
