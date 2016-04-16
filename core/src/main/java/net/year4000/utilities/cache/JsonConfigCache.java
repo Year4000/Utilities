@@ -9,6 +9,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 import net.year4000.utilities.net.HttpConnection;
 import net.year4000.utilities.net.JsonHttpFetcher;
 
@@ -50,16 +51,16 @@ public abstract class JsonConfigCache {
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return Conditions.equals(this, other);
+        return Utils.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return Conditions.hashCode(this);
+        return Utils.hashCode(this);
     }
 }

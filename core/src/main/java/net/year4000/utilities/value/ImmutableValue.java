@@ -1,6 +1,7 @@
 package net.year4000.utilities.value;
 
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 import java.util.Objects;
 
@@ -33,6 +34,6 @@ public class ImmutableValue<V> implements Value<V> {
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 }

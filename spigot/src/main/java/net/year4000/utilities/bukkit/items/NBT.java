@@ -19,6 +19,7 @@ package net.year4000.utilities.bukkit.items;
 
 import com.google.gson.annotations.SerializedName;
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 @SuppressWarnings("unused")
 /** NBT data of the item. */
@@ -105,17 +106,17 @@ public class NBT {
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return Conditions.equals(this, other);
+        return Utils.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return Conditions.hashCode(this);
+        return Utils.hashCode(this);
     }
 
     /** The enchants the item will have. */
@@ -147,17 +148,17 @@ public class NBT {
 
         @Override
         public String toString() {
-            return Conditions.toString(this);
+            return Utils.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return Conditions.equals(this, other);
+            return Utils.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return Conditions.hashCode(this);
+            return Utils.hashCode(this);
         }
     }
 
@@ -201,17 +202,17 @@ public class NBT {
 
         @Override
         public String toString() {
-            return Conditions.toString(this);
+            return Utils.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return Conditions.equals(this, other);
+            return Utils.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return Conditions.hashCode(this);
+            return Utils.hashCode(this);
         }
     }
 }

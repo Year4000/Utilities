@@ -112,16 +112,16 @@ public final class LogUtil {
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return Conditions.equals(this, other);
+        return Utils.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return Conditions.hashCode(this);
+        return Utils.hashCode(this);
     }
 }
