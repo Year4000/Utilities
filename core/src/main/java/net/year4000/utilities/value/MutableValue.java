@@ -1,6 +1,5 @@
 package net.year4000.utilities.value;
 
-import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 
 import java.util.Objects;
@@ -10,7 +9,7 @@ public class MutableValue<V> implements Value<V> {
     protected V value;
 
     /** Init this Value var with the specific value */
-    protected MutableValue(V value) {
+    public MutableValue(V value) {
         this.value = value;
     }
 
