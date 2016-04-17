@@ -19,6 +19,13 @@ public final class Conditions {
         UtilityConstructError.raise();
     }
 
+    /** The condition must be true to continue further */
+    public static void condition(boolean condition, String message) {
+        if (!condition) {
+            throw new IllegalStateException(message);
+        }
+    }
+
     /** Check that the value is in the states */
     @SafeVarargs
     public static <T extends Enum<?>> T checkState(T value, T... states) {

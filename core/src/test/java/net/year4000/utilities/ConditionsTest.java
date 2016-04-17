@@ -48,4 +48,9 @@ public class ConditionsTest {
         Conditions.nonNull(new Object(), "object");
         Conditions.nonNullOrEmpty("String", "string");
     }
+
+    @Test
+    public void conditionTest() {
+        Conditions.condition(1 == 1, "I hope this is true or we have bigger problems");
+    }
 }
