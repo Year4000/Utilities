@@ -116,6 +116,8 @@ public class ValueTest {
 
     @Test
     public void booleanTest() {
+        Assert.assertTrue(Value.parseBoolean("true").isPresent());
+        Assert.assertTrue(Value.parseBoolean("true").get());
         TypeValue value = new TypeValue(true);
         Assert.assertTrue(value.isBoolean());
         Assert.assertTrue(value.toBoolean());

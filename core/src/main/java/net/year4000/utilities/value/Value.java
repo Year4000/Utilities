@@ -75,6 +75,16 @@ public interface Value<V> {
         }
     }
 
+    /** Tries to parse the boolean from the String and returns the value if its found */
+    static Value<Boolean> parseBoolean(String value) {
+        try {
+            if (value == null || value.isEmpty()) return empty();
+            return of(Boolean.parseBoolean(value));
+        } catch (NumberFormatException error) {
+            return empty();
+        }
+    }
+
     /** Get the value of this instance could be null */
     V get();
 
