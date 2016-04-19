@@ -11,7 +11,7 @@ public class PacketType {
     public PacketType(int id, int state, int bounded) {
         this.id = Conditions.isLarger(id, -1);
         this.bounded = Conditions.inRange(bounded, -1, 2); // based on source
-        this.state = Conditions.inRange(state, -2, 3) + 1;
+        this.state = Conditions.inRange(state, -2, 3);
     }
 
     /** The packet id for the type of packet */

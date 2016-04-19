@@ -5,7 +5,9 @@ import net.year4000.utilities.reflection.Bridge;
 import net.year4000.utilities.reflection.Gateways;
 import net.year4000.utilities.reflection.Getter;
 import net.year4000.utilities.reflection.Proxied;
+import net.year4000.utilities.sponge.protocol.Packet;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 
 @Proxied("net.minecraft.entity.player.EntityPlayerMP")
 public interface ProxyEntityPlayerMP {
@@ -15,8 +17,19 @@ public interface ProxyEntityPlayerMP {
         return Gateways.proxy(ProxyEntityPlayerMP.class, player);
     }
 
+    /** Create the proxy of the User */
+    static ProxyEntityPlayerMP of(User user) {
+        Conditions.nonNull(user, "user");
+        return Gateways.proxy(ProxyEntityPlayerMP.class, user);
+    }
+
     /** Grabs the current instance of the NetHandlerPlayServer */
     @Getter("field_71135_a")
     @Bridge(ProxyNetHandlerPlayServer.class)
     ProxyNetHandlerPlayServer netHandlerPlayServer();
+
+    /** Send the packet for this player */
+    default void sendPacket(Packet packet) {
+        netHandlerPlayServer().networkManager().channel().writeAndFlush(packet);
+    }
 }

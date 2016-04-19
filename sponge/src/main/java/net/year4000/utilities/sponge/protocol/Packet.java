@@ -1,23 +1,26 @@
 package net.year4000.utilities.sponge.protocol;
 
-import com.google.common.collect.Maps;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Reflections;
-import net.year4000.utilities.sponge.protocol.proxy.ProxyEnumConnectionState;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiConsumer;
 
 /** Our packet class that bridges the minecraft type with our type */
 public class Packet {
-    private static final ConcurrentMap<PacketType, Class<?>> cache = Maps.newConcurrentMap();
     private PacketType type;
     private Object injectedPacket;
 
+    /** Create a packet from the type and fetch a new instance of the injected packet*/
     public Packet(PacketType type) {
         this.type = Conditions.nonNull(type, "type");
         this.injectedPacket = Conditions.nonNull(inject(), "inject()");
+    }
+
+    /** Create a packet based on the object */
+    public Packet(PacketType type, Object packet) {
+        this.type = Conditions.nonNull(type, "type");
+        this.injectedPacket = Conditions.nonNull(packet, "packet");
     }
 
     /** Find the packet type and cache it */
@@ -32,11 +35,7 @@ public class Packet {
 
     /** Get the class type of the minecraft packet */
     public Class<?> mcPacketClass() {
-        return cache.computeIfAbsent(type, type -> {
-            ProxyEnumConnectionState state = ProxyEnumConnectionState.get();
-            ProxyEnumConnectionState instance = state.value(type.state());
-            return instance.packet(type);
-        });
+        return PacketTypes.fromType(type).getOrThrow();
     }
 
     /** The instance of the injected packet */

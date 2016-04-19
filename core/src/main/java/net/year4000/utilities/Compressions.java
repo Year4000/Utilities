@@ -16,4 +16,17 @@ public final class Compressions {
         }
         byteBuf.writeByte(number);
     }
+
+    /** Read the var int from the bytebuf */
+    public static int readVarInt(ByteBuf byteBuf) {
+        int i = 0, j = 0, k;
+
+        do {
+            k = byteBuf.readByte();
+            i |= (k & 0x7F) << j++ * 7;
+            Conditions.isSmaller(j, 5);
+        } while ((k & 0x80) != 128);
+
+        return i;
+    }
 }
