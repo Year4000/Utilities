@@ -2,7 +2,9 @@ package net.year4000.utilities.sponge.protocol;
 
 import static net.year4000.utilities.sponge.protocol.PacketTypes.Binding.INBOUND;
 import static net.year4000.utilities.sponge.protocol.PacketTypes.Binding.OUTBOUND;
+import static net.year4000.utilities.sponge.protocol.PacketTypes.State.LOGIN;
 import static net.year4000.utilities.sponge.protocol.PacketTypes.State.PLAY;
+import static net.year4000.utilities.sponge.protocol.PacketTypes.State.STATUS;
 
 import com.google.common.collect.Maps;
 import net.year4000.utilities.Conditions;
@@ -174,22 +176,22 @@ public final class PacketTypes {
     public static final PacketType PLAY_SERVER_PLAYER_BLOCK_PLACEMENT = register(PLAY, OUTBOUND, 0x1C);
     public static final PacketType PLAY_SERVER_USE_ITEM = register(PLAY, OUTBOUND, 0x1D);
 
-//    // Status Packets
-//    // Client
-//    public static final PacketType STATUS_CLIENT_RESPONSE = register(STATUS, OUTBOUND, 0x00);
-//    public static final PacketType STATUS_CLIENT_PONG = register(STATUS, OUTBOUND, 0x01);
-//    // Server
-//    public static final PacketType STATUS_SERVER_REQUEST = register(STATUS, INBOUND, 0x00);
-//    public static final PacketType STATUS_SERVER_PING = register(STATUS, INBOUND, 0x01);
-//
-//
-//    // Login Packets
-//    // Client
-//    public static final PacketType LOGIN_CLIENT_DISCONNECT = register(LOGIN, OUTBOUND, 0x00);
-//    public static final PacketType LOGIN_CLIENT_ENCRYPTION_REQUEST = register(LOGIN, OUTBOUND, 0x01);
-//    public static final PacketType LOGIN_CLIENT_LOGIN_SUCCESS = register(LOGIN, OUTBOUND, 0x02);
-//    public static final PacketType LOGIN_CLIENT_ENABLE_COMPRESSION = register(LOGIN, OUTBOUND, 0x03);
-//    // Server
-//    public static final PacketType LOGIN_SERVER_LOGIN_START = register(LOGIN, INBOUND, 0x00);
-//    public static final PacketType LOGIN_SERVER_ENCRYPTION_RESPONSE = register(LOGIN, INBOUND, 0x01);
+    // Status Packets
+    // Client
+    public static final PacketType STATUS_CLIENT_RESPONSE = register(STATUS, INBOUND, 0x00);
+    public static final PacketType STATUS_CLIENT_PONG = register(STATUS, INBOUND, 0x01);
+    // Server
+    public static final PacketType STATUS_SERVER_REQUEST = register(STATUS, OUTBOUND, 0x00);
+    public static final PacketType STATUS_SERVER_PING = register(STATUS, OUTBOUND, 0x01);
+
+
+    // Login Packets
+    // Client
+    public static final PacketType LOGIN_CLIENT_DISCONNECT = register(LOGIN, INBOUND, 0x00);
+    public static final PacketType LOGIN_CLIENT_ENCRYPTION_REQUEST = register(LOGIN, INBOUND, 0x01);
+    public static final PacketType LOGIN_CLIENT_LOGIN_SUCCESS = register(LOGIN, INBOUND, 0x02);
+    public static final PacketType LOGIN_CLIENT_ENABLE_COMPRESSION = register(LOGIN, INBOUND, 0x03);
+    // Server
+    public static final PacketType LOGIN_SERVER_LOGIN_START = register(LOGIN, OUTBOUND, 0x00);
+    public static final PacketType LOGIN_SERVER_ENCRYPTION_RESPONSE = register(LOGIN, OUTBOUND, 0x01);
 }
