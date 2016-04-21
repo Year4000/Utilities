@@ -46,10 +46,10 @@ final class PipelineHandles {
                 Value<PacketType> packetType = PacketTypes.fromClass(clazz);
                 if (packetType.isPresent()) {
                     Packet packet = new Packet(packetType.get(), msg);
-                    Player player = ctx.channel().attr(PacketManager.PLAYER_KEY).get();
-                    PacketListener listener = manager.getListener(clazz, player);
+                    PacketListener listener = manager.getListener(clazz);
                     if (listener != null) {
                         try {
+                            Player player = ctx.channel().attr(PacketManager.PLAYER_KEY).get();
                             return listener.apply(player, packet);
                         } catch (Exception error) {
                             error.printStackTrace();

@@ -16,7 +16,7 @@ import java.util.Map;
 public class PacketManager implements Packets {
     public static final AttributeKey<Player> PLAYER_KEY = AttributeKey.valueOf("player");
     private final Object plugin;
-    private final Map<Class<?>, Map<Player, PacketListener>> listeners = Maps.newConcurrentMap();
+    private final Map<Class<?>, PacketListener> listeners = Maps.newConcurrentMap();
 
     /** Creates the manages and register listeners ect */
     public PacketManager(Object plugin) {
@@ -39,12 +39,12 @@ public class PacketManager implements Packets {
     public PacketListener getListener(PacketType packetType, Player player) {
         Conditions.nonNull(packetType, "packetType");
         Conditions.nonNull(player, "player");
-        return getListener(PacketTypes.fromType(packetType).getOrThrow("packetType"), player);
+        return getListener(PacketTypes.fromType(packetType).getOrThrow("packetType"));
     }
 
     /** Get the listener for the type and player, internal use ignores checks */
-    PacketListener getListener(Class<?> clazz, Player player) {
-        return listeners.get(clazz).get(player);
+    PacketListener getListener(Class<?> clazz) {
+        return listeners.get(clazz);
     }
 
     /** The implementation of sending a custom packet to the player */
@@ -58,15 +58,11 @@ public class PacketManager implements Packets {
 
     /** The implementation on listing for packets */
     @Override
-    public void registerListener(Player player, PacketType packetType, PacketListener consumer) {
-        Conditions.nonNull(player, "player");
+    public void registerListener(PacketType packetType, PacketListener consumer) {
         Conditions.nonNull(packetType, "packetType");
         Conditions.nonNull(consumer, "consumer");
         Class<?> clazz = PacketTypes.fromType(packetType).getOrThrow();
-        listeners.putIfAbsent(clazz, Maps.newConcurrentMap());
-        Map<Player, PacketListener> playerListeners = listeners.get(clazz);
-        Conditions.condition(playerListeners.get(player) == null, "You can only register a listener once");
-        playerListeners.put(player, consumer);
+        listeners.put(clazz, consumer);
     }
 
     @Listener

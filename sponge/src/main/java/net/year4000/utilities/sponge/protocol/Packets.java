@@ -18,11 +18,6 @@ public interface Packets {
         Sponge.getServer().getOnlinePlayers().forEach(player -> sendPacket(player, packet));
     }
 
-    /** Register the consumer for the player packet listener */
-    void registerListener(Player player, PacketType packetType, PacketListener consumer);
-
     /** Register the consumer for all the players the packet listener */
-    default void registerListener(PacketType packetType, PacketListener consumer) {
-        Sponge.getServer().getOnlinePlayers().forEach(player -> registerListener(player, packetType, consumer));
-    }
+    void registerListener(PacketType packetType, PacketListener consumer);
 }
