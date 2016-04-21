@@ -53,7 +53,7 @@ public final class PacketTypes {
     }
 
     /** Which way the packets are bounded to from the server perspective */
-    public enum Binding {OUTBOUND, INBOUND}
+    public enum Binding {INBOUND, OUTBOUND}
 
     /** The type of packet they are */
     public enum State {HANDSHAKE, PLAY, STATUS, LOGIN}
