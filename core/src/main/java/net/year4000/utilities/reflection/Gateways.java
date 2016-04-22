@@ -88,13 +88,13 @@ public final class Gateways {
         /** Create the getter handler */
         private MethodHandler getterHandle(Method method) {
             final String name = Value.of(method.getAnnotation(Getter.class).value()).getOrElse(method.getName());
-            return handleBridge(method, (instance, args) -> Reflections.field(classInstance, instance, name).get());
+            return handleBridge(method, (instance, args) -> Reflections.getter(classInstance, instance, name).get());
         }
 
         /** Create the setter handler */
         private MethodHandler setterHandle(Method method) {
             final String name = Value.of(method.getAnnotation(Setter.class).value()).getOrElse(method.getName());
-            return (instance, args) -> Reflections.field(classInstance, instance, name, args[0]);
+            return (instance, args) -> Reflections.setter(classInstance, instance, name, args[0]);
         }
 
         /** Create the default keyword method handle */

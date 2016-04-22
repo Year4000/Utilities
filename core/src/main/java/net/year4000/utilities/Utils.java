@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /** Contains basic util methods that do not belong in a set category */
 public final class Utils {
@@ -81,7 +80,7 @@ public final class Utils {
 
     /** Grab the field state value and name, used for toString */
     private static Value<String> fieldState(Field field, Object instance) {
-        Value<Object> inst = Reflections.field(instance, field.getName());
+        Value<Object> inst = Reflections.getter(instance, field.getName());
         if (inst.isPresent()) {
             return Value.of(field.getName() + ": " + inst.get());
         }
@@ -122,7 +121,7 @@ public final class Utils {
             Field[] fields = instance.getClass().getDeclaredFields();
             for (Field field : fields) {
                 hash ^= objects.length;
-                hash += Objects.hashCode(Reflections.field(instance, field.getName()));
+                hash += Objects.hashCode(Reflections.getter(instance, field.getName()));
             }
         } else {
             for (Object object : objects) {
