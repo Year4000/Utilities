@@ -46,13 +46,14 @@ public class Packet {
     }
 
     /** Transmute the packet's data */
-    public void transmute(BiConsumer<Class<?>, Object> consumer) {
+    public Packet transmute(BiConsumer<Class<?>, Object> consumer) {
         consumer.accept(mcPacketClass(), mcPacket());
+        return this;
     }
 
     /** Inject the map of fields into the instance */
-    public void inject(Map<String, Object> fields) {
-        transmute((clazz, inst) -> fields.forEach((key, value) -> Reflections.setter(clazz, inst, key, value)));
+    public Packet inject(Map<String, Object> fields) {
+        return transmute((clazz, inst) -> fields.forEach((key, value) -> Reflections.setter(clazz, inst, key, value)));
     }
 
     /** Inject data of the packet using the packet builder */
@@ -96,14 +97,15 @@ public class Packet {
 
         /** Inject the fields into the instance and return the injected instance */
         public Packet inject() {
-            Field[] fields = packet.mcPacketClass().getDeclaredFields();
-            for (int i = 0; i < length; i++) {
-                Object value = values[i];
-                if (value != null) {
-                    Reflections.setter(packet.mcPacket(), fields[i], value);
+            return packet.transmute((clazz, instance) -> {
+                Field[] fields = clazz.getDeclaredFields();
+                for (int i = 0; i < length; i++) {
+                    Object value = values[i];
+                    if (value != null) {
+                        Reflections.setter(instance, fields[i], value);
+                    }
                 }
-            }
-            return packet;
+            });
         }
     }
 }
