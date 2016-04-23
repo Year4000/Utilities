@@ -32,6 +32,12 @@ public enum Messages implements LocaleKeys<CommandSource, Text> {
     CMD_FLY_ON,
     CMD_FLY_OFF,
 
+    // Chunks Command
+    CMD_CHUNKS_UNLOADED,
+    CHUNKS_UNLOADING,
+    CHUNKS_UNLOADED,
+    CHUNKS_WORLD,
+
     // System Command
     CMD_SYSTEM,
     CMD_UPTIME,
