@@ -1,6 +1,7 @@
 package net.year4000.utilities.sponge.protocol;
 
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 /** The type of packet */
 public class PacketType {
@@ -31,16 +32,16 @@ public class PacketType {
 
     @Override
     public int hashCode() {
-        return Conditions.hashCode(this);
+        return Utils.hashCode(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return Conditions.equals(this, other);
+        return Utils.equals(this, other);
     }
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 }
