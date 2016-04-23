@@ -5,6 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
+import net.year4000.utilities.scheduler.Scheduler;
 import net.year4000.utilities.sponge.protocol.proxy.ProxyEntityPlayerMP;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -13,17 +14,20 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /** The packet manager that inject packets into the netty pipeline */
 public class PacketManager implements Packets {
     public static final AttributeKey<Player> PLAYER_KEY = AttributeKey.valueOf("player");
     private final UUID id = UUID.randomUUID();
     private final Map<Class<?>, PacketListener> listeners = Maps.newConcurrentMap();
+    private Scheduler scheduler = Scheduler.builder().build();
 
     /** Creates the manages and register listeners ect */
     public PacketManager(Object plugin) {
         Conditions.nonNull(plugin, "plugin");
         Sponge.getEventManager().registerListeners(plugin, this);
+        scheduler = Scheduler.builder().executor(Sponge.getScheduler().createAsyncExecutor(plugin)).build();
     }
 
     /** Used for unit tests */
@@ -72,6 +76,16 @@ public class PacketManager implements Packets {
         Conditions.nonNull(packet, "packet");
         ProxyEntityPlayerMP entityPlayer = ProxyEntityPlayerMP.of(player);
         entityPlayer.sendPacket(packet);
+    }
+
+    @Override
+    public void sendPacket(Player player, Packet packet, long offset, TimeUnit unit) {
+        scheduler.run(() -> sendPacket(player, packet), (int) offset, unit);
+    }
+
+    @Override
+    public void repeatPacket(Player player, Packet packet, long delay, TimeUnit unit) {
+        scheduler.repeat(() -> sendPacket(player, packet), (int) delay, unit);
     }
 
     /** The implementation on listing for packets */
