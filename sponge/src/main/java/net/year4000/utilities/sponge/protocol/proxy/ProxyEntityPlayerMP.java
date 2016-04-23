@@ -10,7 +10,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 
 @Proxied("net.minecraft.entity.player.EntityPlayerMP")
-public interface ProxyEntityPlayerMP {
+public interface ProxyEntityPlayerMP extends ProxyEntity {
     /** Create the proxy of the player */
     static ProxyEntityPlayerMP of(Player player) {
         Conditions.nonNull(player, "player");

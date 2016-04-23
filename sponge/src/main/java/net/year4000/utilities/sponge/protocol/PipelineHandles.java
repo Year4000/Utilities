@@ -19,7 +19,7 @@ final class PipelineHandles {
 
     /** Convert our packet system into the minecraft version */
     static class PacketEncoder extends MessageToMessageEncoder<Packet> {
-        public static final String NAME = "my_packet_encoder";
+        public static final String NAME_SUFFIX = "_packet_encoder";
         private PacketManager manager;
 
         PacketEncoder(PacketManager manager) {
@@ -33,7 +33,7 @@ final class PipelineHandles {
     }
 
     static class PacketInterceptor extends ChannelDuplexHandler {
-        public static final String NAME = "my_packet_interceptor";
+        public static final String NAME_SUFFIX = "_packet_interceptor";
         private PacketManager manager;
 
         PacketInterceptor(PacketManager manager) {

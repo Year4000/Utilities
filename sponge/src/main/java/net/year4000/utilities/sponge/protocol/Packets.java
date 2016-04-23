@@ -25,4 +25,13 @@ public interface Packets {
 
     /** Register the consumer for all the players the packet listener */
     void registerListener(PacketType packetType, PacketListener consumer);
+
+    /** Is the manager listening to the current packet type */
+    boolean containsListener(PacketType packetType);
+
+    /** Get the listener for the packet type */
+    PacketListener getListener(PacketType packetType);
+
+    /** Remove the listener for the packet type */
+    void removeListener(PacketType packetType);
 }
