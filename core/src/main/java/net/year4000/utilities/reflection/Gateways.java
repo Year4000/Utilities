@@ -28,9 +28,9 @@ public final class Gateways {
     public static <T> T proxy(Class<T> proxy, Object instance) {
         Conditions.nonNull(proxy, "proxy");
         if (instance == null) { // static proxy
-            return Reflection.newProxy(proxy, new Tunnel(proxy));
+            return Reflection.newProxy(proxy, new Tunnel());
         }
-        return Reflection.newProxy(proxy, new Tunnel(proxy, instance));
+        return Reflection.newProxy(proxy, new Tunnel(instance));
     }
 
     /** Creates a static proxy instance between the interface class {@code proxy} */
@@ -41,22 +41,16 @@ public final class Gateways {
     /** Create a tunnel of the object and the under lying code */
     private static class Tunnel implements InvocationHandler {
         private final static Map<Method, MethodHandler> cache = Maps.newConcurrentMap();
-        private final Class<?> proxyClass;
-        private final Class<?> classInstance;
         private final Object instance;
 
         // Normal proxy with an instance
-        Tunnel(Class<?> clazz, Object instance) {
+        Tunnel(Object instance) {
             this.instance = Conditions.nonNull(instance, "instance");
-            this.classInstance = reflectiveClass(clazz);
-            this.proxyClass = clazz;
         }
 
         // Static proxy that access statics only
-        Tunnel(Class<?> clazz) {
+        Tunnel() {
             this.instance = null; // static proxy
-            this.classInstance = reflectiveClass(clazz);
-            this.proxyClass = clazz;
         }
 
         /** Grab the class instance of the reflective class */
@@ -72,8 +66,7 @@ public final class Gateways {
                 return (instance, args) -> {
                     // null return types should just return null
                     Object returnInst = handler.handle(instance, args);
-                    if (returnInst == null) return null;
-                    return Gateways.proxy(bridge, handler.handle(instance, args));
+                    return (returnInst == null) ? null : Gateways.proxy(bridge, returnInst);
                 };
             }
             return handler;
@@ -82,18 +75,21 @@ public final class Gateways {
         /** Create the invoke handler */
         private MethodHandler invokeHandle(Method method) {
             final String name = Value.of(method.getAnnotation(Invoke.class).value()).getOrElse(method.getName());
+            Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
             return handleBridge(method, (instance, args) -> Reflections.invoke(classInstance, instance, name, args).get());
         }
 
         /** Create the getter handler */
         private MethodHandler getterHandle(Method method) {
             final String name = Value.of(method.getAnnotation(Getter.class).value()).getOrElse(method.getName());
+            Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
             return handleBridge(method, (instance, args) -> Reflections.getter(classInstance, instance, name).get());
         }
 
         /** Create the setter handler */
         private MethodHandler setterHandle(Method method) {
             final String name = Value.of(method.getAnnotation(Setter.class).value()).getOrElse(method.getName());
+            Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
             return (instance, args) -> Reflections.setter(classInstance, instance, name, args[0]);
         }
 
@@ -101,6 +97,7 @@ public final class Gateways {
         private MethodHandler defaultHandle(Method method, Object proxy) throws Throwable {
             Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
             constructor.setAccessible(true);
+            Class<?> proxyClass = method.getDeclaringClass();
             MethodHandle handle = constructor.newInstance(proxyClass, MethodHandles.Lookup.PRIVATE)
                 .unreflectSpecial(method, proxyClass)
                 .bindTo(proxy);

@@ -11,7 +11,11 @@ public class ReflectionTest {
     private static final String FOO_BAR = "foo bar";
     private static final MyObject OBJECT = new MyObject();
 
-    private final static class MyObject {
+    public abstract static class OtherObject {
+        private String other = "other";
+    }
+
+    private final static class MyObject extends OtherObject {
         private String foo = FOO;
         private MyObject object = OBJECT;
 
@@ -20,8 +24,13 @@ public class ReflectionTest {
         }
     }
 
+    @Proxied("net.year4000.utilities.ReflectionTest$OtherObject")
+    public interface ProxyOtherObject {
+        @Getter String other();
+    }
+
     @Proxied("net.year4000.utilities.ReflectionTest$MyObject")
-    public interface ProxyMyObject {
+    public interface ProxyMyObject extends ProxyOtherObject {
         @Setter void foo(String value);
         @Getter String foo();
         @Invoke String method();
@@ -32,6 +41,12 @@ public class ReflectionTest {
         default String hello() {
             return "world";
         }
+    }
+
+    @Test
+    public void extendTest() {
+        ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
+        Assert.assertEquals("other", proxy.other());
     }
 
     @Test
