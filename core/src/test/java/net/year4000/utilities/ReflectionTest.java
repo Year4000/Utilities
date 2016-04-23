@@ -1,6 +1,12 @@
 package net.year4000.utilities;
 
-import net.year4000.utilities.reflection.*;
+import net.year4000.utilities.reflection.Bridge;
+import net.year4000.utilities.reflection.Gateways;
+import net.year4000.utilities.reflection.Getter;
+import net.year4000.utilities.reflection.Invoke;
+import net.year4000.utilities.reflection.Proxied;
+import net.year4000.utilities.reflection.Setter;
+import net.year4000.utilities.reflection.Static;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,7 +18,7 @@ public class ReflectionTest {
     private static final MyObject OBJECT = new MyObject();
 
     public abstract static class OtherObject {
-        private String other = "other";
+        private static String other = "other";
     }
 
     private final static class MyObject extends OtherObject {
@@ -26,7 +32,7 @@ public class ReflectionTest {
 
     @Proxied("net.year4000.utilities.ReflectionTest$OtherObject")
     public interface ProxyOtherObject {
-        @Getter String other();
+        @Getter @Static String other();
     }
 
     @Proxied("net.year4000.utilities.ReflectionTest$MyObject")
@@ -93,6 +99,7 @@ public class ReflectionTest {
             defaultTest();
             setterTest();
             invokeTest();
+            extendTest();
         }
     }
 }

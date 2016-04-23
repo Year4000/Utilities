@@ -1,6 +1,7 @@
 package net.year4000.utilities.reflection;
 
-import com.google.common.collect.Maps;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.reflect.Reflection;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Reflections;
@@ -12,7 +13,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * The gateway between Proxied instances and the real instances,
@@ -40,7 +40,7 @@ public final class Gateways {
 
     /** Create a tunnel of the object and the under lying code */
     private static class Tunnel implements InvocationHandler {
-        private final static Map<Method, MethodHandler> cache = Maps.newConcurrentMap();
+        private final static Cache<Method, MethodHandler> cache = CacheBuilder.newBuilder().softValues().build();
         private final Object instance;
 
         // Normal proxy with an instance
@@ -54,13 +54,13 @@ public final class Gateways {
         }
 
         /** Grab the class instance of the reflective class */
-        private Class<?> reflectiveClass(Class<?> proxy) {
+        private static Class<?> reflectiveClass(Class<?> proxy) {
             Proxied proxied = Conditions.nonNull(proxy.getAnnotation(Proxied.class), "@Proxied");
             return Reflections.clazz(proxied.value(), proxied.init(), proxy.getClassLoader()).getOrThrow("value");
         }
 
         /** Handle the bridge between objects and its proxy */
-        private MethodHandler handleBridge(Method method, MethodHandler handler) {
+        private static MethodHandler handleBridge(Method method, MethodHandler handler) {
             if (method.isAnnotationPresent(Bridge.class)) {
                 final Class<?> bridge = method.getAnnotation(Bridge.class).value();
                 return (instance, args) -> {
@@ -73,28 +73,28 @@ public final class Gateways {
         }
 
         /** Create the invoke handler */
-        private MethodHandler invokeHandle(Method method) {
+        private static MethodHandler invokeHandle(Method method) {
             final String name = Value.of(method.getAnnotation(Invoke.class).value()).getOrElse(method.getName());
             Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
             return handleBridge(method, (instance, args) -> Reflections.invoke(classInstance, instance, name, args).get());
         }
 
         /** Create the getter handler */
-        private MethodHandler getterHandle(Method method) {
+        private static MethodHandler getterHandle(Method method) {
             final String name = Value.of(method.getAnnotation(Getter.class).value()).getOrElse(method.getName());
             Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
             return handleBridge(method, (instance, args) -> Reflections.getter(classInstance, instance, name).get());
         }
 
         /** Create the setter handler */
-        private MethodHandler setterHandle(Method method) {
+        private static MethodHandler setterHandle(Method method) {
             final String name = Value.of(method.getAnnotation(Setter.class).value()).getOrElse(method.getName());
             Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
             return (instance, args) -> Reflections.setter(classInstance, instance, name, args[0]);
         }
 
         /** Create the default keyword method handle */
-        private MethodHandler defaultHandle(Method method, Object proxy) throws Throwable {
+        private static MethodHandler defaultHandle(Method method, Object proxy) throws Throwable {
             Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
             constructor.setAccessible(true);
             Class<?> proxyClass = method.getDeclaringClass();
@@ -107,7 +107,7 @@ public final class Gateways {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             // Caching
-            MethodHandler handler = cache.get(method);
+            MethodHandler handler = cache.getIfPresent(method);
             if (handler != null) {
                 return handler.handle(instance, args);
             }
