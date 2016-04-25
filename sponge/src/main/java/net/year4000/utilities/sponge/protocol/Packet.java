@@ -2,6 +2,7 @@ package net.year4000.utilities.sponge.protocol;
 
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Reflections;
+import net.year4000.utilities.value.TypeValue;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class Packet {
         private final Packet packet;
         private final int length;
         private final Object[] values;
-        private int fieldCounter = 0;
+        private int fieldCounter;
 
         /** Create the values*/
         Injector(Packet packet) {
@@ -106,6 +107,43 @@ public class Packet {
                     }
                 }
             });
+        }
+    }
+
+    /** Create a new accessor that will read the object */
+    public Accessor accessor() {
+        return new Accessor(mcPacket(), mcPacketClass());
+    }
+
+    /** Allow accessing fields from the packet */
+    public static class Accessor {
+        private final Object object;
+        private final Field[] fields;
+        private final int length;
+        private int counter;
+
+        Accessor(Object object, Class<?> clazz) {
+            this.object = Conditions.nonNull(object, "object");
+            this.fields = Conditions.nonNull(clazz, "clazz").getDeclaredFields();
+            this.length = fields.length;
+        }
+
+        /** Allow skipping a ordered field */
+        public Accessor skip() {
+            Conditions.isSmaller(counter++, length - 1);
+            return this;
+        }
+
+        /** Get the value from the order it was called */
+        public TypeValue get() {
+            Conditions.isSmaller(counter, length - 1);
+            return get(counter++);
+        }
+
+        /** Get the field at the specific index */
+        public TypeValue get(int index) {
+            Conditions.inRange(index, 0, length - 1);
+            return new TypeValue(Reflections.getter(object, fields[index]));
         }
     }
 }

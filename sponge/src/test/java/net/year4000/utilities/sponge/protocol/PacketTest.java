@@ -70,4 +70,11 @@ public class PacketTest {
             .inject();
         check(packet);
     }
+
+    @Test
+    public void packetAccessorTest() {
+        Packet packet = new Packet(type, FakePacket.class, new FakePacket());
+        Assert.assertEquals(0, packet.accessor().skip().get(0).toInt());
+        Assert.assertEquals(2, packet.injector().skip().add(2).inject().accessor().get(1).toInt());
+    }
 }
