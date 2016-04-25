@@ -30,7 +30,7 @@ public final class Utilities extends AbstractSpongePlugin {
 
     /** Get the instance of Utilities */
     public static Utilities get() {
-        return instance();
+        return instance(Utilities.class);
     }
 
     @Listener
@@ -47,5 +47,13 @@ public final class Utilities extends AbstractSpongePlugin {
             consumer.accept(src, args);
             return CommandResult.success();
         }).build(), cmd);
+    }
+
+    public static void log(Object object, Object... args) {
+        log(get(), object, args);
+    }
+
+    public static void debug(Object object, Object... args) {
+        debug(get(), object, args);
     }
 }
