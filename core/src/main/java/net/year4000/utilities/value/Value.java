@@ -6,18 +6,30 @@ package net.year4000.utilities.value;
 
 import net.year4000.utilities.Conditions;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /** Internal use of Value for various value needs */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public interface Value<V> {
     /** Creates an empty instance of Value */
     static <V> Value<V> empty() {
-        return new ImmutableValue<>(null);
+        return new ImmutableValue<>((V) null);
     }
 
     /** Creates an instance of Value for the given value */
     static <V> Value<V> of(V value) {
         return new ImmutableValue<>(value);
+    }
+
+    /** Creates an instance of Value for the given value */
+    static <V> Value<V> of(Optional<V> value) {
+        return new ImmutableValue<>(value.orElse(null));
+    }
+
+    /** Creates an instance of Value for the given value */
+    static <V> Value<V> of(Value<V> value) {
+        return new ImmutableValue<>(value.get());
     }
 
     /** Creates an instance of Value for the given String, treat empty strings as null */

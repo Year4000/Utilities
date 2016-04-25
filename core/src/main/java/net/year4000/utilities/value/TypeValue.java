@@ -4,8 +4,21 @@
 
 package net.year4000.utilities.value;
 
+import java.util.Optional;
+
 /** This is a utility class that will try to cast to the required type */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class TypeValue extends ImmutableValue<Object> {
+
+    /** Init this Value var with the specific value */
+    public TypeValue(Optional<?> value) {
+        super(value.orElse(null));
+    }
+
+    /** Init this Value var with the specific value */
+    public TypeValue(Value<?> value) {
+        super(value.get());
+    }
 
     /** Init this Value var with the specific value */
     public TypeValue(Object value) {
