@@ -1,7 +1,10 @@
 package net.year4000.utilities.router;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
+import net.year4000.utilities.value.TypeValue;
 
 public class RoutedPath<T> {
     private final String method;
@@ -14,6 +17,24 @@ public class RoutedPath<T> {
         this.prefix = Conditions.nonNullOrEmpty(prefix, "prefix");
         this.handle = Conditions.nonNull(handle, "handle");
         this.contentType = Conditions.nonNull(contentType, "contentType");
+    }
+
+    /** Handle the handle and catch any exceptions that occur and wrap it with RoutHandleException */
+    public T handle(HttpRequest request, HttpResponse response, TypeValue... args) {
+        Conditions.nonNull(request, "request");
+        Conditions.nonNull(response, "response");
+        return _handle(request, response, args);
+    }
+
+    /** Used for unit tests,  ignores the request and response */
+    T _handle(HttpRequest request, HttpResponse response, TypeValue... args) {
+        try {
+            return handle.handle(request, response, args);
+        } catch (RouteHandleException error) {
+            throw error;
+        } catch (Throwable throwable) {
+            throw new RouteHandleException(throwable);
+        }
     }
 
     @Override
