@@ -15,5 +15,3 @@ include 'sponge'
 include 'bungee'
 include 'spigot'
 include 'core:router'
-findProject(':core:router')?.name = 'router'
-
