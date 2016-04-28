@@ -6,7 +6,7 @@ import net.year4000.utilities.value.Value;
 public interface Router {
 
     /** Tries to find the routed path from the prefix */
-    <T> Value<RoutedPath<T>> findPath(String prefix, String method, Class<?> contentType);
+    <T> Value<RoutedPath<T>> findPath(String prefix, String method, Class<T> contentType);
 
     /** Create the router builder */
     static Builder builder() {

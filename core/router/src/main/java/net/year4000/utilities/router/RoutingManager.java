@@ -17,7 +17,7 @@ public class RoutingManager implements Router {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Value<RoutedPath<T>> findPath(String prefix, String method, Class<?> contentType) {
+    public <T> Value<RoutedPath<T>> findPath(String prefix, String method, Class<T> contentType) {
         return Value.of((RoutedPath<T>) paths.get(new Path(prefix, method, contentType)));
     }
 
