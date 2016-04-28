@@ -7,16 +7,12 @@ import net.year4000.utilities.Utils;
 import net.year4000.utilities.value.TypeValue;
 
 public class RoutedPath<T> {
-    private final String method;
-    private final String prefix;
+    private final RoutingManager.Path path;
     private final Handle<T> handle;
-    private final Class<T> contentType;
 
-    RoutedPath(String prefix, String method, Class<T> contentType, Handle<T> handle) {
-        this.method = Conditions.nonNullOrEmpty(method, "method");
-        this.prefix = Conditions.nonNullOrEmpty(prefix, "prefix");
+    RoutedPath(RoutingManager.Path path, Handle<T> handle) {
+        this.path = Conditions.nonNull(path, "path");
         this.handle = Conditions.nonNull(handle, "handle");
-        this.contentType = Conditions.nonNull(contentType, "contentType");
     }
 
     /** Handle the handle and catch any exceptions that occur and wrap it with RoutHandleException */
@@ -49,6 +45,6 @@ public class RoutedPath<T> {
 
     @Override
     public String toString() {
-        return Utils.toString(this, "method", "prefix", "contentTpe");
+        return Utils.toString(this, "path");
     }
 }
