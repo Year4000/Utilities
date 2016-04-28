@@ -7,12 +7,18 @@ import net.year4000.utilities.Utils;
 import net.year4000.utilities.value.Value;
 
 import java.lang.reflect.Field;
+import java.util.SortedSet;
 
 public class RoutingManager implements Router {
     private final ImmutableSortedMap<Path, RoutedPath<?>> paths;
 
     private RoutingManager(ImmutableSortedMap<Path, RoutedPath<?>> paths) {
         this.paths = Conditions.nonNull(paths, paths);
+    }
+
+    /** Get the sorted keys of the routing manger used for unit test */
+    SortedSet<Path> keys() {
+        return paths.keySet();
     }
 
     @Override
