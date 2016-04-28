@@ -37,7 +37,7 @@ public class RoutedPath<T> {
         return _handle(request, response, args);
     }
 
-    /** Used for unit tests,  ignores the request and response */
+    /** Used for unit tests, ignores the request and response checking */
     T _handle(HttpRequest request, HttpResponse response, TypeValue... args) {
         try {
             return handle.handle(request, response, args);
