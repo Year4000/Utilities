@@ -15,6 +15,21 @@ public class RoutedPath<T> {
         this.handle = Conditions.nonNull(handle, "handle");
     }
 
+    /** Get the prefix of the routed path */
+    public String getPrefix() {
+        return path.prefix;
+    }
+
+    /** Get the method of the routed path */
+    public String getMethod() {
+        return path.method;
+    }
+
+    /** Get the content type of the routed path */
+    public Class<?> getContentType() {
+        return path.contentType;
+    }
+
     /** Handle the handle and catch any exceptions that occur and wrap it with RoutHandleException */
     public T handle(HttpRequest request, HttpResponse response, TypeValue... args) {
         Conditions.nonNull(request, "request");

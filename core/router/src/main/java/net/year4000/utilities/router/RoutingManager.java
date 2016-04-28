@@ -7,7 +7,6 @@ import net.year4000.utilities.Utils;
 import net.year4000.utilities.value.Value;
 
 import java.lang.reflect.Field;
-import java.util.Objects;
 
 public class RoutingManager implements Router {
     private final ImmutableSortedMap<Path, RoutedPath<?>> paths;
@@ -61,9 +60,9 @@ public class RoutingManager implements Router {
 
     /** An immutable path that will be used as the key for the sorted hash map */
     static class Path implements Comparable<Path> {
-        private final String prefix;
-        private final String method;
-        private final Class<?> contentType;
+        final String prefix;
+        final String method;
+        final Class<?> contentType;
 
         Path(String prefix, String method, Class<?> contentType) {
             this.prefix = Conditions.nonNullOrEmpty(prefix, "prefix");
