@@ -37,7 +37,7 @@ public class RouterTest {
     public void routedPathTest() {
         RoutedPath<String> path = router.findPath("test", "GET", String.class).get();
         System.out.println(path);
-        Assert.assertEquals("test", path.getPrefix());
+        Assert.assertEquals("test", path.getEndPoint());
         Assert.assertEquals("GET", path.getMethod());
         Assert.assertEquals(String.class, path.getContentType());
         Assert.assertEquals("test-get", path._handle(null, null));

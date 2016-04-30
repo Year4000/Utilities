@@ -10,5 +10,6 @@ apply from: utilities.file('gradle/utilities.gradle')
 
 dependencies {
     compile utilities.project('core')
+    compile 'io.netty:netty-all:5.0.0.Alpha2'
 }
 

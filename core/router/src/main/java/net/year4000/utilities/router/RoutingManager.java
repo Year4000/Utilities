@@ -1,5 +1,8 @@
 package net.year4000.utilities.router;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedMap;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Reflections;
@@ -11,9 +14,11 @@ import java.util.SortedSet;
 
 public class RoutingManager implements Router {
     private final ImmutableSortedMap<Path, RoutedPath<?>> paths;
+    private final ImmutableMultimap<String, Class<?>> contentTypes;
 
-    private RoutingManager(ImmutableSortedMap<Path, RoutedPath<?>> paths) {
+    private RoutingManager(ImmutableSortedMap<Path, RoutedPath<?>> paths, ImmutableMultimap<String, Class<?>> contentTypes) {
         this.paths = Conditions.nonNull(paths, paths);
+        this.contentTypes = Conditions.nonNull(contentTypes, "contentTypes");
     }
 
     /** Get the sorted keys of the routing manger used for unit test */
@@ -22,14 +27,21 @@ public class RoutingManager implements Router {
     }
 
     @Override
+    public ImmutableCollection<Class<?>> contentTypes(String endPoint) {
+        ImmutableCollection<Class<?>> types = contentTypes.get(endPoint);
+        return (types == null) ? ImmutableList.of() : types;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
-    public <T> Value<RoutedPath<T>> findPath(String prefix, String method, Class<T> contentType) {
-        return Value.of((RoutedPath<T>) paths.get(new Path(prefix, method, contentType)));
+    public <T> Value<RoutedPath<T>> findPath(String endPoint, String method, Class<T> contentType) {
+        return Value.of((RoutedPath<T>) paths.get(new Path(endPoint, method, contentType)));
     }
 
     /** The builder to create the simple router */
     static class Builder implements Router.Builder {
-        private ImmutableSortedMap.Builder<Path, RoutedPath<?>> paths = ImmutableSortedMap.<Path, RoutedPath<?>>naturalOrder();
+        private ImmutableSortedMap.Builder<Path, RoutedPath<?>> paths = ImmutableSortedMap.naturalOrder();
+        private ImmutableMultimap.Builder<String, Class<?>> contentTypes = ImmutableMultimap.builder();
 
         @Override
         @SuppressWarnings("unchecked")
@@ -52,32 +64,34 @@ public class RoutingManager implements Router {
         }
 
         @Override
-        public <T> Router.Builder path(String prefix, String method, Class<T> contentType, Handle<T> handle) {
-            Path path = new Path(prefix, method, contentType);
+        public <T> Router.Builder path(String endPoint, String method, Class<T> contentType, Handle<T> handle) {
+            Path path = new Path(endPoint, method, contentType);
             paths.put(path, new RoutedPath<>(path, handle));
+            contentTypes.put(endPoint, contentType);
             return this;
         }
 
         @Override
         public Router build() {
-            return new RoutingManager(paths.build());
+            return new RoutingManager(paths.build(), contentTypes.build());
         }
     }
 
     /** An immutable path that will be used as the key for the sorted hash map */
     static class Path implements Comparable<Path> {
-        final String prefix;
+        final String endPoint;
         final String method;
         final Class<?> contentType;
 
-        Path(String prefix, String method, Class<?> contentType) {
-            this.prefix = Conditions.nonNullOrEmpty(prefix, "prefix");
+        Path(String endPoint, String method, Class<?> contentType) {
+            this.endPoint = Conditions.nonNullOrEmpty(endPoint, "endPoint");
             this.method = Conditions.nonNullOrEmpty(method, "method");
             this.contentType = Conditions.nonNull(contentType, "contentType");
         }
 
         @Override
         public int compareTo(Path other) {
+            Conditions.nonNull(other, "other");
             return hashCode() - other.hashCode();
         }
 

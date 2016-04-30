@@ -15,9 +15,9 @@ public class RoutedPath<T> {
         this.handle = Conditions.nonNull(handle, "handle");
     }
 
-    /** Get the prefix of the routed path */
-    public String getPrefix() {
-        return path.prefix;
+    /** Get the end point of the routed path */
+    public String getEndPoint() {
+        return path.endPoint;
     }
 
     /** Get the method of the routed path */
