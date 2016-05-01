@@ -10,4 +10,7 @@ import java.lang.annotation.Target;
 public @interface Setter {
     /** Invoke the proxy setter, when a value is not supplied use the method name */
     String value() default "";
+
+    /** When value is an empty string try to use the signature, only the first value will be used */
+    Signature[] signature() default {};
 }

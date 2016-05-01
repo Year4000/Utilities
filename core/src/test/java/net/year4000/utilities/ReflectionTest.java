@@ -50,6 +50,11 @@ public class ReflectionTest {
     }
 
     @Test
+    public void gatewaysTest() {
+        Assert.assertEquals(MyObject.class, Gateways.reflectiveClass(ProxyMyObject.class));
+    }
+
+    @Test
     public void extendTest() {
         ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
         Assert.assertEquals("other", proxy.other());
