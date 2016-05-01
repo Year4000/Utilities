@@ -37,7 +37,7 @@ public class Message {
         return request;
     }
 
-    /** Set the responce of the message */
+    /** Set the response of the message */
     public void setResponse(HttpResponse response) {
         this.response = Conditions.nonNull(response, "response");
     }
