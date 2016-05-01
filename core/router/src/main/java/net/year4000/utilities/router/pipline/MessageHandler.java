@@ -11,6 +11,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     protected void messageReceived(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+        System.err.println(NAME);
         Message message = ctx.attr(Message.ATTRIBUTE_KEY).get();
         ctx.write(message.makeResponse(msg)).addListener(ChannelFutureListener.CLOSE);
     }

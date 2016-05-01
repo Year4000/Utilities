@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import net.year4000.utilities.router.http.Message;
-import net.year4000.utilities.tuple.Pair;
+import net.year4000.utilities.tuple.Triad;
 
 import java.util.List;
 
@@ -28,14 +28,15 @@ public class ContentDecoders {
     );
 
     /** Get the best decoder for the message type */
-    public static Pair<String, Class<? extends ChannelHandler>> decoder(Message message) {
-        return new Pair<>(null,null);
+    public static Triad<Class<?>, String, Class<? extends ChannelHandler>> decoder(Message message) {
+        return new Triad<>(String.class, "text/json", StringDecoder.class);
     }
 
     /** The decoder that decodes string to byte buf */
     public static class StringDecoder extends MessageToMessageDecoder<String> {
         @Override
         protected void decode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
+            System.err.println(NAME);
             out.add(Unpooled.wrappedBuffer(msg.getBytes()));
         }
     }

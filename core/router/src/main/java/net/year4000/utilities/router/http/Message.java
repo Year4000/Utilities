@@ -49,7 +49,7 @@ public class Message {
 
     /** Get the endpoint of the route */
     public String endPoint() {
-        return "";
+        return "test";
     }
 
     /** Get the arguments of the url */

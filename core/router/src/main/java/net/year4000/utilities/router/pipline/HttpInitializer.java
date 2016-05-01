@@ -4,14 +4,14 @@
 
 package net.year4000.utilities.router.pipline;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpServerCodec;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.router.Router;
 
-public class HttpInitializer extends ChannelInitializer<SocketChannel> {
+public class HttpInitializer extends ChannelInitializer<Channel> {
     private final Router router;
 
     public HttpInitializer(Router router) {
@@ -26,7 +26,8 @@ public class HttpInitializer extends ChannelInitializer<SocketChannel> {
     }
 
     @Override
-    protected void initChannel(SocketChannel channel) throws Exception {
+    protected void initChannel(Channel channel) throws Exception {
+        System.err.println("init");
         channel.pipeline().firstContext().attr(Router.ATTRIBUTE_KEY).set(router);
         addHandlers(channel.pipeline());
     }
