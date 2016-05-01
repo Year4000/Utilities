@@ -1,12 +1,12 @@
 package net.year4000.utilities;
 
-import net.year4000.utilities.reflection.Bridge;
+import net.year4000.utilities.reflection.annotations.Bridge;
 import net.year4000.utilities.reflection.Gateways;
-import net.year4000.utilities.reflection.Getter;
-import net.year4000.utilities.reflection.Invoke;
-import net.year4000.utilities.reflection.Proxied;
-import net.year4000.utilities.reflection.Setter;
-import net.year4000.utilities.reflection.Static;
+import net.year4000.utilities.reflection.annotations.Getter;
+import net.year4000.utilities.reflection.annotations.Invoke;
+import net.year4000.utilities.reflection.annotations.Proxied;
+import net.year4000.utilities.reflection.annotations.Setter;
+import net.year4000.utilities.reflection.annotations.Static;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

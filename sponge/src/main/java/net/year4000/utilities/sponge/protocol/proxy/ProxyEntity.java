@@ -2,8 +2,8 @@ package net.year4000.utilities.sponge.protocol.proxy;
 
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Gateways;
-import net.year4000.utilities.reflection.Getter;
-import net.year4000.utilities.reflection.Proxied;
+import net.year4000.utilities.reflection.annotations.Getter;
+import net.year4000.utilities.reflection.annotations.Proxied;
 import org.spongepowered.api.entity.Entity;
 
 @Proxied("net.minecraft.entity.Entity")

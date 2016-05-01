@@ -3,10 +3,10 @@ package net.year4000.utilities.sponge.protocol.proxy;
 import com.google.common.collect.BiMap;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Gateways;
-import net.year4000.utilities.reflection.Getter;
-import net.year4000.utilities.reflection.Invoke;
-import net.year4000.utilities.reflection.Proxied;
-import net.year4000.utilities.reflection.Static;
+import net.year4000.utilities.reflection.annotations.Getter;
+import net.year4000.utilities.reflection.annotations.Invoke;
+import net.year4000.utilities.reflection.annotations.Proxied;
+import net.year4000.utilities.reflection.annotations.Static;
 import net.year4000.utilities.sponge.protocol.PacketType;
 
 import java.util.Map;

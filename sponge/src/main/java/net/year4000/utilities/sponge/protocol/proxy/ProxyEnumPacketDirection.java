@@ -2,9 +2,9 @@ package net.year4000.utilities.sponge.protocol.proxy;
 
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Gateways;
-import net.year4000.utilities.reflection.Invoke;
-import net.year4000.utilities.reflection.Proxied;
-import net.year4000.utilities.reflection.Static;
+import net.year4000.utilities.reflection.annotations.Invoke;
+import net.year4000.utilities.reflection.annotations.Proxied;
+import net.year4000.utilities.reflection.annotations.Static;
 
 @Proxied("net.minecraft.network.EnumPacketDirection")
 public interface ProxyEnumPacketDirection {

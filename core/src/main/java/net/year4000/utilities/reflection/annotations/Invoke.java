@@ -1,4 +1,4 @@
-package net.year4000.utilities.reflection;
+package net.year4000.utilities.reflection.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Getter {
-    /** Invoke the proxy getter, when a value is not supplied use the method name */
+public @interface Invoke {
+    /** Invoke the proxy method, when a value is not supplied use the method name */
     String value() default "";
 }
