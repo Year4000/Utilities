@@ -1,6 +1,7 @@
 package net.year4000.utilities.reflection;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 
 import java.lang.reflect.Field;
 
@@ -29,5 +30,11 @@ class FieldSignatureLookup extends AbstractSignatureLookup<Field> {
             }
         }
         return possibles.build();
+    }
+
+    /** Sort by field name as that is the only valid choice */
+    @Override
+    public ImmutableSortedSet<Field> findSorted() {
+        return ImmutableSortedSet.copyOf((left, right) -> left.getName().compareTo(right.getName()), find());
     }
 }

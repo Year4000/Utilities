@@ -1,6 +1,7 @@
 package net.year4000.utilities.reflection;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -19,4 +20,7 @@ public interface SignatureLookup<T> {
 
     /** Return all the possible matches */
     ImmutableSet<T> find();
+
+    /** Return all the possible matches and then sort it */
+    ImmutableSortedSet<T> findSorted();
 }
