@@ -2,7 +2,6 @@ package net.year4000.utilities.reflection;
 
 import static net.year4000.utilities.reflection.Gateways.reflectiveClass;
 
-import net.year4000.utilities.Reflections;
 import net.year4000.utilities.reflection.annotations.Bridge;
 import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Invoke;

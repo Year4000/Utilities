@@ -1,7 +1,6 @@
-package net.year4000.utilities;
+package net.year4000.utilities.reflection;
 
 import net.year4000.utilities.reflection.annotations.Bridge;
-import net.year4000.utilities.reflection.Gateways;
 import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Invoke;
 import net.year4000.utilities.reflection.annotations.Proxied;
@@ -30,12 +29,12 @@ public class ReflectionTest {
         }
     }
 
-    @Proxied("net.year4000.utilities.ReflectionTest$OtherObject")
+    @Proxied("net.year4000.utilities.reflection.ReflectionTest$OtherObject")
     public interface ProxyOtherObject {
         @Getter @Static String other();
     }
 
-    @Proxied("net.year4000.utilities.ReflectionTest$MyObject")
+    @Proxied("net.year4000.utilities.reflection.ReflectionTest$MyObject")
     public interface ProxyMyObject extends ProxyOtherObject {
         @Setter void foo(String value);
         @Getter String foo();

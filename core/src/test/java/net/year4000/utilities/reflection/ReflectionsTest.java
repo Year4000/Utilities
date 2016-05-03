@@ -1,4 +1,4 @@
-package net.year4000.utilities;
+package net.year4000.utilities.reflection;
 
 import net.year4000.utilities.value.Value;
 import org.junit.Assert;
@@ -43,7 +43,7 @@ public class ReflectionsTest {
 
     @Test
     public void classTest() {
-        final String clazz = "net.year4000.utilities.ReflectionsTest$MyObject";
+        final String clazz = "net.year4000.utilities.reflection.ReflectionsTest$MyObject";
         // Simple
         Value<Class<?>> simple = Reflections.clazz(clazz);
         Assert.assertTrue(simple.isPresent());

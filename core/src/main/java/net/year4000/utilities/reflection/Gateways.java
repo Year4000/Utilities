@@ -2,7 +2,6 @@ package net.year4000.utilities.reflection;
 
 import com.google.common.reflect.Reflection;
 import net.year4000.utilities.Conditions;
-import net.year4000.utilities.Reflections;
 import net.year4000.utilities.reflection.annotations.Proxied;
 import net.year4000.utilities.utils.UtilityConstructError;
 

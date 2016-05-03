@@ -9,7 +9,6 @@ import static net.year4000.utilities.reflection.Handlers.setterHandle;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.year4000.utilities.Conditions;
-import net.year4000.utilities.Reflections;
 import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Invoke;
 import net.year4000.utilities.reflection.annotations.Setter;
