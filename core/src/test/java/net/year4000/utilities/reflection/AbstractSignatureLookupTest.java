@@ -1,9 +1,13 @@
 package net.year4000.utilities.reflection;
 
+import com.google.common.collect.ImmutableSet;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SignatureLookupTest {
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+public class AbstractSignatureLookupTest {
     private abstract class Dumb {
         // Must be 2 for test bellow
         String foo = "foo";
@@ -18,8 +22,15 @@ public class SignatureLookupTest {
         abstract int x();
     }
 
-    private SignatureLookup signType(String sig) {
-        return new SignatureLookup(sig, Dumb.class, SignatureLookup.For.FIELD);
+    @SuppressWarnings("unchecked")
+    private AbstractSignatureLookup signType(String sig) {
+        return new AbstractSignatureLookup(sig, Dumb.class, AbstractSignatureLookup.For.FIELD) {
+            /** Do nothing just used for internal fields */
+            @Override
+            public ImmutableSet find() {
+                return ImmutableSet.of();
+            }
+        };
     }
 
     @Test
@@ -37,13 +48,13 @@ public class SignatureLookupTest {
 
     @Test
     public void fieldSignatureTest() {
-        SignatureLookup lookup = new SignatureLookup("Ljava/lang/String;", Dumb.class, SignatureLookup.For.FIELD);
-        Assert.assertEquals(2, lookup.findFields().size());
+        SignatureLookup<Field> lookup = SignatureLookup.fields("Ljava/lang/String;", Dumb.class);
+        Assert.assertEquals(2, lookup.find().size());
     }
 
     @Test
     public void methodSignatureTest() throws Exception {
-        SignatureLookup lookup = new SignatureLookup("()V", Dumb.class, SignatureLookup.For.METHOD);
-        Assert.assertEquals(4, lookup.findMethods().size());
+        SignatureLookup<Method> lookup = SignatureLookup.methods("()V", Dumb.class);
+        Assert.assertEquals(4, lookup.find().size());
     }
 }
