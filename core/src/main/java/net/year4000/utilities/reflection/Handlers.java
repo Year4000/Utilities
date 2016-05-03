@@ -3,6 +3,7 @@ package net.year4000.utilities.reflection;
 import static net.year4000.utilities.reflection.Gateways.reflectiveClass;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import net.year4000.utilities.reflection.annotations.Bridge;
 import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Invoke;
@@ -35,35 +36,40 @@ final class Handlers {
         return handler;
     }
 
+    /** Wrap index values, -1 gets the last value, -2 gets the second to last value and so on */
+    private static int index(int index, int length) {
+        return (index < 0) ? length + index : index;
+    }
+
     /** Find the method */
-    private static Method findMethod(String signature, Class<?> clazz, String method) {
+    private static Method findMethod(String signature, Class<?> clazz, String method, int index) {
         SignatureLookup<Method> lookup = SignatureLookup.methods(signature, clazz);
-        ImmutableSet<Method> methods = lookup.find();
+        ImmutableSortedSet<Method> methods = lookup.findSorted();
         // Only one just return it
         if (methods.size() == 1) {
-            return methods.iterator().next();
+            return methods.first();
         }
         // Filter by name
-        Method result = methods.stream().filter(name -> name.getName().contains(method)).findFirst().orElse(null);
-        if (result != null) {
-            return result;
+        Method[] result = methods.stream().filter(name -> name.getName().contains(method)).toArray(Method[]::new);
+        if (result.length > 0) {
+            return result[index(index, result.length)];
         }
         // Non found throw error
         throw new RuntimeException("No method by this signature: " + signature);
     }
 
     /** Find the method */
-    private static Field findField(String signature, Class<?> clazz, String method) {
+    private static Field findField(String signature, Class<?> clazz, String method, int index) {
         SignatureLookup<Field> lookup = SignatureLookup.fields(signature, clazz);
-        ImmutableSet<Field> methods = lookup.find();
+        ImmutableSortedSet<Field> methods = lookup.findSorted();
         // Only one just return it
         if (methods.size() == 1) {
-            return methods.iterator().next();
+            return methods.first();
         }
         // Filter by name
-        Field result = methods.stream().filter(name -> name.getName().contains(method)).findFirst().orElse(null);
-        if (result != null) {
-            return result;
+        Field[] result = methods.stream().filter(name -> name.getName().contains(method)).toArray(Field[]::new);
+        if (result.length > 0) {
+            return result[index(index, result.length)];
         }
         // Non found throw error
         throw new RuntimeException("No field by this signature: " + signature);
@@ -74,7 +80,7 @@ final class Handlers {
         Invoke invoke = method.getAnnotation(Invoke.class);
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
         if (!invoke.signature().isEmpty()) { // Search by signature
-            Method signature = findMethod(invoke.signature(), classInstance, invoke.value());
+            Method signature = findMethod(invoke.signature(), classInstance, invoke.value(), invoke.index());
             return handleBridge(method, (instance, args) -> Reflections.invoke(instance, signature, args).get());
         }
         // All else
@@ -87,7 +93,7 @@ final class Handlers {
         Getter getter = method.getAnnotation(Getter.class);
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
         if (!getter.signature().isEmpty()) {
-            Field signature = findField(getter.signature(), classInstance, getter.value());
+            Field signature = findField(getter.signature(), classInstance, getter.value(), getter.index());
             return handleBridge(method, ((instance, args) -> Reflections.getter(instance, signature).get()));
         }
         String name = Value.of(getter.value()).getOrElse(method.getName());
@@ -99,7 +105,7 @@ final class Handlers {
         Setter setter = method.getAnnotation(Setter.class);
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
         if (!setter.signature().isEmpty()) {
-            Field signature = findField(setter.signature(), classInstance, setter.value());
+            Field signature = findField(setter.signature(), classInstance, setter.value(), setter.index());
             return (instance, args) -> Reflections.setter(instance, signature, args[0]);
         }
         String name = Value.of(method.getAnnotation(Setter.class).value()).getOrElse(method.getName());

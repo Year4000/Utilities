@@ -13,4 +13,7 @@ public @interface Getter {
 
     /** Read it by the signature, if multiple are present it will try to use value */
     String signature() default "";
+
+    /** The index to grab from the SignatureLookup */
+    int index() default 0;
 }

@@ -1,6 +1,7 @@
 package net.year4000.utilities.reflection;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,6 +30,12 @@ public class AbstractSignatureLookupTest {
             @Override
             public ImmutableSet find() {
                 return ImmutableSet.of();
+            }
+
+            /** Do nothing just used for internal fields */
+            @Override
+            public ImmutableSortedSet findSorted() {
+                return ImmutableSortedSet.of();
             }
         };
     }
