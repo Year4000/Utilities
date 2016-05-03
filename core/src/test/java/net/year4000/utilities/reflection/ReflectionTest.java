@@ -23,9 +23,14 @@ public class ReflectionTest {
     private final static class MyObject extends OtherObject {
         private String foo = FOO;
         private MyObject object = OBJECT;
+        private int findMe = 1;
 
         private String method() {
             return FOO_BAR;
+        }
+
+        private String findMe(int x, int y, int z) {
+            return "found me";
         }
     }
 
@@ -42,6 +47,15 @@ public class ReflectionTest {
 
         @Getter @Bridge(ProxyMyObject.class) ProxyMyObject object();
         @Setter void object(ProxyMyObject object);
+
+        @Invoke(signature = "(III)Ljava/lang/String;")
+        String signatureInvoke(int x, int y, int z);
+
+        @Getter(signature = "I")
+        int signatureGetter();
+
+        @Setter(signature = "I")
+        void signatureSetter(int x);
 
         default String hello() {
             return "world";
@@ -92,6 +106,15 @@ public class ReflectionTest {
     public void defaultTest() {
         ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
         Assert.assertEquals("world", proxy.hello());
+    }
+
+    @Test
+    public void signatureTest() {
+        ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
+        Assert.assertEquals("found me", proxy.signatureInvoke(1, 1, 1));
+        Assert.assertEquals(1, proxy.signatureGetter());
+        proxy.signatureSetter(0);
+        Assert.assertNotEquals(1, proxy.signatureGetter());
     }
 
     @Test
