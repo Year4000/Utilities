@@ -13,6 +13,6 @@ public interface ProxyEntity {
         return Gateways.proxy(ProxyEntity.class, entity);
     }
 
-    @Getter("field_145783_c")
+    @Getter(signature = "I")
     int entityId();
 }

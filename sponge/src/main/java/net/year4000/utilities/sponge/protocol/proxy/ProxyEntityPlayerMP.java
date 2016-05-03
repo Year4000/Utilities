@@ -24,7 +24,7 @@ public interface ProxyEntityPlayerMP extends ProxyEntity {
     }
 
     /** Grabs the current instance of the NetHandlerPlayServer */
-    @Getter("field_71135_a")
+    @Getter(signature = "Lnet/minecraft/network/NetHandlerPlayServer;")
     @Bridge(ProxyNetHandlerPlayServer.class)
     ProxyNetHandlerPlayServer netHandlerPlayServer();
 

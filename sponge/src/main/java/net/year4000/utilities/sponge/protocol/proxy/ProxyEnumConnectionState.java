@@ -25,7 +25,7 @@ public interface ProxyEnumConnectionState {
         return Gateways.proxy(ProxyEnumConnectionState.class);
     }
 
-    @Getter("field_179247_h")
+    @Getter(signature = "Ljava/util/Map;")
     Map<Object, BiMap<Integer, Class<?>>> classMap();
 
     /** Use magic to get the object of the packet */

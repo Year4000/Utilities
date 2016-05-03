@@ -7,7 +7,7 @@ import net.year4000.utilities.reflection.annotations.Proxied;
 @Proxied("net.minecraft.network.NetHandlerPlayServer")
 public interface ProxyNetHandlerPlayServer {
     /** Get the network manager */
-    @Getter("field_147371_a")
+    @Getter(signature = "Lnet/minecraft/network/NetworkManager;")
     @Bridge(ProxyNetworkManager.class)
     ProxyNetworkManager networkManager();
 }
