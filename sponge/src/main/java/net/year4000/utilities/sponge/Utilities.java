@@ -20,7 +20,7 @@ import org.spongepowered.api.plugin.Plugin;
 import java.util.function.BiConsumer;
 
 @Plugin(
-    id = "net.year4000.utilities",
+    id = "utilities",
     name = "Utilities",
     version = Tokens.FULL_VERSION,
     description = "A collection of API's to make coding faster and simpler.",

@@ -46,8 +46,13 @@ public final class ErrorReporter {
     }
 
     /** Set the current threads uncaught exception handler */
+    public static void setUncaughtExceptionHandler(Thread thread) {
+        thread.setUncaughtExceptionHandler(new ErrorReporterHandler());
+    }
+
+    /** Set the current threads uncaught exception handler */
     public static void setUncaughtExceptionHandler() {
-        Thread.currentThread().setUncaughtExceptionHandler(new ErrorReporterHandler());
+        setUncaughtExceptionHandler(Thread.currentThread());
     }
 
     /** Create a new builder for this error reporter */
