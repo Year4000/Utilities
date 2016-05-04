@@ -42,7 +42,7 @@ class Tunnel implements InvocationHandler {
 
         // Cache does not exist create one
         if (method.isAnnotationPresent(Invoke.class)) {
-            MethodHandler handle = invokeHandle(method);
+            MethodHandler handle = invokeHandle(method, args);
             cache.put(method, handle);
             return handle.handle(instance, args);
         } else if (method.isAnnotationPresent(Setter.class)) {
@@ -74,15 +74,21 @@ class Tunnel implements InvocationHandler {
         // Run the method handles to decided what to do
         try {
             return invokable(proxy, method, args);
-        } catch (Throwable throwable) {
-            ErrorReporter.builder(throwable)
+        } catch (NoSuchFieldException | NoSuchMethodException exception) { // Show what went wrong
+            ErrorReporter.builder(exception)
                 .hideStackTrace()
                 .add("Failed at: ", method.getDeclaringClass().getName())
+                .add("Message: ", exception.getMessage())
                 .add("Method: ", method.getName())
                 .add("Arg(s): ", args)
-                .add("Annotation(s): ", method.getDeclaredAnnotations())
+                .add("Annotation(s): ", (Object) method.getDeclaredAnnotations())
                 .buildAndReport(System.err);
-            return null;
+        } catch (Throwable throwable) { // General errors
+            ErrorReporter.builder(throwable)
+                .add("Failed at: ", method.getDeclaringClass().getName())
+                .add("Method: ", method.getName())
+                .buildAndReport(System.err);
         }
+        return null;
     }
 }

@@ -2,7 +2,6 @@ package net.year4000.utilities.reflection;
 
 import static net.year4000.utilities.reflection.Gateways.reflectiveClass;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import net.year4000.utilities.reflection.annotations.Bridge;
 import net.year4000.utilities.reflection.annotations.Getter;
@@ -59,15 +58,15 @@ final class Handlers {
     }
 
     /** Find the method */
-    private static Field findField(String signature, Class<?> clazz, String method, int index) {
+    private static Field findField(String signature, Class<?> clazz, String field, int index) {
         SignatureLookup<Field> lookup = SignatureLookup.fields(signature, clazz);
-        ImmutableSortedSet<Field> methods = lookup.findSorted();
+        ImmutableSortedSet<Field> fields = lookup.findSorted();
         // Only one just return it
-        if (methods.size() == 1) {
-            return methods.first();
+        if (fields.size() == 1) {
+            return fields.first();
         }
         // Filter by name
-        Field[] result = methods.stream().filter(name -> name.getName().contains(method)).toArray(Field[]::new);
+        Field[] result = fields.stream().filter(name -> name.getName().contains(field)).toArray(Field[]::new);
         if (result.length > 0) {
             return result[index(index, result.length)];
         }
@@ -76,7 +75,7 @@ final class Handlers {
     }
 
     /** Create the invoke handler */
-    static MethodHandler invokeHandle(Method method) {
+    static MethodHandler invokeHandle(Method method, Object[] checkArgs) throws NoSuchMethodException {
         Invoke invoke = method.getAnnotation(Invoke.class);
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
         if (!invoke.signature().isEmpty()) { // Search by signature
@@ -85,11 +84,14 @@ final class Handlers {
         }
         // All else
         String name = Value.of(invoke.value()).getOrElse(method.getName());
+        if (Reflections.method(classInstance, name, checkArgs).isEmpty()) { // Make sure the method exists
+            throw new NoSuchMethodException("No method by this name: " + name);
+        }
         return handleBridge(method, (instance, args) -> Reflections.invoke(classInstance, instance, name, args).get());
     }
 
     /** Create the getter handler */
-    static MethodHandler getterHandle(Method method) {
+    static MethodHandler getterHandle(Method method) throws NoSuchFieldException {
         Getter getter = method.getAnnotation(Getter.class);
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
         if (!getter.signature().isEmpty()) {
@@ -97,11 +99,14 @@ final class Handlers {
             return handleBridge(method, ((instance, args) -> Reflections.getter(instance, signature).get()));
         }
         String name = Value.of(getter.value()).getOrElse(method.getName());
+        if (Reflections.field(classInstance, name).isEmpty()) { // Make sure the field exists
+            throw new NoSuchFieldException("No field by this name: " + name);
+        }
         return handleBridge(method, (instance, args) -> Reflections.getter(classInstance, instance, name).get());
     }
 
     /** Create the setter handler */
-    static MethodHandler setterHandle(Method method) {
+    static MethodHandler setterHandle(Method method) throws NoSuchFieldException {
         Setter setter = method.getAnnotation(Setter.class);
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
         if (!setter.signature().isEmpty()) {
@@ -109,6 +114,9 @@ final class Handlers {
             return (instance, args) -> Reflections.setter(instance, signature, args[0]);
         }
         String name = Value.of(method.getAnnotation(Setter.class).value()).getOrElse(method.getName());
+        if (Reflections.field(classInstance, name).isEmpty()) { // Make sure the field exists
+            throw new NoSuchFieldException("No field by this name: " + name);
+        }
         return (instance, args) -> Reflections.setter(classInstance, instance, name, args[0]);
     }
 
