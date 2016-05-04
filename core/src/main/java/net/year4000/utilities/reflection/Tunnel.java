@@ -6,7 +6,6 @@ import static net.year4000.utilities.reflection.Handlers.getterHandle;
 import static net.year4000.utilities.reflection.Handlers.invokeHandle;
 import static net.year4000.utilities.reflection.Handlers.setterHandle;
 
-import com.google.common.base.Joiner;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.year4000.utilities.Conditions;
@@ -17,8 +16,6 @@ import net.year4000.utilities.reflection.annotations.Setter;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /** Create a tunnel of the object and the under lying code */
 class Tunnel implements InvocationHandler {
@@ -35,7 +32,7 @@ class Tunnel implements InvocationHandler {
         this.instance = null; // static proxy
     }
 
-    /** Handle the actual invoaction of the method proxy system */
+    /** Handle the actual invocation of the method proxy system */
     private Object invokable(Object proxy, Method method, Object[] args) throws Throwable {
         // Caching
         MethodHandler handler = cache.getIfPresent(method);
@@ -70,6 +67,11 @@ class Tunnel implements InvocationHandler {
     /** Wraps the error from invokable and print out details */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        // Allow getting the actual instance, bypassing proxy handles
+        if ("$this".equals(method.getName())) {
+            return instance;
+        }
+        // Run the method handles to decided what to do
         try {
             return invokable(proxy, method, args);
         } catch (Throwable throwable) {
