@@ -90,14 +90,14 @@ public final class ErrorReporter {
         /** Add a object with a message to the reporter*/
         public Builder add(String message, Object object) {
             Conditions.nonNullOrEmpty(message, "message");
-            lines.add(message + String.valueOf(object));
+            lines.add(message + ((object == null) ? "null" : String.valueOf(object)));
             return this;
         }
 
         /** Add a bunch of object separated by a comma */
         public Builder add(String message, Object... object) {
             Conditions.nonNullOrEmpty(message, "message");
-            String joined = Stream.of(object).map(String::valueOf).collect(Collectors.joining(", "));
+            String joined = (object == null) ? "null" : Stream.of(object).map(String::valueOf).collect(Collectors.joining(", "));
             lines.add(message + joined);
             return this;
         }

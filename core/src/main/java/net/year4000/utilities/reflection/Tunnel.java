@@ -14,8 +14,11 @@ import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Invoke;
 import net.year4000.utilities.reflection.annotations.Setter;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Create a tunnel of the object and the under lying code */
 class Tunnel implements InvocationHandler {
@@ -75,13 +78,18 @@ class Tunnel implements InvocationHandler {
         try {
             return invokable(proxy, method, args);
         } catch (NoSuchFieldException | NoSuchMethodException exception) { // Show what went wrong
+            String annotations = Stream.of(method.getAnnotations())
+                .map(Annotation::annotationType)
+                .map(clazz -> "@" + clazz.getSimpleName())
+                .collect(Collectors.joining(", "));
+            // The report
             ErrorReporter.builder(exception)
                 .hideStackTrace()
                 .add("Failed at: ", method.getDeclaringClass().getName())
                 .add("Message: ", exception.getMessage())
+                .add("Annotation(s): ", annotations)
                 .add("Method: ", method.getName())
                 .add("Arg(s): ", args)
-                .add("Annotation(s): ", (Object) method.getDeclaredAnnotations())
                 .buildAndReport(System.err);
         } catch (Throwable throwable) { // General errors
             ErrorReporter.builder(throwable)

@@ -124,7 +124,7 @@ public class PacketManager implements Packets {
         } catch (Throwable throwable) {
             ErrorReporter.builder(throwable)
                 .hideStackTrace()
-                .add("Could not inject pipeline encoder or interceptor or: ", event.getTargetEntity().getName())
+                .add("Could not inject pipeline encoder or interceptor for: ", event.getTargetEntity().getName())
                 .buildAndReport(System.err);
         }
     }
