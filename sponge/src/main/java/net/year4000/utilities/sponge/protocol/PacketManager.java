@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.Utils;
 import net.year4000.utilities.scheduler.Scheduler;
 import net.year4000.utilities.sponge.protocol.proxy.ProxyEntityPlayerMP;
@@ -104,20 +105,27 @@ public class PacketManager implements Packets {
 
     @Listener
     public void onPlayerLogin(ClientConnectionEvent.Join event) {
-        ProxyEntityPlayerMP proxy = ProxyEntityPlayerMP.of(event.getTargetEntity());
-        Channel channel = proxy.netHandlerPlayServer().networkManager().channel();
-        channel.attr(PLAYER_KEY).set(event.getTargetEntity());
-        String encoder = hashCode() + PipelineHandles.PacketEncoder.NAME_SUFFIX;
-        String interceptor = hashCode() + PipelineHandles.PacketInterceptor.NAME_SUFFIX;
+        try {
+            ProxyEntityPlayerMP proxy = ProxyEntityPlayerMP.of(event.getTargetEntity());
+            Channel channel = proxy.netHandlerPlayServer().networkManager().channel();
+            channel.attr(PLAYER_KEY).set(event.getTargetEntity());
+            String encoder = hashCode() + PipelineHandles.PacketEncoder.NAME_SUFFIX;
+            String interceptor = hashCode() + PipelineHandles.PacketInterceptor.NAME_SUFFIX;
 
-        // Inject our own encoder that will transmute our packets
-        if (channel.pipeline().get(encoder) == null) {
-            channel.pipeline().addFirst(encoder, new PipelineHandles.PacketEncoder(this));
-        }
+            // Inject our own encoder that will transmute our packets
+            if (channel.pipeline().get(encoder) == null) {
+                channel.pipeline().addFirst(encoder, new PipelineHandles.PacketEncoder(this));
+            }
 
-        // Inject our bi directional packet interceptor
-        if (channel.pipeline().get(interceptor) == null) {
-            channel.pipeline().addFirst(interceptor, new PipelineHandles.PacketInterceptor(this));
+            // Inject our bi directional packet interceptor
+            if (channel.pipeline().get(interceptor) == null) {
+                channel.pipeline().addFirst(interceptor, new PipelineHandles.PacketInterceptor(this));
+            }
+        } catch (Throwable throwable) {
+            ErrorReporter.builder(throwable)
+                .hideStackTrace()
+                .add("Could not inject pipeline encoder or interceptor or: ", event.getTargetEntity().getName())
+                .buildAndReport(System.err);
         }
     }
 

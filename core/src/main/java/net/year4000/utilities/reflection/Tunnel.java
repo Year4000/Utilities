@@ -6,15 +6,19 @@ import static net.year4000.utilities.reflection.Handlers.getterHandle;
 import static net.year4000.utilities.reflection.Handlers.invokeHandle;
 import static net.year4000.utilities.reflection.Handlers.setterHandle;
 
+import com.google.common.base.Joiner;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Invoke;
 import net.year4000.utilities.reflection.annotations.Setter;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Create a tunnel of the object and the under lying code */
 class Tunnel implements InvocationHandler {
@@ -31,8 +35,8 @@ class Tunnel implements InvocationHandler {
         this.instance = null; // static proxy
     }
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    /** Handle the actual invoaction of the method proxy system */
+    private Object invokable(Object proxy, Method method, Object[] args) throws Throwable {
         // Caching
         MethodHandler handler = cache.getIfPresent(method);
         if (handler != null) {
@@ -61,5 +65,22 @@ class Tunnel implements InvocationHandler {
 
         // Special cases
         return Reflections.invoke(Object.class, instance, method.getName()).get();
+    }
+
+    /** Wraps the error from invokable and print out details */
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        try {
+            return invokable(proxy, method, args);
+        } catch (Throwable throwable) {
+            ErrorReporter.builder(throwable)
+                .hideStackTrace()
+                .add("Failed at: ", method.getDeclaringClass().getName())
+                .add("Method: ", method.getName())
+                .add("Arg(s): ", args)
+                .add("Annotation(s): ", method.getDeclaredAnnotations())
+                .buildAndReport(System.err);
+            return null;
+        }
     }
 }

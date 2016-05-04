@@ -4,6 +4,7 @@
 
 package net.year4000.utilities.sponge;
 
+import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.Tokens;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
@@ -27,6 +28,9 @@ import java.util.function.BiConsumer;
     authors = {"ewized"}
 )
 public final class Utilities extends AbstractSpongePlugin {
+    static {
+        ErrorReporter.setUncaughtExceptionHandler();
+    }
 
     /** Get the instance of Utilities */
     public static Utilities get() {
