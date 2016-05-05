@@ -2,6 +2,7 @@ package net.year4000.utilities.reflection;
 
 import static net.year4000.utilities.reflection.Gateways.reflectiveClass;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import net.year4000.utilities.reflection.annotations.Bridge;
 import net.year4000.utilities.reflection.annotations.Getter;
@@ -60,10 +61,10 @@ final class Handlers {
     /** Find the method */
     private static Field findField(String signature, Class<?> clazz, String field, int index) {
         SignatureLookup<Field> lookup = SignatureLookup.fields(signature, clazz);
-        ImmutableSortedSet<Field> fields = lookup.findSorted();
+        ImmutableSet<Field> fields = lookup.find();
         // Only one just return it
         if (fields.size() == 1) {
-            return fields.first();
+            return fields.iterator().next();
         }
         // Filter by name
         Field[] result = fields.stream().filter(name -> name.getName().contains(field)).toArray(Field[]::new);
