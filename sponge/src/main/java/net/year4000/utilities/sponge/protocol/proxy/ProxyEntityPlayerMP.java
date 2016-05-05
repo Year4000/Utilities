@@ -23,6 +23,9 @@ public interface ProxyEntityPlayerMP extends ProxyEntity {
         return Gateways.proxy(ProxyEntityPlayerMP.class, user);
     }
 
+    /** Get the object that this proxy is using */
+    Object $this();
+
     /** Grabs the current instance of the NetHandlerPlayServer */
     @Getter(signature = "Lnet/minecraft/network/NetHandlerPlayServer;")
     @Bridge(ProxyNetHandlerPlayServer.class)

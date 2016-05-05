@@ -14,6 +14,9 @@ public interface ProxyEnumPacketDirection {
         return Gateways.proxy(ProxyEnumPacketDirection.class);
     }
 
+    /** Get the object that this proxy is using */
+    Object $this();
+
     // enum
 
     @Invoke

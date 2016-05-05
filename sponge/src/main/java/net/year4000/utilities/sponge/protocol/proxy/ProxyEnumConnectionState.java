@@ -25,6 +25,9 @@ public interface ProxyEnumConnectionState {
         return Gateways.proxy(ProxyEnumConnectionState.class);
     }
 
+    /** Get the object that this proxy is using */
+    Object $this();
+
     @Getter(signature = "Ljava/util/Map;", index = 1)
     Map<Object, BiMap<Integer, Class<?>>> classMap();
 

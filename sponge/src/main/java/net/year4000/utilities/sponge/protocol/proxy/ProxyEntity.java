@@ -13,6 +13,9 @@ public interface ProxyEntity {
         return Gateways.proxy(ProxyEntity.class, entity);
     }
 
+    /** Get the object that this proxy is using */
+    Object $this();
+
     @Getter(signature = "I")
     int entityId();
 }

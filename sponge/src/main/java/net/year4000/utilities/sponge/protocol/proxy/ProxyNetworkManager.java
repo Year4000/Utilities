@@ -6,6 +6,9 @@ import net.year4000.utilities.reflection.annotations.Proxied;
 
 @Proxied("net.minecraft.network.NetworkManager")
 public interface ProxyNetworkManager {
+    /** Get the object that this proxy is using */
+    Object $this();
+
     /** The netty channel that is attached to the network manager */
     @Getter(signature = "Lio/netty/channel/Channel;")
     Channel channel();
