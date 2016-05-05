@@ -2,7 +2,7 @@ package net.year4000.utilities.sponge.protocol.proxy;
 
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Gateways;
-import net.year4000.utilities.reflection.annotations.Getter;
+import net.year4000.utilities.reflection.annotations.Invoke;
 import net.year4000.utilities.reflection.annotations.Proxied;
 import org.spongepowered.api.entity.Entity;
 
@@ -16,6 +16,7 @@ public interface ProxyEntity {
     /** Get the object that this proxy is using */
     Object $this();
 
-    @Getter(signature = "I")
+    /** The hashcode of the entity is the hashCode of the object */
+    @Invoke(value = "hashCode")
     int entityId();
 }
