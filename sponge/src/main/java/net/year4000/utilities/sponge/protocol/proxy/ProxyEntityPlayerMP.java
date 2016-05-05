@@ -33,6 +33,6 @@ public interface ProxyEntityPlayerMP extends ProxyEntity {
 
     /** Send the packet for this player */
     default void sendPacket(Packet packet) {
-        netHandlerPlayServer().networkManager().channel().writeAndFlush(packet);
+        netHandlerPlayServer().networkManager().sendPacket(packet.mcPacket());
     }
 }

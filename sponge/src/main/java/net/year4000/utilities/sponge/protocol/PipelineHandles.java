@@ -3,33 +3,15 @@ package net.year4000.utilities.sponge.protocol;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import io.netty.handler.codec.MessageToMessageEncoder;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.utils.UtilityConstructError;
 import net.year4000.utilities.value.Value;
 import org.spongepowered.api.entity.living.player.Player;
 
-import java.util.List;
-
 /** The handles for the minecraft pipeline */
 final class PipelineHandles {
     private PipelineHandles() {
         UtilityConstructError.raise();
-    }
-
-    /** Convert our packet system into the minecraft version */
-    static class PacketEncoder extends MessageToMessageEncoder<Packet> {
-        public static final String NAME_SUFFIX = "_packet_encoder";
-        private PacketManager manager;
-
-        PacketEncoder(PacketManager manager) {
-            this.manager = Conditions.nonNull(manager, "manager");
-        }
-
-        @Override
-        protected void encode(ChannelHandlerContext ctx, Packet msg, List<Object> out) throws Exception {
-            out.add(msg.mcPacket());
-        }
     }
 
     static class PacketInterceptor extends ChannelDuplexHandler {
