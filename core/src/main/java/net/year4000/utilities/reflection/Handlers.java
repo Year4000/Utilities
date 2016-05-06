@@ -42,9 +42,8 @@ final class Handlers {
     }
 
     /** Find the method */
-    private static Method findMethod(String signature, Class<?> clazz, String method, int index) {
-        SignatureLookup<Method> lookup = SignatureLookup.methods(signature, clazz);
-        ImmutableSortedSet<Method> methods = lookup.findSorted();
+    private static Method findMethod(String signature, Class<?> clazz, String method, int index) throws NoSuchMethodException {
+        ImmutableSortedSet<Method> methods = SignatureLookup.methods(signature, clazz).findSorted();
         // Only one just return it
         if (methods.size() == 1) {
             return methods.first();
@@ -55,13 +54,12 @@ final class Handlers {
             return result[index(index, result.length)];
         }
         // Non found throw error
-        throw new RuntimeException("No method by this signature: " + signature);
+        throw new NoSuchMethodException("No method by this signature: " + signature);
     }
 
     /** Find the method */
-    private static Field findField(String signature, Class<?> clazz, String field, int index) {
-        SignatureLookup<Field> lookup = SignatureLookup.fields(signature, clazz);
-        ImmutableSet<Field> fields = lookup.find();
+    private static Field findField(String signature, Class<?> clazz, String field, int index) throws NoSuchFieldException {
+        ImmutableSet<Field> fields = SignatureLookup.fields(signature, clazz).find();
         // Only one just return it
         if (fields.size() == 1) {
             return fields.iterator().next();
@@ -72,7 +70,7 @@ final class Handlers {
             return result[index(index, result.length)];
         }
         // Non found throw error
-        throw new RuntimeException("No field by this signature: " + signature);
+        throw new NoSuchFieldException("No field by this signature: " + signature);
     }
 
     /** Create the invoke handler */
