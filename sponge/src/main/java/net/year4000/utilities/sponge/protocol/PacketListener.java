@@ -6,6 +6,11 @@ import java.util.function.BiFunction;
 
 @FunctionalInterface
 public interface PacketListener extends BiFunction<Player, Packet, Boolean> {
+    /** Should the event be ignored, this leaves the packet to be handled normally */
+    boolean IGNORE = false;
+
+    /** Should the event be canceled, prevents the server/client ever knowing about it */
+    boolean CANCEL = true;
 
     /** Return true to stop the packet */
     @Override

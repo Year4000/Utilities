@@ -49,9 +49,8 @@ final class PipelineHandles {
                         return listener.apply(player, packet);
                     } catch (Exception error) {
                         ErrorReporter.builder(error)
-                            .add("PacketManager: ", Integer.toHexString(manager.hashCode()))
-                            .add("PacketManager Plugin: ", manager.plugin)
                             .add("PacketManager ID: ", manager.id)
+                            .add("PacketManager Plugin: ", manager.plugin)
                             .add("PacketManager Listener(s)", manager.listeners.size())
                             .add("Player: ", player.getName())
                             .add("Packet ID: ", Integer.toHexString(packet.packetType().id()))
@@ -60,11 +59,11 @@ final class PipelineHandles {
                             .add("Packet Class: ", packet.mcPacketClass())
                             .add("Packet Object: ", packet.mcPacket())
                             .buildAndReport(System.out);
-                        return false;
+                        return PacketListener.CANCEL;
                     }
                 }
             }
         }
-        return false;
+        return PacketListener.IGNORE;
     }
 }
