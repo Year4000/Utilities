@@ -13,7 +13,9 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
+import net.year4000.utilities.sponge.ducktape.SpongeModuleManager;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
@@ -28,6 +30,8 @@ import java.util.function.BiConsumer;
     authors = {"ewized"}
 )
 public final class Utilities extends AbstractSpongePlugin {
+    private final SpongeModuleManager moduleManager = new SpongeModuleManager();
+
     static {
         ErrorReporter.setUncaughtExceptionHandler();
     }
@@ -35,6 +39,11 @@ public final class Utilities extends AbstractSpongePlugin {
     /** Get the instance of Utilities */
     public static Utilities get() {
         return instance(Utilities.class);
+    }
+
+    @Listener
+    public void onConstruct(GameConstructionEvent event) {
+        moduleManager.injectModules();
     }
 
     @Listener

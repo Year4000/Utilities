@@ -37,7 +37,8 @@ assemble.dependsOn shadowJar {
     version = utilities.version
 
     dependencies {
-        include dependency('redis.clients:jedis:.*')
+        include dependency('org.codehaus.groovy:groovy-all:.*') // core:ducktape
+        include dependency('redis.clients:jedis:.*') // core:redis
         include dependency('net.year4000.utilities:.*')
     }
 }
