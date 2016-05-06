@@ -6,19 +6,16 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.util.AttributeKey;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
-import net.year4000.utilities.Utils;
 import net.year4000.utilities.scheduler.Scheduler;
 import net.year4000.utilities.sponge.protocol.proxy.ProxyEntityPlayerMP;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.plugin.PluginContainer;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /** The packet manager that inject packets into the netty pipeline */
 public class PacketManager implements Packets {
@@ -133,10 +130,10 @@ public class PacketManager implements Packets {
             ChannelPipeline pipeline = channel.pipeline();
             if (pipeline.get(PipelineHandles.INBOUND_NAME) == null) {
                 String where = (pipeline.get("fml:packet_handler") != null) ? "fml:packet_handler" : "packet_handler";
-                pipeline.addBefore(where, PipelineHandles.INBOUND_NAME, PipelineHandles.INBOUND_PACKET_INTERCEPTOR);
+                pipeline.addBefore(where, PipelineHandles.INBOUND_NAME, PipelineHandles.INBOUND_HANDLER);
             }
             if (pipeline.get(PipelineHandles.OUTBOUND_NAME) == null) {
-                pipeline.addAfter("packet_handler", PipelineHandles.OUTBOUND_NAME, PipelineHandles.OUTBOUND_PACKET_INTERCEPTOR);
+                pipeline.addAfter("packet_handler", PipelineHandles.OUTBOUND_NAME, PipelineHandles.OUTBOUND_HANDLER);
             }
         } catch (Throwable throwable) {
             ErrorReporter.builder(throwable)
