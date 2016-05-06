@@ -1,6 +1,9 @@
 package net.year4000.utilities.sponge.protocol;
 
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.utils.UtilityConstructError;
 import net.year4000.utilities.value.Value;
