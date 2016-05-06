@@ -13,27 +13,35 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /** The packet manager that inject packets into the netty pipeline */
 public class PacketManager implements Packets {
     public static final AttributeKey<Player> PLAYER_KEY = AttributeKey.valueOf("player");
-    private final UUID id = UUID.randomUUID();
-    private final Map<Class<?>, PacketListener> listeners = Maps.newConcurrentMap();
-    private Scheduler scheduler = Scheduler.builder().build();
+    public static final AttributeKey<PacketManager> PACKET_MANAGER_KEY = AttributeKey.valueOf("packet_manager");
+    private final Scheduler scheduler;
+    final UUID id = UUID.randomUUID();
+    final Map<Class<?>, PacketListener> listeners = Maps.newConcurrentMap();
+    final String plugin;
 
     /** Creates the manages and register listeners ect */
     public PacketManager(Object plugin) {
         Conditions.nonNull(plugin, "plugin");
         Sponge.getEventManager().registerListeners(plugin, this);
         scheduler = Scheduler.builder().executor(Sponge.getScheduler().createAsyncExecutor(plugin)).build();
+        this.plugin = Sponge.getPluginManager().fromInstance(plugin).get().getId();
     }
 
     /** Used for unit tests */
-    PacketManager() {}
+    PacketManager() {
+        scheduler = Scheduler.builder().build();
+        plugin = "utilities";
+    }
 
     /** Does the map contain any listeners*/
     @Override
@@ -121,12 +129,14 @@ public class PacketManager implements Packets {
             ProxyEntityPlayerMP proxy = ProxyEntityPlayerMP.of(event.getTargetEntity());
             Channel channel = proxy.netHandlerPlayServer().networkManager().channel();
             channel.attr(PLAYER_KEY).set(event.getTargetEntity());
+            channel.attr(PACKET_MANAGER_KEY).set(this);
             ChannelPipeline pipeline = channel.pipeline();
-            String interceptor = Integer.toHexString(hashCode()) + PipelineHandles.PacketInterceptor.NAME_SUFFIX;
-            // Inject our bi directional packet interceptor
-            if (pipeline.get(interceptor) == null) {
-                String before = (pipeline.get("fml:packet_handler") != null) ? "fml:packet_handler" : "packet_handler";
-                pipeline.addBefore(before, interceptor, new PipelineHandles.PacketInterceptor(this));
+            if (pipeline.get(PipelineHandles.INBOUND_NAME) == null) {
+                String where = (pipeline.get("fml:packet_handler") != null) ? "fml:packet_handler" : "packet_handler";
+                pipeline.addBefore(where, PipelineHandles.INBOUND_NAME, PipelineHandles.INBOUND_PACKET_INTERCEPTOR);
+            }
+            if (pipeline.get(PipelineHandles.OUTBOUND_NAME) == null) {
+                pipeline.addAfter("packet_handler", PipelineHandles.OUTBOUND_NAME, PipelineHandles.OUTBOUND_PACKET_INTERCEPTOR);
             }
         } catch (Throwable throwable) {
             ErrorReporter.builder(throwable)
@@ -134,13 +144,5 @@ public class PacketManager implements Packets {
                 .add("Could not inject the packet interceptor for: ", event.getTargetEntity().getName())
                 .buildAndReport(System.err);
         }
-    }
-
-    /** The odds of this clashing are very slim */
-    @Override
-    public int hashCode() {
-        long least = id.getLeastSignificantBits();
-        long most = id.getMostSignificantBits();
-        return (int) ~((least >> 16 ^ least) ^ (most >> 16 ^ most) | 0x80000000);
     }
 }
