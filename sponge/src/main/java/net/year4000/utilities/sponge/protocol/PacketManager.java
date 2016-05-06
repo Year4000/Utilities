@@ -122,7 +122,7 @@ public class PacketManager implements Packets {
             Channel channel = proxy.netHandlerPlayServer().networkManager().channel();
             channel.attr(PLAYER_KEY).set(event.getTargetEntity());
             ChannelPipeline pipeline = channel.pipeline();
-            String interceptor = hashCode() + PipelineHandles.PacketInterceptor.NAME_SUFFIX;
+            String interceptor = Integer.toHexString(hashCode()) + PipelineHandles.PacketInterceptor.NAME_SUFFIX;
             // Inject our bi directional packet interceptor
             if (pipeline.get(interceptor) == null) {
                 String before = (pipeline.get("fml:packet_handler") != null) ? "fml:packet_handler" : "packet_handler";
@@ -136,8 +136,11 @@ public class PacketManager implements Packets {
         }
     }
 
+    /** The odds of this clashing are very slim */
     @Override
     public int hashCode() {
-        return Utils.hashCode(this, id);
+        long least = id.getLeastSignificantBits();
+        long most = id.getMostSignificantBits();
+        return (int) ~((least >> 16 ^ least) ^ (most >> 16 ^ most) | 0x80000000);
     }
 }
