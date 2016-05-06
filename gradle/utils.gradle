@@ -5,13 +5,16 @@
 /** Run a console command and return the output */
 ext.cmd = { String[] input ->
     def out = new ByteArrayOutputStream()
+    try {
+        exec {
+            commandLine input
+            standardOutput = out
+        }
 
-    exec {
-        commandLine input
-        standardOutput = out
+        return out.toString().trim()
+    } catch (e) { // cmd not found on system
+        return "unknown"
     }
-
-    return out.toString().trim()
 }
 
 /** Grab the git hash id, will throw a problem if not a git repo */

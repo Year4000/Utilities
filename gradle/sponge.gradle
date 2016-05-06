@@ -1,0 +1,392 @@
+import com.google.common.io.Files
+import com.google.gson.Gson
+import com.google.inject.*
+import groovy.transform.ToString
+import net.lingala.zip4j.core.ZipFile
+
+import java.util.Optional as Optionals
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.stream.Collectors
+
+import static SpongePlugin.*
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.guava:guava:19.0'
+        classpath 'com.google.code.gson:gson:2.5'
+        classpath 'com.google.inject:guice:3.0'
+        classpath 'net.lingala.zip4j:zip4j:1.3.2'
+    }
+}
+
+apply plugin: SpongePlugin
+
+class SpongePlugin implements Plugin<Project> {
+    static final Gson GSON = new Gson()
+    static final OS PLATFORM = OS.detect()
+    static final String PS = File.separator
+    static final File MINECRAFT_HOME = {
+        def home = System.getProperty('user.home')
+        switch (PLATFORM) {
+            case OS.LINUX:
+                return new File(home, '.minecraft')
+            case OS.OSX:
+                return new File(home, '/Library/Application Support/minecraft')
+                break
+            case OS.WINDOWS:
+                return new File(home, 'Application Data\\.minecraft')
+        }
+    }.call()
+
+    @Override
+    void apply(Project project) {
+        Injector injector = Guice .createInjector Stage.DEVELOPMENT, new Module() {
+            @Override
+            void configure(Binder binder) {
+                binder.bind(Project).toInstance(project)
+                binder.bind(SpongePlugin).toInstance(SpongePlugin.this)
+            }
+        }
+
+        project.extensions.create('spongestarter', SpongeExtension)
+
+        /** Start the forge client */
+        injector.injectMembers(project.tasks.create('startForgeClient', SpongeForgeClient))
+    }
+}
+
+class SpongeExtension {
+    /** When set delete the jar when JVM closes */
+    boolean deleteJar = true
+
+    /** The port the debugger will bind on */
+    int debugPort = 5005
+}
+
+/** Sponge starter runs the needed things to start a sponge instance */
+class SpongeForgeClient extends DefaultTask {
+    SpongeForgeClient() { dependsOn += 'assemble' }
+
+    @Inject
+    private Project project
+
+    @TaskAction
+    def startForgeClient() {
+        // Ensure user has a copy of Minecraft
+        if (!MINECRAFT_HOME.exists()) {
+            throw new Throwable('''
+                Minecraft path does not exists, you MUST have a copy of Minecraft, you can grab it from here;
+                https://minecraft.net/
+            ''')
+        }
+
+        File versions = new File(MINECRAFT_HOME, 'versions')
+        Optionals<File> forge = Arrays.asList(versions.listFiles()).stream()
+                .filter({file -> file.name.contains('forge')})
+                .sorted().sorted(Comparator.reverseOrder())
+                .findFirst()
+
+        // Ensure user has a copy of MinecraftForge
+        if (!forge.isPresent()) {
+            throw new Throwable('''
+                You do not have forge please install forge, you can grab it from here;
+                http://files.minecraftforge.net/
+            ''')
+        }
+
+        logger.lifecycle 'Copying project jar to mods folder'
+        File buildJar
+        try {
+            buildJar = project.shadowJar.archivePath
+        } catch (any) {
+            logger.debug(any.message)
+            buildJar = project.jar.archivePath
+        }
+        File forgeClient = new File(project.rootDir, '/run/forge-client/')
+        System.setProperty("spongeplugin.mcpath", forgeClient.toString())
+        File pluginJarPath = new File(forgeClient, '/mods/')
+        File pluginJar = new File(pluginJarPath, buildJar.name)
+        pluginJarPath.mkdirs()
+        Files.copy(buildJar, pluginJar)
+
+        if (project.spongestarter.deleteJar) {
+            pluginJar.deleteOnExit()
+        }
+
+        logger.lifecycle 'Setting up the client enverionment'
+        MinecraftVersion version = makeMCVersion forge.get()
+        ClassPaths classPaths = generateLibs version;
+        classPaths.libs.get().add("${MINECRAFT_HOME}/versions${PS}${version.inheritsFrom}${PS}${version.inheritsFrom}.jar")
+        def classpath = classPaths.libs.get().stream().collect(Collectors.joining(File.pathSeparator))
+        extractJars classPaths.natives.get(), new File(MINECRAFT_HOME, 'natives')
+        String[] args = minecraftArguments(version, classpath, loginDetails())
+
+        logger.lifecycle 'Starting the Minecraft Client, using settings from the Minecraft Launcher'
+        Process process = new ProcessBuilder(args).directory(forgeClient).start()
+        Runtime.runtime.addShutdownHook { process.destroy() }
+        new StreamToLogger(src: process.inputStream, logger: logger, level: LogLevel.WARN).execute()
+        new StreamToLogger(src: process.errorStream, logger: logger, level: LogLevel.ERROR).execute()
+        process.waitFor()
+    }
+
+    /** Get the login details of the client */
+    private String[] loginDetails() {
+        File profiles = new File(MINECRAFT_HOME, 'launcher_profiles.json')
+        def details = []
+        boolean profileRand = new Random().nextBoolean()
+        def info = "(name:${->details[0]}, token:${->details[1]}, uuid:${->details[2]})"
+        def defaultDetails = [
+                profileRand ? 'Alex' : 'Steve',
+                UUID.randomUUID().toString().replace('-', ''),
+                profileRand ? 'fffffff0fffffff0fffffff0fffffff1' : 'fffffff0fffffff0fffffff0fffffff0'
+        ]
+
+        // Use Alex or Steve if launcher_profiles.json does not exist
+        if (!profiles.exists()) {
+            details = defaultDetails
+            logger.lifecycle "Profile could not be found using: $info"
+            return details
+        }
+
+        FileReader reader = new FileReader(profiles)
+        LauncherProfiles profile = GSON.fromJson(reader, LauncherProfiles)
+        reader.close()
+        details = [profile.displayName(), profile.accessToken(), profile.uuid()]
+
+        if (profile.displayName() == null) {
+            details = defaultDetails
+        }
+
+        logger.lifecycle "Profile found using: $info"
+
+        return details
+    }
+
+    /** Create a string array of the arguments including var filtering */
+    private List<String> minecraftArguments(MinecraftVersion version, String classpath, String... login) {
+        Objects.requireNonNull(version)
+        String[] argParts = version.minecraftArguments.split(' ')
+        def minecraftArgs = [
+            'java',
+            "-Djava.library.path=${MINECRAFT_HOME}/natives/",
+            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${project.spongestarter.debugPort}",
+            // todo launcher java args
+            '-cp',
+            classpath,
+            version.mainClass
+        ]
+        def varMap = [
+            assets_index_name: version.assets,
+            version_name: version.id,
+            game_directory: System.getProperty('spongeplugin.mcpath'),
+            assets_root: "${MINECRAFT_HOME}/assets/",
+            version_type: version.type,
+            user_type: 'mojang',
+            user_properties: '{}',
+            auth_player_name: login[0],
+            auth_access_token: login[1],
+            auth_uuid: login[2]
+        ]
+
+        argParts.each {
+            if (it.startsWith('${') && it.endsWith('}')) {
+                def var = it.substring(2, it.size() - 1)
+                if (varMap[var] == null || varMap[var] == '') {
+                    minecraftArgs.remove(minecraftArgs.size() - 1)
+                } else {
+                    minecraftArgs.add varMap[var]
+                }
+            } else {
+                minecraftArgs.add it
+            }
+        }
+
+        return minecraftArgs
+    }
+
+    /** Extract the jars to the selected path */
+    private def extractJars(List<String> paths, File extractTo) {
+        Objects.requireNonNull(paths)
+        Objects.requireNonNull(extractTo)
+
+        if (extractTo.exists()) {
+            extractTo.delete()
+        }
+
+        extractTo.mkdirs()
+        extractTo.deleteOnExit()
+        def erred = false
+
+        paths.each {
+            def file = new File(it)
+            if (file.exists()) {
+                new ZipFile(file).extractAll extractTo.getPath()
+            } else {
+                logger.debug("no file found by the name of: ${file.name}")
+                erred = true
+            }
+        }
+
+        if (erred) {
+            logger.warn('There were native jars not found, minecraft may fail to load')
+        }
+    }
+
+    /** Convert the json file to MinecraftVersion object */
+    private MinecraftVersion makeMCVersion(File file) {
+        Objects.requireNonNull(file)
+        file = new File(file, file.name + '.json')
+        FileInputStream stream = new FileInputStream(file)
+        InputStreamReader reader = new InputStreamReader(stream)
+        MinecraftVersion version = GSON.fromJson reader, MinecraftVersion
+        logger.debug("Reading ${file.name}: ${version}")
+        reader.close();
+        return version;
+    }
+
+    /** Generate a list of ClassPaths minecraft needs */
+    private ClassPaths generateLibs(MinecraftVersion object) {
+        Objects.requireNonNull(object)
+        ClassPaths classPaths = new ClassPaths();
+
+        if (object.inheritsFrom != null) {
+            File path = new File(new File(MINECRAFT_HOME, 'versions'), object.inheritsFrom)
+            MinecraftVersion version = makeMCVersion path
+            ClassPaths parent = generateLibs version
+            classPaths.libs.get().addAll parent.libs.get()
+            classPaths.natives.get().addAll parent.natives.get()
+        }
+
+        Collections.reverse object.libraries
+
+        object.libraries.each {
+            String[] parts = ((String) it.get('name')).split(':')
+            String library = "${MINECRAFT_HOME}/libraries$PS${parts[0].replace('.', PS)}$PS${parts[1]}$PS${parts[2]}$PS${parts[1]}-${parts[2]}.jar"
+
+            if (it.containsKey('natives')) {
+                def platform = OS.detect().name().toLowerCase()
+                def nativeName = library.substring(0, library.lastIndexOf('.jar')) + '-natives-' + platform + '.jar'
+                classPaths.natives.get().addFirst nativeName
+            } else {
+                classPaths.libs.get().addFirst library
+            }
+        }
+
+        return classPaths;
+    }
+
+    @ToString(includeNames=true)
+    private class LauncherProfiles {
+        private String selectedUser
+        private Map<String, Object> authenticationDatabase
+
+        def accessToken() { authenticationDatabase.get(selectedUser).accessToken }
+        def displayName() { authenticationDatabase.get(selectedUser).displayName }
+        def uuid() { selectedUser }
+    }
+
+    @ToString(includeNames=true)
+    private class MinecraftVersion {
+        String id
+        String type
+        String inheritsFrom
+        String assets
+        String minecraftArguments
+        String mainClass
+        List<Map<String, Object>> libraries
+    }
+
+    private class ClassPaths extends Tuples.Pair<LinkedList<String>, LinkedList<String>> {
+        def libs = a
+        def natives = b
+
+        ClassPaths() { super(new LinkedList<String>(), new LinkedList<String>()) }
+    }
+}
+
+// Utils for Above Script
+
+/** Run Streams to Logger */
+final class StreamToLogger implements Runnable {
+    static final ExecutorService EXECUTOR = Executors.newCachedThreadPool()
+    InputStream src
+    Logger logger
+    LogLevel level
+
+    private InputStreamReader reader
+    private BufferedReader bufferedReader
+
+    @Override
+    void run() {
+        if (reader == null && bufferedReader == null) {
+            reader = new InputStreamReader(src)
+            bufferedReader = new BufferedReader(reader)
+        }
+
+        String line = bufferedReader.readLine()
+        if (line != null) {
+            logger.log level, line
+        }
+        EXECUTOR.execute this
+    }
+
+    def execute() {
+        EXECUTOR.execute this
+        Runtime.runtime.addShutdownHook { EXECUTOR.shutdown }
+    }
+}
+
+/** Simple way of detecting the current OS of the jvm runtime */
+final enum OS {
+    LINUX,
+    OSX,
+    WINDOWS
+
+    static OS detect() {
+        def name = System.getProperty("os.name")?.toLowerCase()
+
+        if (name.contains('linux')) return LINUX
+        else if (name.contains('mac') || name.contains('osx')) return OSX
+        else if (name.contains('windows')) return WINDOWS
+
+        throw new Throwable('Could not detect os, report this issue.')
+    }
+}
+
+/** A class that helps with returing tuple vales with multiple types */
+final class Tuples {
+    /** A class for the use of pair */
+    final static class TupleValue<V> {
+        private V value
+
+        /** Get the current value, could be null */
+        V get() { value }
+
+        /** Get or else the current value */
+        V getOrElse(V value) { (V) this.value ?: value }
+
+        /** Set the current value of this tuple */
+        void set(V value) { this.value = value }
+
+        @Override
+        String toString() { "TupleValue(${value})" }
+    }
+
+    /** Represents a tuple pair */
+    static class Pair<A, B> {
+        final TupleValue<A> a;
+        final TupleValue<B> b;
+
+        Pair(A a, B b) {
+            this.a = new TupleValue<>(value: a)
+            this.b = new TupleValue<>(value: b)
+        }
+
+        @Override
+        String toString() { "Pair(${a?.get()}, ${b?.get()})" }
+    }
+}

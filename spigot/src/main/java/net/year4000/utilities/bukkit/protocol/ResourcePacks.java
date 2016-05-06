@@ -9,10 +9,9 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.google.common.collect.Maps;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.URLBuilder;
+import net.year4000.utilities.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -25,8 +24,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class ResourcePacks implements Closeable {
     private static Map<UUID, PackWrapper> packs = Maps.newHashMap();
     private final ProtocolManager manager;
@@ -35,17 +32,17 @@ public class ResourcePacks implements Closeable {
 
     /** Create an instance of ResourcePacks */
     public ResourcePacks(ProtocolManager manager, Plugin plugin) {
-        this.manager = checkNotNull(manager, "manager");
-        this.plugin = checkNotNull(plugin, "plugin");
+        this.manager = Conditions.nonNull(manager, "manager");
+        this.plugin = Conditions.nonNull(plugin, "plugin");
         this.adapter = new PackAdapter(this);
         this.manager.addPacketListener(adapter);
     }
 
     /** Sends the resource pack to the player */
     public void sendResourcePack(Player player, String url, BiConsumer<Player, EnumWrappers.ResourcePackStatus> results) {
-        checkNotNull(player, "player");
-        checkNotNull(url, "url");
-        checkNotNull(results, "results");
+        Conditions.nonNull(player, "player");
+        Conditions.nonNull(url, "url");
+        Conditions.nonNull(results, "results");
         String hash;
 
         try {
@@ -82,7 +79,7 @@ public class ResourcePacks implements Closeable {
 
     /** Remove listener for the selected player */
     public void removePlayerListener(Player player) {
-        checkNotNull(player, "player");
+        Conditions.nonNull(player, "player");
         packs.remove(player.getUniqueId());
     }
 
@@ -92,7 +89,6 @@ public class ResourcePacks implements Closeable {
         manager.removePacketListener(adapter);
     }
 
-    @EqualsAndHashCode(callSuper = false)
     public static class PackAdapter extends PacketAdapter {
         private final String code; // Used for equals and hashCode
 
@@ -115,16 +111,50 @@ public class ResourcePacks implements Closeable {
 
             wrapper.ifPresent(packWrapper -> packWrapper.consumer.accept(event.getPlayer(), resource.getResult()));
         }
+
+        @Override
+        public String toString() {
+            return Utils.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return Utils.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return Utils.hashCode(this);
+        }
     }
 
     /** A class that wraps the BiConsumer of the packet listener */
-    @AllArgsConstructor
-    @EqualsAndHashCode(of = {"url", "hash"})
-    @ToString
     private class PackWrapper {
         private Player player;
         private String url;
         private String hash;
         private BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer;
+
+        public PackWrapper(Player player, String url, String hash, BiConsumer<Player, EnumWrappers.ResourcePackStatus> consumer) {
+            this.player = Conditions.nonNull(player, "player");
+            this.url = Conditions.nonNullOrEmpty(url, "url");
+            this.hash = Conditions.nonNull(hash, "hash");
+            this.consumer = Conditions.nonNull(consumer, "consumer");
+        }
+
+        @Override
+        public String toString() {
+            return Utils.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return Utils.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return Utils.hashCode(this);
+        }
     }
 }

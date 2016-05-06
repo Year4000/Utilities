@@ -19,9 +19,9 @@ package net.year4000.utilities.locale;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
-import lombok.Data;
-import lombok.Getter;
 import net.year4000.utilities.LogUtil;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,12 +37,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * you will need to create a singleton pattern to use this
  * correctly.
  */
-@Data
 @SuppressWarnings("unused")
 public abstract class AbstractLocaleManager {
     public static final Locale DEFAULT_LOCALE = new Locale(Locale.US.toString().toLowerCase());
     protected static final String EXTENSION = ".properties";
-    @Getter
     private final Map<Locale, Properties> locales = Maps.newConcurrentMap();
     protected String path;
     protected String[] codes;
@@ -122,5 +120,48 @@ public abstract class AbstractLocaleManager {
         }
 
         return locales.getOrDefault(locale, locales.getOrDefault(backup, new Properties()));
+    }
+
+    public String getPath() {
+        return this.path;
+    }
+
+    public String[] getCodes() {
+        return this.codes;
+    }
+
+    public LogUtil getLog() {
+        return this.log;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setCodes(String[] codes) {
+        this.codes = codes;
+    }
+
+    public void setLog(LogUtil log) {
+        this.log = log;
+    }
+
+    public Map<Locale, Properties> getLocales() {
+        return this.locales;
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
     }
 }

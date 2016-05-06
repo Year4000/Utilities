@@ -4,8 +4,7 @@
 
 package net.year4000.utilities.sdk;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.mc.ChatColor;
 import net.year4000.utilities.mc.MessageUtil;
 
@@ -41,7 +40,6 @@ public abstract class AbstractBadgeManager<P> {
 
     public abstract String getBadge(P player);
 
-    @AllArgsConstructor
     public enum Badges {
         MISSING(ChatColor.DARK_GRAY, "Γ", "missing", 0),
         ALPHA(ChatColor.DARK_AQUA, "α", "alpha", 1),
@@ -55,16 +53,36 @@ public abstract class AbstractBadgeManager<P> {
         OMEGA(ChatColor.RED, "Ω", "omega", 9),
         /* DIFF CHECKER */;
 
-        @Getter
         private ChatColor color;
-        @Getter
         private String badge, permission;
-        @Getter
         private int rank;
+
+        Badges(ChatColor color, String badge, String permission, int rank) {
+            this.color = Conditions.nonNull(color, "color");
+            this.badge = Conditions.nonNullOrEmpty(badge, "badge");
+            this.permission = Conditions.nonNullOrEmpty(permission, "permission");
+            this.rank = Conditions.isLarger(rank, -1);
+        }
 
         @Override
         public String toString() {
             return MessageUtil.replaceColors(color + badge);
+        }
+
+        public ChatColor getColor() {
+            return this.color;
+        }
+
+        public String getBadge() {
+            return this.badge;
+        }
+
+        public String getPermission() {
+            return this.permission;
+        }
+
+        public int getRank() {
+            return this.rank;
         }
     }
 }

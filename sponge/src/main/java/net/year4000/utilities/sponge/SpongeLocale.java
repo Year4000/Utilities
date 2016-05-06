@@ -4,7 +4,6 @@
 
 package net.year4000.utilities.sponge;
 
-import lombok.Getter;
 import net.year4000.utilities.locale.AbstractLocaleManager;
 import net.year4000.utilities.locale.Translatable;
 import org.spongepowered.api.command.CommandSource;
@@ -20,7 +19,6 @@ import static org.spongepowered.api.text.serializer.TextSerializers.FORMATTING_C
 
 public class SpongeLocale implements Translatable<Text> {
     private AbstractLocaleManager localeManager;
-    @Getter
     private Locale locale;
 
     /** Create a new instance for Sponge Locales */
@@ -101,5 +99,9 @@ public class SpongeLocale implements Translatable<Text> {
         }
 
         return builder.build();
+    }
+
+    public Locale getLocale() {
+        return this.locale;
     }
 }

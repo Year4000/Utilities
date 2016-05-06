@@ -18,9 +18,8 @@
 package net.year4000.utilities.bukkit.gui;
 
 import com.google.common.collect.Sets;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 import net.year4000.utilities.bukkit.ItemUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -37,11 +36,8 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@ToString
-@EqualsAndHashCode
 public class GUIManager implements Listener {
     private Set<AbstractGUI> menus = Sets.newHashSet();
-    @Setter
     private Function<Player, Locale> locale = (player) -> Locale.US;
 
     /** Add a menu to the GUIManger to be listen by an action */
@@ -107,5 +103,24 @@ public class GUIManager implements Listener {
                 return;
             }
         }
+    }
+
+    public void setLocale(Function<Player, Locale> locale) {
+        this.locale = locale;
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
     }
 }

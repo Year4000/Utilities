@@ -1,12 +1,10 @@
 package net.year4000.utilities;
 
-import junit.framework.Assert;
-import lombok.extern.java.Log;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 
-@Log
 public class URLBuilderTest {
 
     @Test

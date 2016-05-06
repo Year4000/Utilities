@@ -4,10 +4,17 @@
 
 package net.year4000.utilities;
 
+import net.year4000.utilities.utils.UtilityConstructError;
+
 /**
  * Tokens generated from gradle.
  */
-public class Tokens {
+public final class Tokens {
+
+    private Tokens() {
+        UtilityConstructError.raise();
+    }
+
     /** The version of this gradle project */
     public static final String VERSION = "${version}";
 

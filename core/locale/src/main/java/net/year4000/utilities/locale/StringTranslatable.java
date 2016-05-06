@@ -5,7 +5,6 @@
 package net.year4000.utilities.locale;
 
 import com.google.common.base.Joiner;
-import lombok.Getter;
 
 import java.util.Locale;
 import java.util.MissingFormatArgumentException;
@@ -15,7 +14,6 @@ import static net.year4000.utilities.locale.AbstractLocaleManager.DEFAULT_LOCALE
 
 public class StringTranslatable implements Translatable<String> {
     protected AbstractLocaleManager localeManager;
-    @Getter
     protected Locale locale;
 
     /** Force the wrapper to create the instance */
@@ -48,5 +46,9 @@ public class StringTranslatable implements Translatable<String> {
         }
 
         return formatted;
+    }
+
+    public Locale getLocale() {
+        return this.locale;
     }
 }

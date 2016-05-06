@@ -20,8 +20,6 @@ package net.year4000.utilities.bukkit;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -33,7 +31,6 @@ import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MessagingChannel implements PluginMessageListener {
     private static final String CHANNEL = "BungeeCord";
     private static final String FORWARD = "Forward";
@@ -41,6 +38,9 @@ public final class MessagingChannel implements PluginMessageListener {
     private static MessagingChannel inst;
     private final Deque<AbstractMap.Entry<String, Callback<ByteArrayDataInput>>> requests = new ArrayDeque<>();
     private final ConcurrentMap<String, Callback<ByteArrayDataInput>> custom = new ConcurrentHashMap<>();
+
+    private MessagingChannel() {
+    }
 
     /** Get the messaging channel instance */
     public static MessagingChannel get() {

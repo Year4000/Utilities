@@ -19,10 +19,9 @@ package net.year4000.utilities.sdk;
 
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
 import net.year4000.utilities.URLBuilder;
+import net.year4000.utilities.net.JsonHttpFetcher;
 import net.year4000.utilities.sdk.routes.Route;
 import net.year4000.utilities.sdk.routes.accounts.AccountRoute;
 import net.year4000.utilities.sdk.routes.players.PlayerCountJson;
@@ -33,16 +32,22 @@ import net.year4000.utilities.sdk.routes.servers.ServersRoute;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-@NoArgsConstructor
-@AllArgsConstructor
 public class API {
+    private static final JsonHttpFetcher fetcher = JsonHttpFetcher.builder().build();
     public static final String BASE_URL = "https://api.year4000.net/";
     public static final String ACCOUNTS_PATH = "accounts";
     public static final String SERVERS_PATH = "servers";
     public static final String PLAYER_COUNT_PATH = "player-count";
     public static final Type SERVERS_TYPE = new TypeToken<Map<String, ServerJson>>() {
+
     }.getType();
     private String key = null;
+
+    public API(String key) {
+        this.key = key;
+    }
+
+    public API() {}
 
     /** The base url builder for creating API urls */
     public URLBuilder api() {
@@ -69,7 +74,7 @@ public class API {
     public AccountRoute getAccount(String id) {
         try {
             URLBuilder url = api().addPath(ACCOUNTS_PATH).addPath(id);
-            JsonObject response = HttpFetcher.get(url.build(), JsonObject.class);
+            JsonObject response = fetcher.get(url.build(), JsonObject.class);
             return Route.generate(AccountRoute.class, response);
         }
         catch (Exception e) {
@@ -80,9 +85,12 @@ public class API {
     /** Get the account with the id of the user */
     public void getAccountAsync(String id, Callback<AccountRoute> callback) {
         URLBuilder url = api().addPath(ACCOUNTS_PATH).addPath(id);
-        HttpFetcher.get(url.build(), JsonObject.class, (response, error) -> {
-            AccountRoute route = error != null ? null : Route.generate(AccountRoute.class, response);
-            callback.callback(route, error);
+        fetcher.get(url.build(), JsonObject.class, (response, error) -> {
+            if (response.isPresent()) {
+                callback.callback(Route.generate(AccountRoute.class, response.get()));
+            } else if (error.isPresent()){
+                callback.callback(error.get());
+            }
         });
     }
 
@@ -90,7 +98,7 @@ public class API {
     public ServersRoute getServers() {
         try {
             URLBuilder url = api().addPath(SERVERS_PATH);
-            Map<String, ServerJson> response = HttpFetcher.get(url.build(), SERVERS_TYPE);
+            Map<String, ServerJson> response = fetcher.get(url.build(), SERVERS_TYPE);
             return Route.generate(ServersRoute.class, response);
         }
         catch (Exception e) {
@@ -101,9 +109,12 @@ public class API {
     /** Get the account with the id of the user */
     public void getServersAsync(Callback<ServersRoute> callback) {
         URLBuilder url = api().addPath(SERVERS_PATH);
-        HttpFetcher.get(url.build(), SERVERS_TYPE, (response, error) -> {
-            ServersRoute route = error != null ? null : Route.generate(ServersRoute.class, response);
-            callback.callback(route, error);
+        fetcher.get(url.build(), SERVERS_TYPE, (response, error) -> {
+            if (response.isPresent()) {
+                callback.callback(Route.generate(ServersRoute.class, response.get()));
+            } else if (error.isPresent()){
+                callback.callback(error.get());
+            }
         });
     }
 
@@ -111,7 +122,7 @@ public class API {
     public PlayerCountRoute getPlayerCount() {
         try {
             URLBuilder url = api().addPath(PLAYER_COUNT_PATH);
-            PlayerCountJson response = HttpFetcher.get(url.build(), PlayerCountJson.class);
+            PlayerCountJson response = fetcher.get(url.build(), PlayerCountJson.class);
             return Route.generate(PlayerCountRoute.class, response);
         }
         catch (Exception e) {
@@ -122,9 +133,12 @@ public class API {
     /** Get the player count async */
     public void getPlayerCountAsync(Callback<PlayerCountRoute> callback) {
         URLBuilder url = api().addPath(PLAYER_COUNT_PATH);
-        HttpFetcher.get(url.build(), PlayerCountJson.class, (response, error) -> {
-            PlayerCountRoute route = error != null ? null : Route.generate(PlayerCountRoute.class, response);
-            callback.callback(route, error);
+        fetcher.get(url.build(), PlayerCountJson.class, (response, error) -> {
+            if (response.isPresent()) {
+                callback.callback(Route.generate(PlayerCountRoute.class, response.get()));
+            } else if (error.isPresent()){
+                callback.callback(error.get());
+            }
         });
     }
 
@@ -137,7 +151,7 @@ public class API {
     /** Get a custom route */
     public <R extends Route, T> R getRoute(Class<R> route, Class<T> type, URLBuilder url) {
         try {
-            T response = HttpFetcher.get(url.build(), type);
+            T response = fetcher.get(url.build(), type);
             return Route.generate(route, response);
         }
         catch (Exception e) {
@@ -154,7 +168,7 @@ public class API {
     /** Get a custom route */
     public <R extends Route, T> R getRoute(Class<R> route, Type type, URLBuilder url) {
         try {
-            T response = HttpFetcher.get(url.build(), type);
+            T response = fetcher.get(url.build(), type);
             return Route.generate(route, response);
         }
         catch (Exception e) {
@@ -170,10 +184,7 @@ public class API {
 
     /** Get a custom route async */
     public <R extends Route, T> void getRouteAsync(Class<R> route, Class<T> type, URLBuilder url, Callback<R> callback) {
-        HttpFetcher.get(url.build(), type, (response, error) -> {
-            R routeObject = error != null ? null : Route.generate(route, response);
-            callback.callback(routeObject, error);
-        });
+        getRouteAsync(route, type, url, callback);
     }
 
     /** Get a custom route async */
@@ -184,9 +195,12 @@ public class API {
 
     /** Get a custom route async */
     public <R extends Route> void getRouteAsync(Class<R> route, Type type, URLBuilder url, Callback<R> callback) {
-        HttpFetcher.get(url.build(), type, (response, error) -> {
-            R routeObject = error != null ? null : Route.generate(route, response);
-            callback.callback(routeObject, error);
+        fetcher.get(url.build(), type, (response, error) -> {
+            if (response.isPresent()) {
+                callback.callback(Route.generate(route, response.get()));
+            } else if (error.isPresent()){
+                callback.callback(error.get());
+            }
         });
     }
 }

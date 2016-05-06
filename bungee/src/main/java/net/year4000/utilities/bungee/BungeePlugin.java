@@ -21,16 +21,14 @@ import com.sk89q.bungee.util.BungeeCommandsManager;
 import com.sk89q.bungee.util.CommandExecutor;
 import com.sk89q.bungee.util.CommandRegistration;
 import com.sk89q.minecraft.util.commands.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.year4000.utilities.LogUtil;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 import java.util.*;
 
@@ -40,11 +38,8 @@ import static net.year4000.utilities.bungee.Messages.*;
  * This is a wrapper for BungeeCord plugins, this will allow for
  * quick and creation of common tasks.
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
 @SuppressWarnings("unused")
 public class BungeePlugin extends Plugin implements CommandExecutor<CommandSender> {
-    @Getter(AccessLevel.PRIVATE)
     private static BungeePlugin inst;
     private final BungeeCommandsManager commands = new BungeeCommandsManager();
     public LogUtil log = new LogUtil(ProxyServer.getInstance().getLogger());
@@ -75,6 +70,10 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
     /** Print out the stack trace */
     public static void log(Exception e, boolean simple) {
         getInst().log.log(e, simple);
+    }
+
+    private static BungeePlugin getInst() {
+        return BungeePlugin.inst;
     }
 
     // Logger Stuff //
@@ -142,5 +141,36 @@ public class BungeePlugin extends Plugin implements CommandExecutor<CommandSende
                 }
             }
         }
+    }
+
+    public BungeeCommandsManager getCommands() {
+        return this.commands;
+    }
+
+    public LogUtil getLog() {
+        return this.log;
+    }
+
+    public boolean isDebug() {
+        return this.debug;
+    }
+
+    public void setLog(LogUtil log) {
+        this.log = log;
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
     }
 }

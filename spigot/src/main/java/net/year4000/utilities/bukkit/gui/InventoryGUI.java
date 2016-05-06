@@ -18,9 +18,8 @@
 package net.year4000.utilities.bukkit.gui;
 
 import com.google.common.base.Ascii;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 import net.year4000.utilities.bukkit.BukkitUtil;
 import net.year4000.utilities.bukkit.ItemUtil;
 import net.year4000.utilities.mc.MessageUtil;
@@ -31,12 +30,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-@ToString(of = {"uuid", "size", "title", "icons"})
-@EqualsAndHashCode(of = {"uuid", "size", "title"})
 public final class InventoryGUI implements InventoryHolder {
     public static final int COLS = 9;
     private final UUID uuid = UUID.randomUUID();
-    @Getter
     private Inventory inventory;
     private IconView[][] icons;
     private String title;
@@ -83,5 +79,24 @@ public final class InventoryGUI implements InventoryHolder {
         }
 
         return inventory;
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
+    }
+
+    public Inventory getInventory() {
+        return this.inventory;
     }
 }

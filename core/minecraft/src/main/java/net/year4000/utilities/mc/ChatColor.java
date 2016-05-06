@@ -4,8 +4,6 @@
 
 package net.year4000.utilities.mc;
 
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -57,7 +55,6 @@ public enum ChatColor {
     private final char code;
     /** This colour's colour char prefixed by the {@link #COLOR_CHAR}. */
     private final String toString;
-    @Getter
     private final String name;
 
     ChatColor(char code, String name) {
@@ -108,5 +105,9 @@ public enum ChatColor {
     @Override
     public String toString() {
         return toString;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }
