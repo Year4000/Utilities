@@ -58,6 +58,9 @@ public final class PacketTypes {
     /** The type of packet they are */
     public enum State {HANDSHAKE, PLAY, STATUS, LOGIN}
 
+    /** The latest protocol version this class has been updated for */
+    public static final int PROTOCOL_VERSION = 109;
+
     // Play Packets
     // Client
     public static final PacketType PLAY_CLIENT_SPAWN_OBJECT = of(PLAY, OUTBOUND, 0x00);
