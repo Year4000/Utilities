@@ -21,9 +21,9 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
     /** Add the handlers to the channel pipeline */
     public void addHandlers(ChannelPipeline pipeline) {
         pipeline.addLast("http_server_codec", new HttpServerCodec())
-            .addLast(RouterDecoder.NAME, new RouterDecoder())
-            .addLast(MessageHandler.NAME, new MessageHandler())
-            .addLast(ExceptionHandler.NAME, new ExceptionHandler());
+            .addLast(RouterDecoder.NAME, RouterDecoder.INSTANCE)
+            .addLast(MessageHandler.NAME, MessageHandler.INSTANCE)
+            .addLast(ExceptionHandler.NAME, ExceptionHandler.INSTANCE);
     }
 
     @Override
