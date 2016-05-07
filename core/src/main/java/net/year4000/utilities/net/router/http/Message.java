@@ -49,12 +49,12 @@ public class Message {
 
     /** Get the endpoint of the route */
     public String endPoint() {
-        return "test";
+        return request.getUri();
     }
 
     /** Get the arguments of the url */
     public TypeValue[] arguments() {
-        return null;
+        return new TypeValue[0];
     }
 
     /** Create the full response from the content of the byte buffer */

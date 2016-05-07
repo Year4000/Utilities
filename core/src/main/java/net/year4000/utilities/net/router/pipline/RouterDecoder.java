@@ -4,7 +4,6 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.HttpRequest;
-import net.year4000.utilities.Reflections;
 import net.year4000.utilities.net.router.RoutedPath;
 import net.year4000.utilities.net.router.Router;
 import net.year4000.utilities.net.router.http.Message;
@@ -20,13 +19,16 @@ public class RouterDecoder extends MessageToMessageDecoder<HttpRequest> {
     @SuppressWarnings("unchecked")
     protected void decode(ChannelHandlerContext ctx, HttpRequest request, List<Object> out) throws Exception {
         System.err.println(NAME);
-        Router router = ctx.attr(Router.ATTRIBUTE_KEY).get();
+        Router router = ctx.channel().attr(Router.ATTRIBUTE_KEY).get();
         Message message = new Message(request);
-        ctx.attr(Message.ATTRIBUTE_KEY).set(message);
-        Triad<Class<?>, String, Class<? extends ChannelHandler>> triad = ContentDecoders.decoder(message);
-        ChannelHandler decoder = Reflections.instance(triad.c.get()).get();
-        ctx.pipeline().addAfter(NAME, ContentDecoders.NAME, decoder);
-        Value<RoutedPath<Object>> path = router.findPath(message.endPoint(), request.getMethod().toString(), (Class<Object>) triad.a.get());
+        ctx.channel().attr(Message.ATTRIBUTE_KEY).set(message);
+        Triad<Class<?>, String, ChannelHandler> triad = ContentDecoders.decoder(message);
+        ctx.pipeline().addAfter(NAME, ContentDecoders.NAME, triad.c.get());
+        System.out.println(request);
+        Value<RoutedPath<Object>> path = router.findPath(
+                message.endPoint(),
+                String.valueOf(request.getMethod()),
+                (Class<Object>) triad.a.get());
 
         // Route found display the contents
         if (path.isPresent()) {
@@ -35,5 +37,6 @@ public class RouterDecoder extends MessageToMessageDecoder<HttpRequest> {
         }
 
         // Not found display the error
+        throw new RuntimeException("Error");
     }
 }
