@@ -1,13 +1,13 @@
-package net.year4000.utilities.router.pipline;
+package net.year4000.utilities.net.router.pipline;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.HttpRequest;
 import net.year4000.utilities.Reflections;
-import net.year4000.utilities.router.RoutedPath;
-import net.year4000.utilities.router.Router;
-import net.year4000.utilities.router.http.Message;
+import net.year4000.utilities.net.router.RoutedPath;
+import net.year4000.utilities.net.router.Router;
+import net.year4000.utilities.net.router.http.Message;
 import net.year4000.utilities.tuple.Triad;
 import net.year4000.utilities.value.Value;
 
@@ -26,7 +26,7 @@ public class RouterDecoder extends MessageToMessageDecoder<HttpRequest> {
         Triad<Class<?>, String, Class<? extends ChannelHandler>> triad = ContentDecoders.decoder(message);
         ChannelHandler decoder = Reflections.instance(triad.c.get()).get();
         ctx.pipeline().addAfter(NAME, ContentDecoders.NAME, decoder);
-        Value<RoutedPath<Object>> path = router.findPath(message.endPoint(), request.method().toString(), (Class<Object>) triad.a.get());
+        Value<RoutedPath<Object>> path = router.findPath(message.endPoint(), request.getMethod().toString(), (Class<Object>) triad.a.get());
 
         // Route found display the contents
         if (path.isPresent()) {

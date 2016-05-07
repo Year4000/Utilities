@@ -1,12 +1,11 @@
-package net.year4000.utilities.router;
+package net.year4000.utilities.net.router;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpVersion;
-import net.year4000.utilities.router.pipline.HttpInitializer;
+import net.year4000.utilities.net.router.pipline.HttpInitializer;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ public class HttpPipelineTest {
     @Test
     public void test() throws Exception {
         channel.writeInbound(dummyHttp("http://localhost/test"));
-        ByteBuf buf = channel.readOutbound();
+        Object buf = channel.readOutbound();
         System.out.println(buf);
     }
 }

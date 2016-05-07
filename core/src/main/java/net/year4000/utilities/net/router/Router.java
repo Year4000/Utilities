@@ -1,4 +1,4 @@
-package net.year4000.utilities.router;
+package net.year4000.utilities.net.router;
 
 import com.google.common.collect.ImmutableCollection;
 import io.netty.util.AttributeKey;
@@ -6,7 +6,7 @@ import net.year4000.utilities.value.Value;
 
 /** Routers must be immutable this is so the design must be fast */
 public interface Router {
-    AttributeKey<Router> ATTRIBUTE_KEY = AttributeKey.newInstance("router");
+    AttributeKey<Router> ATTRIBUTE_KEY = AttributeKey.valueOf("router");
 
     /** Get the known contentTypes for the selected prefix */
     ImmutableCollection<Class<?>> contentTypes(String endPoint);

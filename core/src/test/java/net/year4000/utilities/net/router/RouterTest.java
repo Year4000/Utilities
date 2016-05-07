@@ -1,4 +1,4 @@
-package net.year4000.utilities.router;
+package net.year4000.utilities.net.router;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;

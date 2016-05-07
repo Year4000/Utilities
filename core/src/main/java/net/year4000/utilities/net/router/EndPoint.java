@@ -1,4 +1,4 @@
-package net.year4000.utilities.router;
+package net.year4000.utilities.net.router;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

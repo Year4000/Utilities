@@ -1,4 +1,4 @@
-package net.year4000.utilities.router;
+package net.year4000.utilities.net.router;
 
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;

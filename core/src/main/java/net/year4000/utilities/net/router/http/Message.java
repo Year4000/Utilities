@@ -1,10 +1,10 @@
-package net.year4000.utilities.router.http;
+package net.year4000.utilities.net.router.http;
 
+import com.google.common.net.HttpHeaders;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -14,7 +14,7 @@ import net.year4000.utilities.Conditions;
 import net.year4000.utilities.value.TypeValue;
 
 public class Message {
-    public static final AttributeKey<Message> ATTRIBUTE_KEY = AttributeKey.newInstance("message");
+    public static final AttributeKey<Message> ATTRIBUTE_KEY = AttributeKey.valueOf("message");
     private HttpRequest request;
     private HttpResponse response;
 
@@ -60,8 +60,8 @@ public class Message {
     /** Create the full response from the content of the byte buffer */
     public FullHttpResponse makeResponse(ByteBuf buffer) {
         Conditions.nonNull(buffer, "buffer").retain();
-        DefaultFullHttpResponse response = new DefaultFullHttpResponse(this.response.protocolVersion(), this.response.status(), buffer);
-        response.headers().addInt(HttpHeaderNames.CONTENT_LENGTH, buffer.readableBytes());
+        DefaultFullHttpResponse response = new DefaultFullHttpResponse(this.response.getProtocolVersion(), this.response.getStatus(), buffer);
+        response.headers().add(HttpHeaders.CONTENT_LENGTH, buffer.readableBytes());
         return response;
     }
 }

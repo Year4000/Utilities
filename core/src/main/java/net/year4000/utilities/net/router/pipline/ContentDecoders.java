@@ -1,4 +1,4 @@
-package net.year4000.utilities.router.pipline;
+package net.year4000.utilities.net.router.pipline;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -7,7 +7,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import net.year4000.utilities.router.http.Message;
+import net.year4000.utilities.net.router.http.Message;
 import net.year4000.utilities.tuple.Triad;
 
 import java.util.List;
