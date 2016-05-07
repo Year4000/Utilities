@@ -1,12 +1,11 @@
-package net.year4000.utilities;
+package net.year4000.utilities.reflection;
 
-import net.year4000.utilities.reflection.Bridge;
-import net.year4000.utilities.reflection.Gateways;
-import net.year4000.utilities.reflection.Getter;
-import net.year4000.utilities.reflection.Invoke;
-import net.year4000.utilities.reflection.Proxied;
-import net.year4000.utilities.reflection.Setter;
-import net.year4000.utilities.reflection.Static;
+import net.year4000.utilities.reflection.annotations.Bridge;
+import net.year4000.utilities.reflection.annotations.Getter;
+import net.year4000.utilities.reflection.annotations.Invoke;
+import net.year4000.utilities.reflection.annotations.Proxied;
+import net.year4000.utilities.reflection.annotations.Setter;
+import net.year4000.utilities.reflection.annotations.Static;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,18 +23,23 @@ public class ReflectionTest {
     private final static class MyObject extends OtherObject {
         private String foo = FOO;
         private MyObject object = OBJECT;
+        private int findMe = 1;
 
         private String method() {
             return FOO_BAR;
         }
+
+        private String findMe(int x, int y, int z) {
+            return "found me";
+        }
     }
 
-    @Proxied("net.year4000.utilities.ReflectionTest$OtherObject")
+    @Proxied("net.year4000.utilities.reflection.ReflectionTest$OtherObject")
     public interface ProxyOtherObject {
         @Getter @Static String other();
     }
 
-    @Proxied("net.year4000.utilities.ReflectionTest$MyObject")
+    @Proxied("net.year4000.utilities.reflection.ReflectionTest$MyObject")
     public interface ProxyMyObject extends ProxyOtherObject {
         @Setter void foo(String value);
         @Getter String foo();
@@ -44,9 +48,23 @@ public class ReflectionTest {
         @Getter @Bridge(ProxyMyObject.class) ProxyMyObject object();
         @Setter void object(ProxyMyObject object);
 
+        @Invoke(signature = "(III)Ljava/lang/String;")
+        String signatureInvoke(int x, int y, int z);
+
+        @Getter(signature = "I")
+        int signatureGetter();
+
+        @Setter(signature = "I")
+        void signatureSetter(int x);
+
         default String hello() {
             return "world";
         }
+    }
+
+    @Test
+    public void gatewaysTest() {
+        Assert.assertEquals(MyObject.class, Gateways.reflectiveClass(ProxyMyObject.class));
     }
 
     @Test
@@ -88,6 +106,15 @@ public class ReflectionTest {
     public void defaultTest() {
         ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
         Assert.assertEquals("world", proxy.hello());
+    }
+
+    @Test
+    public void signatureTest() {
+        ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
+        Assert.assertEquals("found me", proxy.signatureInvoke(1, 1, 1));
+        Assert.assertEquals(1, proxy.signatureGetter());
+        proxy.signatureSetter(0);
+        Assert.assertNotEquals(1, proxy.signatureGetter());
     }
 
     @Test

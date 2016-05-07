@@ -1,6 +1,6 @@
 package net.year4000.utilities;
 
-import com.google.common.base.Joiner;
+import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.utils.UtilityConstructError;
 import net.year4000.utilities.value.Value;
 
@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Contains basic util methods that do not belong in a set category */
 public final class Utils {
@@ -89,6 +91,11 @@ public final class Utils {
 
     /** Use reflection to print the to string method */
     public static String toString(Object instance, String... vars) {
+        if (instance == null) {
+            return "null";
+        }
+        boolean prettyString = System.getProperty("utilities.pretty_string") != null;
+        String pretty = prettyString ? "\n\t" : "";
         String prefix = instance.getClass().getSimpleName();
         Field[] fields = instance.getClass().getDeclaredFields();
         List<String> variables = new ArrayList<>(fields.length);
@@ -106,7 +113,8 @@ public final class Utils {
                 }
             }
         }
-        return prefix + "(" + instance.hashCode()  +") {" + Joiner.on(", ").join(variables) + "}";
+        String varsResults = Stream.of(variables.toArray(new String[variables.size()])).collect(Collectors.joining(", " + pretty));
+        return prefix + "(" + instance.hashCode()  +") {" + pretty + varsResults + (prettyString ? "\n}" : "}");
     }
 
     /** Check if the objects hash codes matches, thus the objects should be equal */

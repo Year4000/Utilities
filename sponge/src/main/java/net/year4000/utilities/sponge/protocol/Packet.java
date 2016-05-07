@@ -1,7 +1,7 @@
 package net.year4000.utilities.sponge.protocol;
 
 import net.year4000.utilities.Conditions;
-import net.year4000.utilities.Reflections;
+import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.value.TypeValue;
 
 import java.lang.reflect.Field;

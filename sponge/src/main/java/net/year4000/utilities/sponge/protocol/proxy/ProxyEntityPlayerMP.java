@@ -1,10 +1,10 @@
 package net.year4000.utilities.sponge.protocol.proxy;
 
 import net.year4000.utilities.Conditions;
-import net.year4000.utilities.reflection.Bridge;
+import net.year4000.utilities.reflection.annotations.Bridge;
 import net.year4000.utilities.reflection.Gateways;
-import net.year4000.utilities.reflection.Getter;
-import net.year4000.utilities.reflection.Proxied;
+import net.year4000.utilities.reflection.annotations.Getter;
+import net.year4000.utilities.reflection.annotations.Proxied;
 import net.year4000.utilities.sponge.protocol.Packet;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
@@ -23,13 +23,16 @@ public interface ProxyEntityPlayerMP extends ProxyEntity {
         return Gateways.proxy(ProxyEntityPlayerMP.class, user);
     }
 
+    /** Get the object that this proxy is using */
+    Object $this();
+
     /** Grabs the current instance of the NetHandlerPlayServer */
-    @Getter("field_71135_a")
+    @Getter(signature = "Lnet/minecraft/network/NetHandlerPlayServer;")
     @Bridge(ProxyNetHandlerPlayServer.class)
     ProxyNetHandlerPlayServer netHandlerPlayServer();
 
     /** Send the packet for this player */
     default void sendPacket(Packet packet) {
-        netHandlerPlayServer().networkManager().channel().writeAndFlush(packet);
+        netHandlerPlayServer().networkManager().sendPacket(packet.mcPacket());
     }
 }

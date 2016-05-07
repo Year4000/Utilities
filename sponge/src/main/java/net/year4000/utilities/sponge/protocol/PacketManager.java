@@ -2,9 +2,10 @@ package net.year4000.utilities.sponge.protocol;
 
 import com.google.common.collect.Maps;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelPipeline;
 import io.netty.util.AttributeKey;
 import net.year4000.utilities.Conditions;
-import net.year4000.utilities.Utils;
+import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.scheduler.Scheduler;
 import net.year4000.utilities.sponge.protocol.proxy.ProxyEntityPlayerMP;
 import org.spongepowered.api.Sponge;
@@ -19,19 +20,25 @@ import java.util.concurrent.TimeUnit;
 /** The packet manager that inject packets into the netty pipeline */
 public class PacketManager implements Packets {
     public static final AttributeKey<Player> PLAYER_KEY = AttributeKey.valueOf("player");
-    private final UUID id = UUID.randomUUID();
-    private final Map<Class<?>, PacketListener> listeners = Maps.newConcurrentMap();
-    private Scheduler scheduler = Scheduler.builder().build();
+    public static final AttributeKey<PacketManager> PACKET_MANAGER_KEY = AttributeKey.valueOf("packet_manager");
+    private final Scheduler scheduler;
+    final UUID id = UUID.randomUUID();
+    final Map<Class<?>, PacketListener> listeners = Maps.newConcurrentMap();
+    final String plugin;
 
     /** Creates the manages and register listeners ect */
     public PacketManager(Object plugin) {
         Conditions.nonNull(plugin, "plugin");
         Sponge.getEventManager().registerListeners(plugin, this);
         scheduler = Scheduler.builder().executor(Sponge.getScheduler().createAsyncExecutor(plugin)).build();
+        this.plugin = Sponge.getPluginManager().fromInstance(plugin).get().getId();
     }
 
     /** Used for unit tests */
-    PacketManager() {}
+    PacketManager() {
+        scheduler = Scheduler.builder().build();
+        plugin = "utilities";
+    }
 
     /** Does the map contain any listeners*/
     @Override
@@ -74,8 +81,19 @@ public class PacketManager implements Packets {
     public void sendPacket(Player player, Packet packet) {
         Conditions.nonNull(player, "player");
         Conditions.nonNull(packet, "packet");
-        ProxyEntityPlayerMP entityPlayer = ProxyEntityPlayerMP.of(player);
-        entityPlayer.sendPacket(packet);
+        try {
+            ProxyEntityPlayerMP.of(player).sendPacket(packet);
+        } catch (Throwable throwable) {
+            ErrorReporter.builder(throwable)
+                .hideStackTrace()
+                .add("Player: ", player.getName())
+                .add("Packet ID: ", Integer.toHexString(packet.packetType().id()))
+                .add("Packet State: ", PacketTypes.State.values()[packet.packetType().state()])
+                .add("Packet Bounded: ", PacketTypes.Binding.values()[packet.packetType().bounded()])
+                .add("Packet Class: ", packet.mcPacketClass())
+                .add("Packet Object: ", packet.mcPacket())
+                .buildAndReport(System.err);
+        }
     }
 
     @Override
@@ -104,25 +122,24 @@ public class PacketManager implements Packets {
 
     @Listener
     public void onPlayerLogin(ClientConnectionEvent.Join event) {
-        ProxyEntityPlayerMP proxy = ProxyEntityPlayerMP.of(event.getTargetEntity());
-        Channel channel = proxy.netHandlerPlayServer().networkManager().channel();
-        channel.attr(PLAYER_KEY).set(event.getTargetEntity());
-        String encoder = hashCode() + PipelineHandles.PacketEncoder.NAME_SUFFIX;
-        String interceptor = hashCode() + PipelineHandles.PacketInterceptor.NAME_SUFFIX;
-
-        // Inject our own encoder that will transmute our packets
-        if (channel.pipeline().get(encoder) == null) {
-            channel.pipeline().addFirst(encoder, new PipelineHandles.PacketEncoder(this));
+        try {
+            ProxyEntityPlayerMP proxy = ProxyEntityPlayerMP.of(event.getTargetEntity());
+            Channel channel = proxy.netHandlerPlayServer().networkManager().channel();
+            channel.attr(PLAYER_KEY).set(event.getTargetEntity());
+            channel.attr(PACKET_MANAGER_KEY).set(this);
+            ChannelPipeline pipeline = channel.pipeline();
+            if (pipeline.get(PipelineHandles.INBOUND_NAME) == null) {
+                String where = (pipeline.get("fml:packet_handler") != null) ? "fml:packet_handler" : "packet_handler";
+                pipeline.addBefore(where, PipelineHandles.INBOUND_NAME, PipelineHandles.INBOUND_HANDLER);
+            }
+            if (pipeline.get(PipelineHandles.OUTBOUND_NAME) == null) {
+                pipeline.addAfter("packet_handler", PipelineHandles.OUTBOUND_NAME, PipelineHandles.OUTBOUND_HANDLER);
+            }
+        } catch (Throwable throwable) {
+            ErrorReporter.builder(throwable)
+                .hideStackTrace()
+                .add("Could not inject the packet interceptor for: ", event.getTargetEntity().getName())
+                .buildAndReport(System.err);
         }
-
-        // Inject our bi directional packet interceptor
-        if (channel.pipeline().get(interceptor) == null) {
-            channel.pipeline().addFirst(interceptor, new PipelineHandles.PacketInterceptor(this));
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return Utils.hashCode(this, id);
     }
 }
