@@ -32,7 +32,7 @@ public class Packet {
         this.type = Conditions.nonNull(type, "type");
         this.clazz = Conditions.nonNull(clazz, "clazz");
         this.injectedPacket = (packet == null) ? Reflections.instance(clazz).getOrThrow() : packet;
-        Conditions.condition(isOfClassType(packet), "packet");
+        Conditions.condition(isOfClassType(injectedPacket), "packet");
     }
 
     /** The type this packet if for */
