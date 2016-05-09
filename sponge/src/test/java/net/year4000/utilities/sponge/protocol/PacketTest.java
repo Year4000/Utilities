@@ -33,6 +33,7 @@ public class PacketTest {
         Assert.assertNotNull(packet.mcPacket());
 
         packet.inject(ImmutableMap.of("x", 1, "y", 2, "z", 3));
+        packet.inject(clazz -> packet.mcPacket());
         check(packet);
     }
 
