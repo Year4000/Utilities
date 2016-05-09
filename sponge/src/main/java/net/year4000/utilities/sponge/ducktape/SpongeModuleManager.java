@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Injector;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.ducktape.ModuleManager;
 import net.year4000.utilities.reflection.Reflections;
@@ -59,13 +60,19 @@ public class SpongeModuleManager extends ModuleManager {
 
     /** Register the listeners found in the modules */
     public void registerListeners() {
-        try {
-            modules.forEach(this::registerModuleListeners);
-        } catch (Throwable throwable) {
-            ErrorReporter.builder(throwable)
-                .add("Problem registering the listeners")
-                .buildAndReport(System.err);
-        }
+        modules.forEach((container, object) -> {
+            try {
+                registerModuleListeners(container, object);
+            } catch (Throwable throwable) {
+                ErrorReporter.builder(throwable)
+                    .hideStackTrace()
+                    .add("Problem registering the listeners")
+                    .add("ID: ", container.getId())
+                    .add("Name: ", container.getName())
+                    .add("Error: ", throwable.getMessage())
+                    .buildAndReport(System.err);
+            }
+        });
     }
 
     /** Register the listeners for the module */
@@ -76,16 +83,11 @@ public class SpongeModuleManager extends ModuleManager {
                 continue; // Must register methods with a listener annotation
             }
             Class<?>[] types = method.getParameterTypes();
-            if (types.length == 0) {
-                continue; // Must have at least one parameter
-            }
-            if (!Event.class.isAssignableFrom(types[0])) {
-                System.err.println("isAssignableFrom");
-                continue; // First param must be an event
-            }
+            Conditions.condition(types.length > 0, "Must have more than 0 arguments");
+            Conditions.condition(Event.class.isAssignableFrom(types[0]), "First arg must be an Event");
             Class<? extends Event> eventClass = (Class<? extends Event>) types[0];
             Sponge.getEventManager().registerListener(Utilities.get(), eventClass, event -> {
-                try {
+                try { // Proxy the event to the module
                     Reflections.invoke(module, method, event);
                 } catch (Throwable throwable) {
                     ErrorReporter.builder(throwable)
