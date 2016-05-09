@@ -65,9 +65,9 @@ public final class Utilities extends AbstractSpongePlugin {
     @Listener
     public void onUtilitiesInit(GameInitializationEvent event) {
         Messages.Factory.inst.get(); // Trigger a download from server now so it can cache it for later
-        PluginCommand.register(this);
-        // FlyCommand.register(this); todo disable, should be in drip
-        SystemCommand.register(this);
+        PluginCommand.register(this, injector);
+        // FlyCommand.register(this, injector); todo disable, should be in drip
+        SystemCommand.register(this, injector);
     }
 
     /** Internal testing method */

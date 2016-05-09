@@ -1,5 +1,16 @@
 package net.year4000.utilities.sponge.command;
 
+import static net.year4000.utilities.sponge.Messages.CMD_CPU_TOTAL;
+import static net.year4000.utilities.sponge.Messages.CMD_MEMORY_FREE;
+import static net.year4000.utilities.sponge.Messages.CMD_MEMORY_MAX;
+import static net.year4000.utilities.sponge.Messages.CMD_MEMORY_TOTAL;
+import static net.year4000.utilities.sponge.Messages.CMD_SYSTEM;
+import static net.year4000.utilities.sponge.Messages.CMD_UPTIME;
+import static org.spongepowered.api.text.format.TextColors.GOLD;
+import static org.spongepowered.api.text.format.TextColors.GRAY;
+import static org.spongepowered.api.text.format.TextColors.YELLOW;
+
+import com.google.inject.Injector;
 import net.year4000.utilities.TimeUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -13,9 +24,6 @@ import org.spongepowered.api.text.Text;
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.TimeUnit;
 
-import static net.year4000.utilities.sponge.Messages.*;
-import static org.spongepowered.api.text.format.TextColors.*;
-
 public final class SystemCommand implements CommandExecutor {
     private static final String[] ALIAS = new String[] {"system", "mem"};
     private static final CommandSpec COMMAND_SPEC = CommandSpec.builder()
@@ -25,7 +33,8 @@ public final class SystemCommand implements CommandExecutor {
         .build();
 
     /** Register this command with the manager */
-    public static void register(Object object) {
+    public static void register(Object object, Injector injector) {
+        injector.injectMembers(COMMAND_SPEC.getExecutor());
         Sponge.getCommandManager().register(object, COMMAND_SPEC, ALIAS);
     }
 
