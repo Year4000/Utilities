@@ -38,6 +38,8 @@ assemble.dependsOn shadowJar {
 
     dependencies {
         include dependency('org.codehaus.groovy:groovy-all:.*') // core:ducktape
+        include dependency('org.scala-lang:scala-*:.*') // core:ducktape
+        include dependency('org.jetbrains.kotlin:kotlin-*:.*') // core:ducktape
         include dependency('redis.clients:jedis:.*') // core:redis
         include dependency('net.year4000.utilities:.*')
     }

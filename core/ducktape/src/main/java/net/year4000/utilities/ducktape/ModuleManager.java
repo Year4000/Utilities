@@ -34,6 +34,7 @@ public class ModuleManager {
     /** A map of all loaders stored by their class, should not be final as support for adding custom loaders */
     private ClassToInstanceMap<ModuleLoader> loaders = ImmutableClassToInstanceMap.<ModuleLoader>builder()
         .put(GroovyModuleLoader.class, new GroovyModuleLoader())
+        .put(ScalaModuleLoader.class, new ScalaModuleLoader())
         .build();
 
 
