@@ -12,10 +12,8 @@ import net.year4000.utilities.value.Value;
 
 import java.io.Reader;
 import java.lang.reflect.Type;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Condition;
 
 @AbstractHttpFetcher.ContentType("application/json; charset=utf8")
 public class JsonHttpFetcher extends AbstractHttpFetcher<JsonObject> {

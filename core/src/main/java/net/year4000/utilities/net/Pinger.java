@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import net.year4000.utilities.Callback;
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -163,17 +164,17 @@ public final class Pinger {
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return Conditions.equals(this, other);
+        return Utils.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return Conditions.hashCode(this);
+        return Utils.hashCode(this);
     }
 
     public class StatusResponse {
@@ -247,17 +248,17 @@ public final class Pinger {
 
         @Override
         public String toString() {
-            return Conditions.toString(this);
+            return Utils.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return Conditions.equals(this, other);
+            return Utils.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return Conditions.hashCode(this);
+            return Utils.hashCode(this);
         }
     }
 
@@ -315,17 +316,17 @@ public final class Pinger {
 
         @Override
         public String toString() {
-            return Conditions.toString(this);
+            return Utils.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return Conditions.equals(this, other);
+            return Utils.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return Conditions.hashCode(this);
+            return Utils.hashCode(this);
         }
     }
 
@@ -363,17 +364,17 @@ public final class Pinger {
 
         @Override
         public String toString() {
-            return Conditions.toString(this);
+            return Utils.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return Conditions.equals(this, other);
+            return Utils.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return Conditions.hashCode(this);
+            return Utils.hashCode(this);
         }
     }
 
@@ -411,17 +412,17 @@ public final class Pinger {
 
         @Override
         public String toString() {
-            return Conditions.toString(this);
+            return Utils.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return Conditions.equals(this, other);
+            return Utils.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return Conditions.hashCode(this);
+            return Utils.hashCode(this);
         }
     }
 }

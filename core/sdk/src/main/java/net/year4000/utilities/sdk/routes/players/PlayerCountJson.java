@@ -18,6 +18,7 @@
 package net.year4000.utilities.sdk.routes.players;
 
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 import java.util.Map;
 
@@ -46,17 +47,17 @@ public class PlayerCountJson {
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return Conditions.equals(this, other);
+        return Utils.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return Conditions.hashCode(this);
+        return Utils.hashCode(this);
     }
 
     public static class Count {
@@ -78,17 +79,17 @@ public class PlayerCountJson {
 
         @Override
         public String toString() {
-            return Conditions.toString(this);
+            return Utils.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return Conditions.equals(this, other);
+            return Utils.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return Conditions.hashCode(this);
+            return Utils.hashCode(this);
         }
     }
 }

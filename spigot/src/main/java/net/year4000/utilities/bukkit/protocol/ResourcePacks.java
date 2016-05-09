@@ -11,6 +11,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.google.common.collect.Maps;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.URLBuilder;
+import net.year4000.utilities.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -113,17 +114,17 @@ public class ResourcePacks implements Closeable {
 
         @Override
         public String toString() {
-            return Conditions.toString(this);
+            return Utils.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return Conditions.equals(this, other);
+            return Utils.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return Conditions.hashCode(this);
+            return Utils.hashCode(this);
         }
     }
 
@@ -143,17 +144,17 @@ public class ResourcePacks implements Closeable {
 
         @Override
         public String toString() {
-            return Conditions.toString(this);
+            return Utils.toString(this);
         }
 
         @Override
         public boolean equals(Object other) {
-            return Conditions.equals(this, other);
+            return Utils.equals(this, other);
         }
 
         @Override
         public int hashCode() {
-            return Conditions.hashCode(this);
+            return Utils.hashCode(this);
         }
     }
 }

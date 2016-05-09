@@ -17,7 +17,9 @@
 
 package net.year4000.utilities.scheduler;
 
+import com.google.common.base.Throwables;
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -49,8 +51,7 @@ public class ThreadedTask implements Runnable {
         if (delay > 0 && unit != null) {
             try {
                 unit.sleep(delay);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException error) {
                 Thread.currentThread().interrupt();
             }
         }
@@ -60,9 +61,8 @@ public class ThreadedTask implements Runnable {
     private void execute() {
         try {
             task.run();
-        }
-        catch (Exception t) {
-            manager.log.log(t, false);
+        } catch (Exception error) {
+            Throwables.propagate(error);
         }
     }
 
@@ -72,8 +72,7 @@ public class ThreadedTask implements Runnable {
             if (repeat) {
                 execute();
                 sleep();
-            }
-            else {
+            } else {
                 sleep();
                 execute();
             }
@@ -82,16 +81,16 @@ public class ThreadedTask implements Runnable {
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return Conditions.equals(this, other);
+        return Utils.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return Conditions.hashCode(this);
+        return Utils.hashCode(this);
     }
 }

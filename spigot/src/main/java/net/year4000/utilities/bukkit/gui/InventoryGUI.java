@@ -19,6 +19,7 @@ package net.year4000.utilities.bukkit.gui;
 
 import com.google.common.base.Ascii;
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 import net.year4000.utilities.bukkit.BukkitUtil;
 import net.year4000.utilities.bukkit.ItemUtil;
 import net.year4000.utilities.mc.MessageUtil;
@@ -82,17 +83,17 @@ public final class InventoryGUI implements InventoryHolder {
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 
     @Override
     public boolean equals(Object other) {
-        return Conditions.equals(this, other);
+        return Utils.equals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return Conditions.hashCode(this);
+        return Utils.hashCode(this);
     }
 
     public Inventory getInventory() {

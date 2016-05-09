@@ -1,15 +1,27 @@
 package net.year4000.utilities.value;
 
-import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /** Simple implementation of the Value */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class MutableValue<V> implements Value<V> {
     protected V value;
 
     /** Init this Value var with the specific value */
-    protected MutableValue(V value) {
+    public MutableValue(Optional<V> value) {
+        this.value = value.orElse(null);
+    }
+
+    /** Init this Value var with the specific value */
+    public MutableValue(Value<V> value) {
+        this.value = value.get();
+    }
+
+    /** Init this Value var with the specific value */
+    public MutableValue(V value) {
         this.value = value;
     }
 
@@ -38,6 +50,6 @@ public class MutableValue<V> implements Value<V> {
 
     @Override
     public String toString() {
-        return Conditions.toString(this);
+        return Utils.toString(this);
     }
 }
