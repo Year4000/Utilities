@@ -4,8 +4,18 @@
 
 package net.year4000.utilities.sponge.command;
 
+import static net.year4000.utilities.sponge.Messages.CMD_PLUGINS;
+import static net.year4000.utilities.sponge.Messages.CMD_VERSION;
+import static org.spongepowered.api.text.format.TextColors.AQUA;
+import static org.spongepowered.api.text.format.TextColors.DARK_GRAY;
+import static org.spongepowered.api.text.format.TextColors.GRAY;
+import static org.spongepowered.api.text.format.TextColors.GREEN;
+import static org.spongepowered.api.text.format.TextColors.YELLOW;
+
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.year4000.utilities.Mappers;
+import net.year4000.utilities.sponge.Utilities;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -19,10 +29,6 @@ import org.spongepowered.api.text.action.TextActions;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static net.year4000.utilities.sponge.Messages.CMD_PLUGINS;
-import static net.year4000.utilities.sponge.Messages.CMD_VERSION;
-import static org.spongepowered.api.text.format.TextColors.*;
 
 
 public final class PluginCommand implements CommandExecutor {
@@ -82,8 +88,11 @@ public final class PluginCommand implements CommandExecutor {
 
     /** Get the collection of active plugins */
     public List<PluginContainer> plugins() {
-        return Sponge.getPluginManager().getPlugins().stream()
+        return ImmutableList.<PluginContainer>builder()
+            .addAll(Sponge.getPluginManager().getPlugins().stream()
             .filter(plugin -> plugin.getInstance().isPresent())
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()))
+            .addAll(Utilities.get().getModuleManager().getModules())
+            .build();
     }
 }

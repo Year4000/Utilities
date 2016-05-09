@@ -1,11 +1,12 @@
 package net.year4000.utilities.sponge.ducktape;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import net.year4000.utilities.Utils;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
 import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class WrappedPluginContainer implements PluginContainer {
     private final Object plugin;
@@ -39,5 +40,10 @@ public class WrappedPluginContainer implements PluginContainer {
     @Override
     public Optional<Object> getInstance() {
         return Optional.ofNullable(plugin);
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(pluginData);
     }
 }

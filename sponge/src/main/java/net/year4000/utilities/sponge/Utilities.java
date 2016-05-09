@@ -4,6 +4,8 @@
 
 package net.year4000.utilities.sponge;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.Tokens;
 import net.year4000.utilities.sponge.command.PluginCommand;
@@ -17,6 +19,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
 import java.util.function.BiConsumer;
@@ -35,14 +38,28 @@ public final class Utilities extends AbstractSpongePlugin {
         ErrorReporter.setUncaughtExceptionHandler();
     }
 
+    /** The DI injector that was used to inject this plugin */
+    @Inject
+    private Injector injector;
+
     /** Get the instance of Utilities */
     public static Utilities get() {
         return instance(Utilities.class);
     }
 
+    /** Get the module manager */
+    public SpongeModuleManager getModuleManager() {
+        return moduleManager;
+    }
+
     @Listener
     public void onConstruct(GameConstructionEvent event) {
-        moduleManager.injectModules();
+        moduleManager.injectModules(injector); // Find and Construct the modules
+    }
+
+    @Listener
+    public void onConstruct(GamePreInitializationEvent event) {
+        moduleManager.registerListeners(); // Register the listeners of the module
     }
 
     @Listener
