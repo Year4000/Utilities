@@ -1,5 +1,6 @@
 package net.year4000.utilities.sponge.protocol;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -35,6 +36,7 @@ public class PacketManager implements Packets {
     }
 
     /** Used for unit tests */
+    @VisibleForTesting
     PacketManager() {
         scheduler = Scheduler.builder().build();
         plugin = "utilities";
@@ -48,6 +50,7 @@ public class PacketManager implements Packets {
     }
 
     /** Does the map contain a listener, internal use ignores checks */
+    @VisibleForTesting
     boolean containsListener(Class<?> clazz) {
         return listeners.get(clazz) != null;
     }
@@ -60,6 +63,7 @@ public class PacketManager implements Packets {
     }
 
     /** Get the listener for the type and player, internal use ignores checks */
+    @VisibleForTesting
     PacketListener getListener(Class<?> clazz) {
         return listeners.get(clazz);
     }
@@ -72,6 +76,7 @@ public class PacketManager implements Packets {
     }
 
     /** Remove the listener unit test method */
+    @VisibleForTesting
     void removeListener(Class<?> clazz) {
         listeners.remove(clazz);
     }
@@ -116,6 +121,7 @@ public class PacketManager implements Packets {
     }
 
     /** Register the listener, used for the unit test */
+    @VisibleForTesting
     void registerListener(Class<?> clazz, PacketListener consumer) {
         listeners.put(clazz, consumer);
     }

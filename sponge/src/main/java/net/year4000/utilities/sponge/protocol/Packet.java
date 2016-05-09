@@ -1,5 +1,6 @@
 package net.year4000.utilities.sponge.protocol;
 
+import com.google.common.annotations.VisibleForTesting;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.value.TypeValue;
@@ -26,6 +27,7 @@ public class Packet {
     }
 
     /** Used to create the packet instance */
+    @VisibleForTesting
     Packet(PacketType type, Class<?> clazz, Object packet) {
         this.type = Conditions.nonNull(type, "type");
         this.clazz = Conditions.nonNull(clazz, "clazz");
