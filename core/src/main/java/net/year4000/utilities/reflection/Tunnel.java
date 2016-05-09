@@ -57,10 +57,8 @@ class Tunnel implements InvocationHandler {
             MethodHandler handle = getterHandle(method);
             cache.put(method, handle);
             return handle.handle(instance, args);
-        } else if (method.isDefault()) {
-            MethodHandler handle = defaultHandle(method, proxy);
-            cache.put(method, handle);
-            return handle.handle(instance, args);
+        } else if (method.isDefault()) { // Can not be cached currently
+            return defaultHandle(method, proxy).handle(instance, args);
         }
 
         // Special cases
