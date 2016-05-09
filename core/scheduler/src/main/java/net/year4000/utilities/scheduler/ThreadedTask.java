@@ -17,20 +17,28 @@
 
 package net.year4000.utilities.scheduler;
 
-import lombok.Value;
-import lombok.experimental.NonFinal;
+import com.google.common.base.Throwables;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 import java.util.concurrent.TimeUnit;
 
-@Value
 public class ThreadedTask implements Runnable {
-    private SchedulerManager manager;
-    private int id;
-    private Runnable task;
-    private int delay;
-    private TimeUnit unit;
-    @NonFinal
+    private final SchedulerManager manager;
+    private final int id;
+    private final Runnable task;
+    private final int delay;
+    private final TimeUnit unit;
     private boolean repeat;
+
+    ThreadedTask(SchedulerManager manager, int id, Runnable task, int delay, TimeUnit unit, boolean repeat) {
+        this.manager = Conditions.nonNull(manager, "manager");
+        this.id = Conditions.isLarger(id, -1);
+        this.task = Conditions.nonNull(task, "task");
+        this.delay = Conditions.isLarger(delay, -1);
+        this.unit = unit;
+        this.repeat = repeat;
+    }
 
     /** Stop the task if the task was assigned to be repeated */
     public void stop() {
@@ -43,8 +51,7 @@ public class ThreadedTask implements Runnable {
         if (delay > 0 && unit != null) {
             try {
                 unit.sleep(delay);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException error) {
                 Thread.currentThread().interrupt();
             }
         }
@@ -54,9 +61,8 @@ public class ThreadedTask implements Runnable {
     private void execute() {
         try {
             task.run();
-        }
-        catch (Exception t) {
-            manager.log.log(t, false);
+        } catch (Exception error) {
+            Throwables.propagate(error);
         }
     }
 
@@ -66,11 +72,25 @@ public class ThreadedTask implements Runnable {
             if (repeat) {
                 execute();
                 sleep();
-            }
-            else {
+            } else {
                 sleep();
                 execute();
             }
         } while (repeat);
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
     }
 }

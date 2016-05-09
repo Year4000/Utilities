@@ -11,7 +11,6 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import lombok.Getter;
 import net.year4000.utilities.bukkit.Utilities;
 import org.bukkit.plugin.Plugin;
 
@@ -30,7 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ServerInfoPing implements PacketOutputHandler {
     private static final int MAX_SIZE = 32767;
-    @Getter
     private final ListenerPriority priority;
     private final Map<String, Supplier<JsonElement>> customElements = Maps.newConcurrentMap();
 
@@ -102,5 +100,9 @@ public class ServerInfoPing implements PacketOutputHandler {
     /** Just an element in json ping data */
     public void put(String key, Supplier<JsonElement> value) {
         customElements.put(key, value);
+    }
+
+    public ListenerPriority getPriority() {
+        return this.priority;
     }
 }

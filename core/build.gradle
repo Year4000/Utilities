@@ -30,4 +30,5 @@ blossom {
 dependencies {
     compile 'com.google.code.gson:gson:2.5'
     compile 'com.google.guava:guava:19.0'
+    compile 'io.netty:netty-all:4.0.23.Final'
 }

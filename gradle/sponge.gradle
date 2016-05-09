@@ -106,7 +106,11 @@ class SpongeForgeClient extends DefaultTask {
             logger.debug(any.message)
             buildJar = project.jar.archivePath
         }
-        File pluginJar = new File(MINECRAFT_HOME, 'mods/' + buildJar.name)
+        File forgeClient = new File(project.rootDir, '/run/forge-client/')
+        System.setProperty("spongeplugin.mcpath", forgeClient.toString())
+        File pluginJarPath = new File(forgeClient, '/mods/')
+        File pluginJar = new File(pluginJarPath, buildJar.name)
+        pluginJarPath.mkdirs()
         Files.copy(buildJar, pluginJar)
 
         if (project.spongestarter.deleteJar) {
@@ -116,13 +120,13 @@ class SpongeForgeClient extends DefaultTask {
         logger.lifecycle 'Setting up the client enverionment'
         MinecraftVersion version = makeMCVersion forge.get()
         ClassPaths classPaths = generateLibs version;
-        classPaths.libs.get().add('versions' + PS + version.inheritsFrom + PS + version.inheritsFrom + '.jar')
+        classPaths.libs.get().add("${MINECRAFT_HOME}/versions${PS}${version.inheritsFrom}${PS}${version.inheritsFrom}.jar")
         def classpath = classPaths.libs.get().stream().collect(Collectors.joining(File.pathSeparator))
         extractJars classPaths.natives.get(), new File(MINECRAFT_HOME, 'natives')
         String[] args = minecraftArguments(version, classpath, loginDetails())
 
         logger.lifecycle 'Starting the Minecraft Client, using settings from the Minecraft Launcher'
-        Process process = new ProcessBuilder(args).directory(MINECRAFT_HOME).start()
+        Process process = new ProcessBuilder(args).directory(forgeClient).start()
         Runtime.runtime.addShutdownHook { process.destroy() }
         new StreamToLogger(src: process.inputStream, logger: logger, level: LogLevel.WARN).execute()
         new StreamToLogger(src: process.errorStream, logger: logger, level: LogLevel.ERROR).execute()
@@ -168,7 +172,7 @@ class SpongeForgeClient extends DefaultTask {
         String[] argParts = version.minecraftArguments.split(' ')
         def minecraftArgs = [
             'java',
-            '-Djava.library.path=natives/',
+            "-Djava.library.path=${MINECRAFT_HOME}/natives/",
             "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${project.spongestarter.debugPort}",
             // todo launcher java args
             '-cp',
@@ -178,8 +182,8 @@ class SpongeForgeClient extends DefaultTask {
         def varMap = [
             assets_index_name: version.assets,
             version_name: version.id,
-            game_directory: MINECRAFT_HOME.toString(),
-            assets_root: 'assets/',
+            game_directory: System.getProperty('spongeplugin.mcpath'),
+            assets_root: "${MINECRAFT_HOME}/assets/",
             version_type: version.type,
             user_type: 'mojang',
             user_properties: '{}',
@@ -218,7 +222,7 @@ class SpongeForgeClient extends DefaultTask {
         def erred = false
 
         paths.each {
-            def file = new File(MINECRAFT_HOME, it)
+            def file = new File(it)
             if (file.exists()) {
                 new ZipFile(file).extractAll extractTo.getPath()
             } else {
@@ -261,7 +265,7 @@ class SpongeForgeClient extends DefaultTask {
 
         object.libraries.each {
             String[] parts = ((String) it.get('name')).split(':')
-            String library = "libraries$PS${parts[0].replace('.', PS)}$PS${parts[1]}$PS${parts[2]}$PS${parts[1]}-${parts[2]}.jar"
+            String library = "${MINECRAFT_HOME}/libraries$PS${parts[0].replace('.', PS)}$PS${parts[1]}$PS${parts[2]}$PS${parts[1]}-${parts[2]}.jar"
 
             if (it.containsKey('natives')) {
                 def platform = OS.detect().name().toLowerCase()

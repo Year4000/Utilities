@@ -8,14 +8,14 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import lombok.EqualsAndHashCode;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 import net.year4000.utilities.net.HttpConnection;
 import net.year4000.utilities.net.JsonHttpFetcher;
 
 /**
  * Make it simple for a class to constructor the object from a JSON web page.
  */
-@EqualsAndHashCode
 public abstract class JsonConfigCache {
     private LoadingCache<Class<? extends JsonConfigCache>, JsonConfigCache> cache;
 
@@ -47,5 +47,20 @@ public abstract class JsonConfigCache {
 
         // Have to cast or wont compile right
         return (T) self.cache.getUnchecked(url.config());
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
     }
 }

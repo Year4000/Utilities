@@ -19,8 +19,6 @@ package net.year4000.utilities.sdk;
 
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
 import net.year4000.utilities.URLBuilder;
 import net.year4000.utilities.net.JsonHttpFetcher;
@@ -34,8 +32,6 @@ import net.year4000.utilities.sdk.routes.servers.ServersRoute;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-@NoArgsConstructor
-@AllArgsConstructor
 public class API {
     private static final JsonHttpFetcher fetcher = JsonHttpFetcher.builder().build();
     public static final String BASE_URL = "https://api.year4000.net/";
@@ -43,8 +39,15 @@ public class API {
     public static final String SERVERS_PATH = "servers";
     public static final String PLAYER_COUNT_PATH = "player-count";
     public static final Type SERVERS_TYPE = new TypeToken<Map<String, ServerJson>>() {
+
     }.getType();
     private String key = null;
+
+    public API(String key) {
+        this.key = key;
+    }
+
+    public API() {}
 
     /** The base url builder for creating API urls */
     public URLBuilder api() {

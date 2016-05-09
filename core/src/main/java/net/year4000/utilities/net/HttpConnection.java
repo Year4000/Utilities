@@ -5,11 +5,9 @@
 package net.year4000.utilities.net;
 
 import com.google.common.collect.Maps;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.URLBuilder;
+import net.year4000.utilities.Utils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -23,7 +21,6 @@ import java.util.Map;
 /**
  * The connection used to use along side HttpFetcher.
  */
-@Data
 public class HttpConnection implements Cloneable {
     private static final int TIMEOUT = 5000;
     private static final String USER_AGENT = "Year4000 Utilities API Interface";
@@ -33,16 +30,15 @@ public class HttpConnection implements Cloneable {
     private String userAgent = null;
     private int timeout = -1;
     // Connection
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
     private HttpURLConnection urlConnection;
 
     public HttpConnection(String url) {
-        urlBuilder = URLBuilder.fromURL(url);
+        urlBuilder = URLBuilder.fromURL(Conditions.nonNullOrEmpty(url, "url"));
     }
 
     /** Copy the supplied http connection */
     private HttpConnection(HttpConnection connection) {
+        Conditions.nonNull(connection, "connection");
         urlBuilder = connection.urlBuilder;
         headers = connection.headers;
         userAgent = connection.userAgent;
@@ -51,7 +47,7 @@ public class HttpConnection implements Cloneable {
 
     /** Response with http */
     public static Reader responseHttp(HttpURLConnection connection) throws IOException {
-        int responseCode = connection.getResponseCode();
+        int responseCode = Conditions.nonNull(connection, "connection").getResponseCode();
 
         // Get Response
         if (responseCode >= HttpURLConnection.HTTP_OK && responseCode <= HttpURLConnection.HTTP_PARTIAL) {
@@ -64,7 +60,7 @@ public class HttpConnection implements Cloneable {
 
     /** Response with https */
     public static Reader responseHttps(HttpsURLConnection connection) throws IOException {
-        int responseCode = connection.getResponseCode();
+        int responseCode = Conditions.nonNull(connection, "connection").getResponseCode();
 
         // Get Response
         if (responseCode >= HttpsURLConnection.HTTP_OK && responseCode <= HttpsURLConnection.HTTP_PARTIAL) {
@@ -77,6 +73,8 @@ public class HttpConnection implements Cloneable {
 
     /** Send data to the connection https */
     public static void requestHttps(HttpsURLConnection connection, String data) throws IOException {
+        Conditions.nonNull(connection, "connection");
+        Conditions.nonNullOrEmpty(data, "data");
         // Send Data
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
             writer.write(data);
@@ -85,6 +83,8 @@ public class HttpConnection implements Cloneable {
 
     /** Send data to the connection https */
     public static void requestHttp(HttpURLConnection connection, String data) throws IOException {
+        Conditions.nonNull(connection, "connection");
+        Conditions.nonNullOrEmpty(data, "data");
         // Send Data
         try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())) {
             writer.write(data);
@@ -128,5 +128,48 @@ public class HttpConnection implements Cloneable {
     /** Clone this object just runs the copy constructor */
     public HttpConnection clone() {
         return new HttpConnection(this);
+    }
+
+    public URLBuilder getUrlBuilder() {
+        return this.urlBuilder;
+    }
+
+    public Map<String, String> getHeaders() {
+        return this.headers;
+    }
+
+    public String getUserAgent() {
+        return this.userAgent;
+    }
+
+    public int getTimeout() {
+        return this.timeout;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = Conditions.nonNull(headers, "headers");
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = Conditions.nonNullOrEmpty(userAgent, "userAgent");
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout < 0 ? -1 : timeout;
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
     }
 }

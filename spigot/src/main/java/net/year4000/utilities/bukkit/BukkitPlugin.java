@@ -20,8 +20,6 @@ package net.year4000.utilities.bukkit;
 import com.sk89q.bukkit.util.BukkitCommandsManager;
 import com.sk89q.bukkit.util.CommandsManagerRegistration;
 import com.sk89q.minecraft.util.commands.*;
-import lombok.AccessLevel;
-import lombok.Getter;
 import net.year4000.utilities.LogUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -39,13 +37,9 @@ import static net.year4000.utilities.bukkit.Messages.*;
  */
 @SuppressWarnings("unused")
 public class BukkitPlugin extends JavaPlugin {
-    @Getter(AccessLevel.PRIVATE)
     private static BukkitPlugin inst;
-    @Getter
     private final BukkitCommandsManager commands = new BukkitCommandsManager();
-    @Getter
     public LogUtil log = new LogUtil(getLogger());
-    @Getter
     public boolean debug = log.isDebug();
 
     /** Load this instance */
@@ -75,6 +69,10 @@ public class BukkitPlugin extends JavaPlugin {
     /** Print out the stack trace */
     public static void log(Exception e, boolean simple) {
         getInst().log.log(e, simple);
+    }
+
+    private static BukkitPlugin getInst() {
+        return BukkitPlugin.inst;
     }
 
     /** Set the new debug status of this plugin */
@@ -135,5 +133,17 @@ public class BukkitPlugin extends JavaPlugin {
         }
 
         return true;
+    }
+
+    public BukkitCommandsManager getCommands() {
+        return this.commands;
+    }
+
+    public LogUtil getLog() {
+        return this.log;
+    }
+
+    public boolean isDebug() {
+        return this.debug;
     }
 }

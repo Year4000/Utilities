@@ -20,8 +20,8 @@ package net.year4000.utilities.bukkit.gui;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 import net.year4000.utilities.bukkit.Utilities;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -31,8 +31,6 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.*;
 
-@ToString
-@EqualsAndHashCode(of = {"uuid"})
 public abstract class AbstractGUI implements Runnable {
     /** The locales for the menus */
     protected final Map<Locale, InventoryGUI> menus = Maps.newConcurrentMap();
@@ -157,5 +155,20 @@ public abstract class AbstractGUI implements Runnable {
         });
 
         generate = true;
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
     }
 }

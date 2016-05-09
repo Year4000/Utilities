@@ -6,10 +6,9 @@ package net.year4000.utilities.net;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import net.year4000.utilities.Callback;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -18,19 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author zh32 <zh32 at zh32.de> modify by ewized to add lombok support,
- *         update the code to latest java standards, and various tweaks.
- */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @SuppressWarnings("unused")
 public final class Pinger {
     public static final int TIME_OUT = (int) TimeUnit.SECONDS.toMillis(5);
     private static final Gson gson = new Gson();
     private InetSocketAddress host;
     private int timeout = TIME_OUT;
+
+    public Pinger(InetSocketAddress host, int timeout) {
+        this.host = Conditions.nonNull(host, "host");
+        this.timeout = Conditions.isLarger(timeout, 1);
+    }
+
+    public Pinger() {}
 
     public int readVarInt(DataInputStream in) throws IOException {
         int i = 0;
@@ -147,15 +146,53 @@ public final class Pinger {
         }
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
+    public InetSocketAddress getHost() {
+        return this.host;
+    }
+
+    public int getTimeout() {
+        return this.timeout;
+    }
+
+    public void setHost(InetSocketAddress host) {
+        this.host = host;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
+    }
+
     public class StatusResponse {
         private String description;
         private Players players;
         private Version version;
         private String favicon;
         private Integer time;
+
+        public StatusResponse(String description, Players players, Version version, String favicon, Integer time) {
+            this.description = Conditions.nonNullOrEmpty(description, "description");
+            this.players = Conditions.nonNull(players, "players");
+            this.version = Conditions.nonNull(version, "version");
+            this.favicon = Conditions.nonNullOrEmpty(favicon, "favicon");
+            this.time = Conditions.nonNull(time, "time");
+        }
+
+        public StatusResponse() {}
 
         public Pinger.StatusResponse copy() {
             Pinger.StatusResponse copy = new StatusResponse();
@@ -168,15 +205,75 @@ public final class Pinger {
 
             return copy;
         }
+
+        public String getDescription() {
+            return this.description;
+        }
+
+        public Players getPlayers() {
+            return this.players;
+        }
+
+        public Version getVersion() {
+            return this.version;
+        }
+
+        public String getFavicon() {
+            return this.favicon;
+        }
+
+        public Integer getTime() {
+            return this.time;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public void setPlayers(Players players) {
+            this.players = players;
+        }
+
+        public void setVersion(Version version) {
+            this.version = version;
+        }
+
+        public void setFavicon(String favicon) {
+            this.favicon = favicon;
+        }
+
+        public void setTime(Integer time) {
+            this.time = time;
+        }
+
+        @Override
+        public String toString() {
+            return Utils.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return Utils.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return Utils.hashCode(this);
+        }
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
     public class Players {
         private Integer max;
         private Integer online;
         private List<Player> sample;
+
+        public Players(Integer max, Integer online, List<Player> sample) {
+            this.max = Conditions.nonNull(max, "max");
+            this.online = Conditions.nonNull(online, "online");
+            this.sample = Conditions.nonNull(sample, "sample");
+        }
+
+        public Players() {}
 
         public Pinger.Players copy() {
             Players copy = new Players();
@@ -192,29 +289,140 @@ public final class Pinger {
 
             return copy;
         }
+
+        public Integer getMax() {
+            return this.max;
+        }
+
+        public Integer getOnline() {
+            return this.online;
+        }
+
+        public List<Player> getSample() {
+            return this.sample;
+        }
+
+        public void setMax(Integer max) {
+            this.max = max;
+        }
+
+        public void setOnline(Integer online) {
+            this.online = online;
+        }
+
+        public void setSample(List<Player> sample) {
+            this.sample = sample;
+        }
+
+        @Override
+        public String toString() {
+            return Utils.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return Utils.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return Utils.hashCode(this);
+        }
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
     public class Player {
         private String name;
         private String id;
 
+        public Player(String name, String id) {
+            this.name = Conditions.nonNullOrEmpty(name, "name");
+            this.id = Conditions.nonNullOrEmpty(id, "id");
+        }
+
+        public Player() {
+        }
+
         public Pinger.Player copy() {
             return new Player(name, id);
         }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public String getId() {
+            return this.id;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return Utils.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return Utils.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return Utils.hashCode(this);
+        }
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
     public class Version {
         private String name;
         private String protocol;
 
+        public Version(String name, String protocol) {
+            this.name = Conditions.nonNullOrEmpty(name, "name");
+            this.protocol = Conditions.nonNullOrEmpty(protocol, "protocol");
+        }
+
+        public Version() {
+        }
+
         public Pinger.Version copy() {
             return new Version(name, protocol);
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public String getProtocol() {
+            return this.protocol;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setProtocol(String protocol) {
+            this.protocol = protocol;
+        }
+
+        @Override
+        public String toString() {
+            return Utils.toString(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return Utils.equals(this, other);
+        }
+
+        @Override
+        public int hashCode() {
+            return Utils.hashCode(this);
         }
     }
 }

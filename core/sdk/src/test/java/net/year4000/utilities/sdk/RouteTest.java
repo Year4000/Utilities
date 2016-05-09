@@ -4,14 +4,15 @@
 
 package net.year4000.utilities.sdk;
 
-import lombok.extern.java.Log;
 import net.year4000.utilities.sdk.routes.accounts.AccountRoute;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Log
+import java.util.logging.Logger;
+
 public class RouteTest {
+    private static final Logger log = Logger.getLogger(RouteTest.class.getName());
     private static API api = new API();
 
     @Test

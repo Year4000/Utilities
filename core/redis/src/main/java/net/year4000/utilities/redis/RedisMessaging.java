@@ -6,8 +6,8 @@ package net.year4000.utilities.redis;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.Utils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
@@ -18,8 +18,6 @@ import java.util.function.Consumer;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@ToString
-@EqualsAndHashCode
 public class RedisMessaging implements Closeable {
     private static final String CHANNELS = "*";
     private final Multimap<String, Consumer<String>> listeners = ArrayListMultimap.create();
@@ -87,6 +85,21 @@ public class RedisMessaging implements Closeable {
     public void close() {
         listeners.keySet().forEach(this::unsubscribe);
         pubsub.unsubscribe();
+    }
+
+    @Override
+    public String toString() {
+        return Utils.toString(this);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return Utils.equals(this, other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.hashCode(this);
     }
 
     /** Handle the message from Redis */

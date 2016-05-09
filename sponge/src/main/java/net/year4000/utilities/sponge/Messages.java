@@ -5,7 +5,9 @@
 package net.year4000.utilities.sponge;
 
 import net.year4000.utilities.cache.QuickCache;
-import net.year4000.utilities.locale.*;
+import net.year4000.utilities.locale.LocaleKeys;
+import net.year4000.utilities.locale.Translatable;
+import net.year4000.utilities.locale.URLLocaleManager;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 

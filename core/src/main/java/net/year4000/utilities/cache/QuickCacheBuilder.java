@@ -20,7 +20,6 @@ package net.year4000.utilities.cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import lombok.NonNull;
 
 import java.lang.reflect.Constructor;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +65,6 @@ public final class QuickCacheBuilder<T> {
      *
      * @return new QuickCache with this builder's info.
      */
-    @NonNull
     public QuickCache<T> build() {
         return build(clazz, time, unit);
     }
