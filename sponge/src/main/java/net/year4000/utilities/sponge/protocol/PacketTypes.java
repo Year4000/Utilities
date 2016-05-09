@@ -14,7 +14,6 @@ import net.year4000.utilities.value.Value;
 
 import java.util.concurrent.ConcurrentMap;
 
-
 /** A enumeration of all the type of packets Minecraft 1.9.2 can handle */
 public final class PacketTypes {
     private static final ConcurrentMap<Class<?>, PacketType> map = Maps.newConcurrentMap();
@@ -179,7 +178,6 @@ public final class PacketTypes {
     // Server
     public static final PacketType STATUS_SERVER_REQUEST = of(STATUS, OUTBOUND, 0x00);
     public static final PacketType STATUS_SERVER_PING = of(STATUS, OUTBOUND, 0x01);
-
 
     // Login Packets
     // Client
