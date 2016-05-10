@@ -17,5 +17,5 @@ public interface Holograms {
         return HologramManager.get(plugin);
     }
 
-    void add(Location<World> location, Text... text);
+    Hologram add(Location<World> location, Text... text);
 }

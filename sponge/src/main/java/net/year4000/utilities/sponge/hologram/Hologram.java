@@ -1,14 +1,12 @@
 package net.year4000.utilities.sponge.hologram;
 
-import static net.year4000.utilities.sponge.protocol.PacketTypes.Binding.OUTBOUND;
-import static net.year4000.utilities.sponge.protocol.PacketTypes.State.PLAY;
+import static net.year4000.utilities.sponge.protocol.PacketTypes.V1_8.PLAY_CLIENT_SPAWN_MOB;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Throwables;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.sponge.protocol.Packet;
-import net.year4000.utilities.sponge.protocol.PacketTypes;
 import net.year4000.utilities.value.Value;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
@@ -19,31 +17,30 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 public final class Hologram {
     private static final double OFFSET = 0.25;
     private final HologramManager manager;
-    private final List<Text> lines;
     private final Vector3d origin;
     private final Extent extent;
+    private FrameBuffer buffer;
 
-    Hologram(HologramManager manager, Location<World> location, Text... lines) {
+    /** Create the hologram at the location and with the buffer*/
+    Hologram(HologramManager manager, Location<World> location, FrameBuffer buffer) {
         this.manager = Conditions.nonNull(manager, "manager");
         Conditions.nonNull(location, "location");
         this.origin = location.getPosition();
         this.extent = location.getExtent();
-        this.lines = Arrays.asList(Conditions.nonNull(lines, "lines"));
+        this.buffer = Conditions.nonNull(buffer, "buffer");
     }
 
     /** Send the packets */
     public void generate() {
-        double y = (lines.size() / 2) * -OFFSET; // Shift origin so hologram's origin is in the center
-        for (Text line : lines) {
+        double y = (buffer.size() / 2) * -OFFSET; // Shift origin so hologram's origin is in the center
+        for (Text line : buffer) {
             line(y += OFFSET, line).ifPresent(entity -> {
-                manager.packets.sendPacket(new Packet(PacketTypes.of(PLAY, OUTBOUND, 0x0F)).inject(clazz -> {
+                manager.packets.sendPacket(new Packet(PLAY_CLIENT_SPAWN_MOB).inject(clazz -> {
                     try { // Swap out the default packet with the one of the entity
                         Class<?> entityClass = Reflections.clazz("net.minecraft.entity.EntityLivingBase").get();
                         return clazz.getConstructor(entityClass).newInstance(entity);

@@ -27,7 +27,9 @@ public class HologramManager implements Holograms {
     }
 
     @Override
-    public void add(Location<World> location, Text... text) {
-        new Hologram(this, location, text).generate();
+    public Hologram add(Location<World> location, Text... text) {
+        Hologram hologram = new Hologram(this, location, FrameBuffer.builder().add(text).build());
+        hologram.generate();
+        return hologram;
     }
 }
