@@ -5,6 +5,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.awt.image.BufferedImage;
+
 /** Create holograms */
 public interface Holograms {
     /** Get the default hologram manager that is using utilities as the plugin */
@@ -18,4 +20,6 @@ public interface Holograms {
     }
 
     Hologram add(Location<World> location, Text... text);
+
+    Hologram add(Location<World> location, BufferedImage image);
 }

@@ -7,6 +7,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.awt.image.BufferedImage;
 import java.util.Map;
 
 public class HologramManager implements Holograms {
@@ -29,6 +30,12 @@ public class HologramManager implements Holograms {
     @Override
     public Hologram add(Location<World> location, Text... text) {
         Hologram hologram = new Hologram(this, location, FrameBuffer.builder().add(text).build());
+        hologram.generate();
+        return hologram;
+    }
+
+    @Override public Hologram add(Location<World> location, BufferedImage image) {
+        Hologram hologram = new Hologram(this, location, FrameBuffer.builder().add(image).build());
         hologram.generate();
         return hologram;
     }
