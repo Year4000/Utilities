@@ -22,13 +22,14 @@ import java.util.concurrent.TimeUnit;
 public class PacketManager implements Packets {
     public static final AttributeKey<Player> PLAYER_KEY = AttributeKey.valueOf("player");
     public static final AttributeKey<PacketManager> PACKET_MANAGER_KEY = AttributeKey.valueOf("packet_manager");
+    private static final Map<Class<?>, PacketManager> managers = Maps.newConcurrentMap();
     private final Scheduler scheduler;
     final UUID id = UUID.randomUUID();
     final Map<Class<?>, PacketListener> listeners = Maps.newConcurrentMap();
     final String plugin;
 
     /** Creates the manages and register listeners ect */
-    public PacketManager(Object plugin) {
+    protected PacketManager(Object plugin) {
         Conditions.nonNull(plugin, "plugin");
         Sponge.getEventManager().registerListeners(plugin, this);
         scheduler = Scheduler.builder().executor(Sponge.getScheduler().createAsyncExecutor(plugin)).build();
@@ -40,6 +41,13 @@ public class PacketManager implements Packets {
     PacketManager() {
         scheduler = Scheduler.builder().build();
         plugin = "utilities";
+    }
+
+    /** Only one PacketManager per instance from Packets.manager() */
+    public static PacketManager get(Object plugin) {
+        Class<?> clazz = plugin.getClass();
+        managers.putIfAbsent(clazz, new PacketManager(plugin));
+        return managers.get(clazz);
     }
 
     /** Does the map contain any listeners*/

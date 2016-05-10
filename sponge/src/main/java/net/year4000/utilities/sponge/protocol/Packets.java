@@ -14,7 +14,7 @@ public interface Packets {
 
     /** Get the default PacketManager for this interface using the plugin you supplied */
     static Packets manager(Object plugin) {
-        return new PacketManager(plugin);
+        return PacketManager.get(plugin);
     }
 
     /** Send a selected packet to the player */

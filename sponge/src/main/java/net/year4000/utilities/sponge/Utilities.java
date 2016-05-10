@@ -8,6 +8,8 @@ import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.Tokens;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
+import net.year4000.utilities.sponge.hologram.Holograms;
+import net.year4000.utilities.sponge.protocol.Packets;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -15,6 +17,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
 import java.util.function.BiConsumer;
@@ -28,6 +31,11 @@ import java.util.function.BiConsumer;
     authors = {"ewized"}
 )
 public final class Utilities extends AbstractSpongePlugin {
+    // Services
+    private Packets packets;
+    private Holograms holograms;
+
+    // Error Reporter
     static {
         ErrorReporter.setUncaughtExceptionHandler();
     }
@@ -35,6 +43,12 @@ public final class Utilities extends AbstractSpongePlugin {
     /** Get the instance of Utilities */
     public static Utilities get() {
         return instance(Utilities.class);
+    }
+
+    @Listener
+    public void onUtilitiesPreInit(GamePreInitializationEvent event) {
+        packets = setProvider(Packets.class, Packets.manager());
+        holograms = setProvider(Holograms.class, Holograms.manager());
     }
 
     @Listener
@@ -51,6 +65,12 @@ public final class Utilities extends AbstractSpongePlugin {
             consumer.accept(src, args);
             return CommandResult.success();
         }).build(), cmd);
+    }
+
+    /** Internal setting of service provider */
+    private <T> T setProvider(Class<T> clazz, T instance) {
+        Sponge.getServiceManager().setProvider(this, clazz, instance);
+        return instance;
     }
 
     public static void log(Object object, Object... args) {
