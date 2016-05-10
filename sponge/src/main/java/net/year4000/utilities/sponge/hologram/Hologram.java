@@ -40,11 +40,11 @@ public final class Hologram {
 
     /** Send the packets */
     public void generate() {
-        double y = (lines.size() / 2) * OFFSET; // Shift origin so hologram's origin is in the center
+        double y = (lines.size() / 2) * -OFFSET; // Shift origin so hologram's origin is in the center
         for (Text line : lines) {
             line(y += OFFSET, line).ifPresent(entity -> {
                 manager.packets.sendPacket(new Packet(PacketTypes.of(PLAY, OUTBOUND, 0x0F)).inject(clazz -> {
-                    try {
+                    try { // Swap out the default packet with the one of the entity
                         Class<?> entityClass = Reflections.clazz("net.minecraft.entity.EntityLivingBase").get();
                         return clazz.getConstructor(entityClass).newInstance(entity);
                     } catch (Exception error) {
