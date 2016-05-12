@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -13,6 +14,9 @@ public class AbstractSignatureLookupTest {
         // Must be 2 for test bellow
         String foo = "foo";
         String bar = "bar";
+
+        Dumb() {}
+        Dumb(String foo, String bar) {}
 
         // Must be 4 for test bellow
         abstract void a();
@@ -63,5 +67,14 @@ public class AbstractSignatureLookupTest {
     public void methodSignatureTest() throws Exception {
         SignatureLookup<Method> lookup = SignatureLookup.methods("()V", Dumb.class);
         Assert.assertEquals(4, lookup.find().size());
+    }
+
+
+    @Test
+    public void constructorSignatureTest() throws Exception {
+        SignatureLookup<Constructor<Dumb>> lookup = SignatureLookup.constructors("(Ljava/lang/String;Ljava/lang/String;)V", Dumb.class);
+        Assert.assertEquals(1, lookup.find().size());
+        SignatureLookup<Constructor<Dumb>> lookupEmpty = SignatureLookup.constructors("()V", Dumb.class);
+        Assert.assertEquals(1, lookupEmpty.find().size());
     }
 }

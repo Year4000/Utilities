@@ -9,7 +9,7 @@ import java.util.List;
 /** Tries and finds the field for method based on the signatures value */
 public abstract class AbstractSignatureLookup<T> implements SignatureLookup<T> {
     /** Should it look up fields for methods */
-    public enum For {FIELD, METHOD}
+    public enum For {FIELD, METHOD, CONSTRUCTOR}
 
     // Used to parse the signature
 
@@ -45,7 +45,7 @@ public abstract class AbstractSignatureLookup<T> implements SignatureLookup<T> {
         this.type = Conditions.nonNull(type, "type");
         // Grab the return type and args
         this.returnType = type(signature).getOrElse(null);
-        this.argsType = (type == For.METHOD) ? methodArgs(signature).getOrElse(null) : null;
+        this.argsType = (type != For.FIELD) ? methodArgs(signature).getOrElse(null) : null;
     }
 
     /** Creates a unique map of the classes and the chars */
@@ -75,7 +75,7 @@ public abstract class AbstractSignatureLookup<T> implements SignatureLookup<T> {
 
     /** Get the return type of the method if it is one, or the field type, if class not found return empty value */
     private Value<Class<?>> type(String str) {
-        Conditions.checkState(type, For.METHOD, For.FIELD);
+        Conditions.checkState(type, For.METHOD, For.FIELD, For.CONSTRUCTOR);
         Conditions.nonNullOrEmpty(str, "str");
         int index = str.lastIndexOf(")") + 1;
         try {
@@ -87,7 +87,7 @@ public abstract class AbstractSignatureLookup<T> implements SignatureLookup<T> {
 
     /** Get the class types of the method arguments, if class not found return empty value */
     private Value<Class<?>[]> methodArgs(String str) {
-        Conditions.checkState(type, For.METHOD);
+        Conditions.checkState(type, For.METHOD, For.CONSTRUCTOR);
         Conditions.nonNullOrEmpty(str, "str");
         str = str.substring(1, str.lastIndexOf(")"));
         List<Class<?>> args = Lists.newArrayList();
