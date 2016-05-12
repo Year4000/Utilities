@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import net.year4000.utilities.value.Value;
 
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -91,6 +92,14 @@ public final class ErrorReporter {
         public Builder add(String message, Object object) {
             Conditions.nonNullOrEmpty(message, "message");
             lines.add(message + ((object == null) ? "null" : String.valueOf(object)));
+            return this;
+        }
+
+        /** Add a bunch of object separated by a comma */
+        public Builder add(String message, Collection<Object> objects) {
+            Conditions.nonNullOrEmpty(message, "message");
+            String joined = (objects == null) ? "null" : objects.stream().map(String::valueOf).collect(Collectors.joining(", "));
+            lines.add(message + joined);
             return this;
         }
 

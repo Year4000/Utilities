@@ -14,6 +14,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -91,15 +92,15 @@ public class PacketManager implements Packets {
 
     /** The implementation of sending a custom packet to the player */
     @Override
-    public void sendPacket(Player player, Packet packet) {
-        Conditions.nonNull(player, "player");
+    public void sendPacket(Collection<Player> players, Packet packet) {
         Conditions.nonNull(packet, "packet");
+        Conditions.nonNull(players, "players");
         try {
-            ProxyEntityPlayerMP.of(player).sendPacket(packet);
+            players.stream().map(ProxyEntityPlayerMP::of).forEach(player -> player.sendPacket(packet));
         } catch (Throwable throwable) {
             ErrorReporter.builder(throwable)
                 .hideStackTrace()
-                .add("Player: ", player.getName())
+                .add("Player(s): ", players)
                 .add("Packet ID: ", Integer.toHexString(packet.packetType().id()))
                 .add("Packet State: ", PacketTypes.State.values()[packet.packetType().state()])
                 .add("Packet Bounded: ", PacketTypes.Binding.values()[packet.packetType().bounded()])
@@ -110,13 +111,13 @@ public class PacketManager implements Packets {
     }
 
     @Override
-    public void sendPacket(Player player, Packet packet, long offset, TimeUnit unit) {
-        scheduler.run(() -> sendPacket(player, packet), (int) offset, unit);
+    public void sendPacket(Collection<Player> players, Packet packet, long offset, TimeUnit unit) {
+        scheduler.run(() -> sendPacket(players, packet), (int) offset, unit);
     }
 
     @Override
-    public void repeatPacket(Player player, Packet packet, long delay, TimeUnit unit) {
-        scheduler.repeat(() -> sendPacket(player, packet), (int) delay, unit);
+    public void repeatPacket(Collection<Player> players, Packet packet, long delay, TimeUnit unit) {
+        scheduler.repeat(() -> sendPacket(players, packet), (int) delay, unit);
     }
 
     /** The implementation on listing for packets */

@@ -1,16 +1,22 @@
 package net.year4000.utilities.sponge.hologram;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Maps;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.sponge.protocol.Packets;
-import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.awt.image.BufferedImage;
+import java.util.Collection;
 import java.util.Map;
 
+/**
+ * The Hologram Manager that will handle all of the holograms, it uses a FrameBuffer to
+ * create the frames for the hologram, if they are animated.
+ */
 public class HologramManager implements Holograms {
     private static final Map<Class<?>, HologramManager> managers = Maps.newConcurrentMap();
     final Object plugin;
@@ -28,22 +34,23 @@ public class HologramManager implements Holograms {
         return managers.get(clazz);
     }
 
-    @Override
-    public Hologram add(Location<World> location, Text... text) {
-        Hologram hologram = new Hologram(this, location, FrameBuffer.builder().add(text).build());
-        Sponge.getServer().getOnlinePlayers().forEach(hologram::send);
-        return hologram;
+    @Override public Hologram add(Location<World> location, Text... text) {
+        return null;
     }
 
-    @Override
-    public Hologram add(Location<World> location, BufferedImage image) {
-        Hologram hologram = new Hologram(this, location, FrameBuffer.builder().add(image).build());
-        Sponge.getServer().getOnlinePlayers().forEach(hologram::send);
-        return hologram;
+    @Override public Hologram add(Collection<Player> players, Vector3d vector, Text... text) {
+        return null;
     }
 
-    @Override
-    public void remove(Hologram hologram) {
-        Sponge.getServer().getOnlinePlayers().forEach(hologram::destroy);
+    @Override public Hologram add(Location<World> location, BufferedImage image) {
+        return null;
+    }
+
+    @Override public Hologram add(Collection<Player> players, Vector3d vector, BufferedImage image) {
+        return null;
+    }
+
+    @Override public void remove(Player player, Hologram hologram) {
+
     }
 }

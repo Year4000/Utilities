@@ -54,7 +54,7 @@ public class Hologram {
         if (spawnPackets.size() == 0) {
             generate(); // Only create the packets once we need to send them
         }
-        spawnPackets.forEach(packet -> manager.packets.sendPacket(player, packet));
+        spawnPackets.forEach(packet -> manager.packets.sendPacket(packet));
     }
 
     /** Destroy the hologram for the player */
