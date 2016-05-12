@@ -73,14 +73,17 @@ final class FrameBuffer implements Iterable<Text> {
 
         /** Add the text object to the builder */
         Builder add(Text text) {
-            lines.add(Conditions.nonNull(text, "text"));
+            if (text == null) {
+                text = Text.EMPTY;
+            }
+            lines.add(text);
             return this;
         }
 
         /** Add the lines to the builder */
         Builder add(Text... texts) {
             for (Text text : Conditions.nonNull(texts, "texts")) {
-                lines.add(text);
+                add(text);
             }
             return this;
         }
@@ -93,7 +96,7 @@ final class FrameBuffer implements Iterable<Text> {
 
         /** Adds a BufferedImage into the hologram */
         Builder add(BufferedImage image) {
-            System.out.println(TextColors.AQUA.getColor());
+            Conditions.nonNull(image, "image");
             for (int y = 0; y < image.getHeight(); y++) {
                 Text.Builder builder = Text.builder();
                 for (int x = 0 ; x < image.getWidth(); x++) {

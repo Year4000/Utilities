@@ -22,4 +22,6 @@ public interface Holograms {
     Hologram add(Location<World> location, Text... text);
 
     Hologram add(Location<World> location, BufferedImage image);
+
+    void remove(Hologram hologram);
 }

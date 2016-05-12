@@ -3,6 +3,7 @@ package net.year4000.utilities.sponge.hologram;
 import com.google.common.collect.Maps;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.sponge.protocol.Packets;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -30,13 +31,19 @@ public class HologramManager implements Holograms {
     @Override
     public Hologram add(Location<World> location, Text... text) {
         Hologram hologram = new Hologram(this, location, FrameBuffer.builder().add(text).build());
-        hologram.generate();
+        Sponge.getServer().getOnlinePlayers().forEach(hologram::send);
         return hologram;
     }
 
-    @Override public Hologram add(Location<World> location, BufferedImage image) {
+    @Override
+    public Hologram add(Location<World> location, BufferedImage image) {
         Hologram hologram = new Hologram(this, location, FrameBuffer.builder().add(image).build());
-        hologram.generate();
+        Sponge.getServer().getOnlinePlayers().forEach(hologram::send);
         return hologram;
+    }
+
+    @Override
+    public void remove(Hologram hologram) {
+        Sponge.getServer().getOnlinePlayers().forEach(hologram::destroy);
     }
 }
