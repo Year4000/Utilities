@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.primitives.Ints;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 /** Find the constructor by the signature */
@@ -28,10 +29,15 @@ class ConstructorSignatureLookup<C> extends AbstractSignatureLookup<Constructor<
     public ImmutableSet<Constructor<C>> find() {
         ImmutableSet.Builder<Constructor<C>> possibles = new ImmutableSet.Builder<>();
         for (Constructor<C> constructor : constructors()) {
-            // Constructors first arg is the calling class, so strip that off
-            Class<?>[] paramTypes = Arrays.copyOfRange(constructor.getParameterTypes(), 1, constructor.getParameterCount());
-            if (Arrays.equals(paramTypes, argsType)) {
-                possibles.add(constructor);
+            if (Modifier.isStatic(from.getModifiers())) {
+                if (Arrays.equals(constructor.getParameterTypes(), argsType)) {
+                    possibles.add(constructor);
+                }
+            } else { // Non Static Classes Constructors first arg is the parent class, so strip that off
+                Class<?>[] paramTypes = Arrays.copyOfRange(constructor.getParameterTypes(), 1, constructor.getParameterCount());
+                if (Arrays.equals(paramTypes, argsType)) {
+                    possibles.add(constructor);
+                }
             }
         }
         return possibles.build();

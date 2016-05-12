@@ -27,6 +27,7 @@ public class ReflectionsTest {
     public void instanceTest() {
         Assert.assertFalse(Reflections.instance(MyObject.class).isEmpty());
         Assert.assertFalse(Reflections.instance(MyObject.class, "bar").isEmpty());
+        Assert.assertFalse(Reflections.instance("(Ljava/lang/String;)V", MyObject.class, "bar").isEmpty());
     }
 
     @Test

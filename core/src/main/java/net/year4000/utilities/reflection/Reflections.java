@@ -11,6 +11,7 @@ import net.year4000.utilities.value.Value;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 /** A set of tools for handling reflections */
@@ -150,6 +151,23 @@ public final class Reflections {
             field.setAccessible(state);
             return Value.of(value);
         } catch (ReflectiveOperationException error) {
+            return Value.empty();
+        }
+    }
+
+    /** Create an instance of the provided object with the specific signature */
+    public static <T> Value<T> instance(String signature, Class<T> clazz, Object... args) {
+        try {
+            SignatureLookup<Constructor<T>> lookup = SignatureLookup.constructors(signature, clazz);
+            Constructor<T> constructor = lookup.find().iterator().next();
+            Conditions.condition(constructor.getParameterCount() == args.length, "Args must match signature");
+            boolean state = constructor.isAccessible();
+            constructor.setAccessible(true);
+            T value = constructor.newInstance(args);
+            constructor.setAccessible(state);
+            return Value.of(value);
+        } catch (ReflectiveOperationException | NoSuchElementException error) {
+            error.printStackTrace();
             return Value.empty();
         }
     }
