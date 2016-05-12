@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.sponge.protocol.Packet;
-import net.year4000.utilities.tuple.Pair;
 import net.year4000.utilities.value.Value;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
@@ -23,6 +22,7 @@ import org.spongepowered.api.world.extent.Extent;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A light weight and fast system to get the holograms displayed.
@@ -35,7 +35,7 @@ public class Hologram {
     private final HologramManager manager;
     private final Vector3d origin;
     private final Extent extent;
-    private final List<Pair<ArmorStand, Packet>> armorStands;
+    private final List<Packet> spawnPackets;
     private Packet destroyPacket;
     private FrameBuffer buffer;
 
@@ -46,26 +46,28 @@ public class Hologram {
         this.origin = location.getPosition();
         this.extent = location.getExtent();
         this.buffer = Conditions.nonNull(buffer, "buffer");
-        this.armorStands = Lists.newArrayListWithCapacity(buffer.size());
+        this.spawnPackets = Lists.newArrayListWithCapacity(buffer.size());
     }
 
     /** Send the hologram to the player */
     void send(Player player) {
-        if (armorStands.size() == 0) {
+        if (spawnPackets.size() == 0) {
             generate(); // Only create the packets once we need to send them
         }
-        armorStands.forEach(pair -> manager.packets.sendPacket(player, pair.b.get()));
+        spawnPackets.forEach(packet -> manager.packets.sendPacket(player, packet));
     }
 
     /** Destroy the hologram for the player */
     void destroy(Player player) {
-        if (armorStands.size() > 0 && destroyPacket != null) {
+        if (spawnPackets.size() > 0 && destroyPacket != null) {
             manager.packets.sendPacket(player, destroyPacket);
         }
     }
 
     /** Generate the packets to send and destroy the hologram */
     private void generate() {
+        int[] ids = new int[buffer.size()];
+        AtomicInteger counter = new AtomicInteger();
         double y = (buffer.size() / 2) * -OFFSET; // Shift origin so hologram's origin is in the center
         for (Text line : buffer) {
             line(y += OFFSET, line).ifPresent(entity -> {
@@ -77,17 +79,12 @@ public class Hologram {
                         throw Throwables.propagate(error);
                     }
                 });
-                armorStands.add(new Pair<>(entity, packet));
+                ids[counter.getAndIncrement()] = entity.hashCode();
+                spawnPackets.add(packet);
             });
         }
-        // Destroy packet
-        destroyPacket = new Packet(PLAY_CLIENT_DESTROY_ENTITIES).inject(clazz -> {
-            int[] ids = new int[buffer.size()];
-            for (int i = 0 ; i < buffer.size() ; i++) {
-                ids[i] = armorStands.get(i).a.hashCode();
-            }
-            return Reflections.instance(clazz, ids).get();
-        });
+       // Destroy packet
+        destroyPacket = new Packet(PLAY_CLIENT_DESTROY_ENTITIES).injector().add(ids).inject();
     }
 
     /** Create the armor stand entity */
