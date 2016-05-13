@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ReflectionsTest {
-    private static class MyObject {
+    private static class MyObject implements Comparable<MyObject> {
         private static String foo_bar = "foo bar";
         private String foo = "bar";
         private String bar = "foo";
@@ -21,6 +21,24 @@ public class ReflectionsTest {
         private String foo() {
             return "bar";
         }
+
+        @Override
+        public int compareTo(MyObject other) {
+            return 1;
+        }
+    }
+
+    private interface Proxy {
+        String foo();
+    }
+
+    @Test
+    public void proxyTest() {
+        // Simple handler that treated it correctly
+        Proxy proxy = Reflections.proxy(Proxy.class, (proxy1, method, args) -> (args != null) ? 1 : "bar", Comparable.class);
+        Assert.assertEquals("bar", proxy.foo());
+        Comparable<MyObject> comparable = (Comparable<MyObject>) proxy;
+        Assert.assertEquals(1, comparable.compareTo(null));
     }
 
     @Test
