@@ -1,11 +1,6 @@
 package net.year4000.utilities.reflection;
 
-import net.year4000.utilities.reflection.annotations.Bridge;
-import net.year4000.utilities.reflection.annotations.Getter;
-import net.year4000.utilities.reflection.annotations.Invoke;
-import net.year4000.utilities.reflection.annotations.Proxied;
-import net.year4000.utilities.reflection.annotations.Setter;
-import net.year4000.utilities.reflection.annotations.Static;
+import net.year4000.utilities.reflection.annotations.*;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,11 +30,13 @@ public class ReflectionTest {
     }
 
     @Proxied("net.year4000.utilities.reflection.ReflectionTest$OtherObject")
+    @Implements(@Proxied("a"))
     public interface ProxyOtherObject {
         @Getter @Static String other();
     }
 
     @Proxied("net.year4000.utilities.reflection.ReflectionTest$MyObject")
+    @Implements(@Proxied("java.lang.Runnable"))
     public interface ProxyMyObject extends ProxyOtherObject {
         @Setter void foo(String value);
         @Getter String foo();
@@ -65,6 +62,7 @@ public class ReflectionTest {
     @Test
     public void gatewaysTest() {
         Assert.assertEquals(MyObject.class, Gateways.reflectiveClass(ProxyMyObject.class));
+        Assert.assertTrue(Gateways.proxy(ProxyMyObject.class) instanceof Runnable);
     }
 
     @Test
