@@ -5,6 +5,8 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.function.Supplier;
+
 public class ReflectionTest {
     private static final String FOO = "foo";
     private static final String BAR = "bar";
@@ -15,7 +17,7 @@ public class ReflectionTest {
         private static String other = "other";
     }
 
-    private final static class MyObject extends OtherObject {
+    private final static class MyObject extends OtherObject implements Supplier<String> {
         private String foo = FOO;
         private MyObject object = OBJECT;
         private int findMe = 1;
@@ -27,16 +29,20 @@ public class ReflectionTest {
         private String findMe(int x, int y, int z) {
             return "found me";
         }
+
+        @Override
+        public String get() {
+            return FOO;
+        }
     }
 
     @Proxied("net.year4000.utilities.reflection.ReflectionTest$OtherObject")
-    @Implements(@Proxied("a"))
     public interface ProxyOtherObject {
         @Getter @Static String other();
     }
 
     @Proxied("net.year4000.utilities.reflection.ReflectionTest$MyObject")
-    @Implements(@Proxied("java.lang.Runnable"))
+    @Implements({@Proxied("java.lang.Runnable"), @Proxied("java.util.function.Supplier")})
     public interface ProxyMyObject extends ProxyOtherObject {
         @Setter void foo(String value);
         @Getter String foo();
@@ -75,6 +81,8 @@ public class ReflectionTest {
     public void invokeTest() {
         ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
         Assert.assertEquals(FOO_BAR, proxy.method());
+        Supplier<String> supplier = (Supplier<String>) proxy;
+        Assert.assertEquals(FOO, supplier.get());
     }
 
     @Test

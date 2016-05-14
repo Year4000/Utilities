@@ -63,8 +63,8 @@ class Tunnel implements InvocationHandler {
             return handle.handle(instance, args);
         }
 
-        // Special cases
-        return Reflections.invoke(Object.class, instance, method.getName()).get();
+        // Last if no others are found use the declaring classes method
+        return Reflections.invoke(method.getDeclaringClass(), instance, method.getName()).get();
     }
 
     /** Wraps the error from invokable and print out details */
@@ -83,7 +83,7 @@ class Tunnel implements InvocationHandler {
                 .map(clazz -> "@" + clazz.getSimpleName())
                 .collect(Collectors.joining(", "));
             // The report
-            ErrorReporter.builder(exception)
+            throw ErrorReporter.builder(exception)
                 .hideStackTrace()
                 .add("Failed at: ", method.getDeclaringClass().getName())
                 .add("Message: ", exception.getMessage())
@@ -92,11 +92,10 @@ class Tunnel implements InvocationHandler {
                 .add("Arg(s): ", args)
                 .buildAndReport(System.err);
         } catch (Throwable throwable) { // General errors
-            ErrorReporter.builder(throwable)
+            throw ErrorReporter.builder(throwable)
                 .add("Failed at: ", method.getDeclaringClass().getName())
                 .add("Method: ", method.getName())
                 .buildAndReport(System.err);
         }
-        return null;
     }
 }
