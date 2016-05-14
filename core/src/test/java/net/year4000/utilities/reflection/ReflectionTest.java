@@ -1,14 +1,11 @@
 package net.year4000.utilities.reflection;
 
-import net.year4000.utilities.reflection.annotations.Bridge;
-import net.year4000.utilities.reflection.annotations.Getter;
-import net.year4000.utilities.reflection.annotations.Invoke;
-import net.year4000.utilities.reflection.annotations.Proxied;
-import net.year4000.utilities.reflection.annotations.Setter;
-import net.year4000.utilities.reflection.annotations.Static;
+import net.year4000.utilities.reflection.annotations.*;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.function.Supplier;
 
 public class ReflectionTest {
     private static final String FOO = "foo";
@@ -20,7 +17,7 @@ public class ReflectionTest {
         private static String other = "other";
     }
 
-    private final static class MyObject extends OtherObject {
+    private final static class MyObject extends OtherObject implements Supplier<String> {
         private String foo = FOO;
         private MyObject object = OBJECT;
         private int findMe = 1;
@@ -32,6 +29,11 @@ public class ReflectionTest {
         private String findMe(int x, int y, int z) {
             return "found me";
         }
+
+        @Override
+        public String get() {
+            return FOO;
+        }
     }
 
     @Proxied("net.year4000.utilities.reflection.ReflectionTest$OtherObject")
@@ -40,6 +42,7 @@ public class ReflectionTest {
     }
 
     @Proxied("net.year4000.utilities.reflection.ReflectionTest$MyObject")
+    @Implements({@Proxied("java.lang.Runnable"), @Proxied("java.util.function.Supplier")})
     public interface ProxyMyObject extends ProxyOtherObject {
         @Setter void foo(String value);
         @Getter String foo();
@@ -65,6 +68,7 @@ public class ReflectionTest {
     @Test
     public void gatewaysTest() {
         Assert.assertEquals(MyObject.class, Gateways.reflectiveClass(ProxyMyObject.class));
+        Assert.assertTrue(Gateways.proxy(ProxyMyObject.class) instanceof Runnable);
     }
 
     @Test
@@ -77,6 +81,8 @@ public class ReflectionTest {
     public void invokeTest() {
         ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
         Assert.assertEquals(FOO_BAR, proxy.method());
+        Supplier<String> supplier = (Supplier<String>) proxy;
+        Assert.assertEquals(FOO, supplier.get());
     }
 
     @Test

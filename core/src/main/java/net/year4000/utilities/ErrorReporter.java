@@ -34,7 +34,7 @@ public final class ErrorReporter {
     }
 
     /** Report it to the print stream */
-    public synchronized void report(PrintStream out) {
+    public synchronized RuntimeException report(PrintStream out) {
         String clean = "\nError Report #" + Integer.toHexString(id) + "\n";
         for (String arg : args) {
             clean += " -\t" + arg + "\n";
@@ -44,6 +44,7 @@ public final class ErrorReporter {
             clean += "Trace:\t" + Stream.of(throwable.getStackTrace()).map(String::valueOf).collect(Collectors.joining("\n -\t"));
         }
         out.println(clean.substring(0, clean.length() - 1)); // Strip off last endline
+        throw new RuntimeException(getThrowable());
     }
 
     /** Set the current threads uncaught exception handler */
@@ -119,8 +120,8 @@ public final class ErrorReporter {
         }
 
         /** Build the report and print it out to the print stream */
-        public void buildAndReport(PrintStream out) {
-            build().report(out);
+        public RuntimeException buildAndReport(PrintStream out) {
+            return build().report(out);
         }
     }
 
