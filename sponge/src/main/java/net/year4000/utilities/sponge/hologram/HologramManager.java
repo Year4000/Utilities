@@ -65,17 +65,17 @@ public class HologramManager implements Holograms {
             int frames = reader.getNumImages(true);
             FrameBuffer start = FrameBuffer.builder().add(reader.read(0)).build();
             Hologram hologram = new Hologram(this, location, start);
-            final SoftReference<Hologram> softHologram = new SoftReference<>(hologram);
             send(players, hologram);
             // Handle the animations, must happen after first frame was sent
             if (frames > 1) {
-                List<FrameBuffer> frameBuffers = Lists.newArrayList();
+                final List<FrameBuffer> frameBuffers = Lists.newArrayList();
                 frameBuffers.add(start);
                 for (int i = 1 ; i < frames; i++) {
                     frameBuffers.add(FrameBuffer.builder().add(reader.read(i)).build());
                 }
-                Iterator<FrameBuffer> iterator = Iterators.cycle(frameBuffers);
-                AtomicReference<ThreadedTask> task = new AtomicReference<>();
+                final Iterator<FrameBuffer> iterator = Iterators.cycle(frameBuffers);
+                final AtomicReference<ThreadedTask> task = new AtomicReference<>();
+                final SoftReference<Hologram> softHologram = new SoftReference<>(hologram);
                 task.set(scheduler.repeat(() -> { // Add a task to update the hologram animation
                     Hologram tmp = softHologram.get();
                     if (tmp == null) {
