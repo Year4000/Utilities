@@ -6,6 +6,7 @@ import static net.year4000.utilities.sponge.protocol.PacketTypes.V1_8.PLAY_CLIEN
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Reflections;
@@ -22,9 +23,14 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
+import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 /**
  * A light weight and fast system to get the holograms displayed.
@@ -39,6 +45,8 @@ public class Hologram implements Comparable<Hologram> {
     private final Extent extent;
     private final List<Packet> spawnPackets;
     private final List<ArmorStand> armorStands;
+    private final ReadWriteLock viewerLock = new ReentrantReadWriteLock();
+    private List<WeakReference<Player>> viewers = Lists.newArrayList();
     private Packet destroyPacket;
     private FrameBuffer buffer;
     private boolean changed;
@@ -60,7 +68,13 @@ public class Hologram implements Comparable<Hologram> {
             generate(); // Only create the packets once we need to send them
             changed = false;
         }
-        spawnPackets.forEach(packet -> manager.packets.sendPacket(player, packet));
+        try {
+            viewerLock.writeLock().lock();
+            viewers.add(new WeakReference<>(player));
+        } finally {
+            viewerLock.writeLock().unlock();
+            spawnPackets.forEach(packet -> manager.packets.sendPacket(player, packet));
+        }
     }
 
     /** Destroy the hologram for the player */
@@ -68,11 +82,20 @@ public class Hologram implements Comparable<Hologram> {
         if (spawnPackets.size() > 0 && destroyPacket != null) {
             manager.packets.sendPacket(player, destroyPacket);
         }
+        try {
+            viewerLock.writeLock().lock();
+            // Cleans up the viewers and removes the player from the list
+            this.viewers = this.viewers.stream()
+                .filter(weakPlayer -> weakPlayer.get() != null && !weakPlayer.get().equals(player))
+                .collect(Collectors.toList());
+        } finally {
+            viewerLock.writeLock().unlock();
+        }
     }
 
     /** Update the hologram with the framebuffer */
     void update(Player player, FrameBuffer buffer) {
-        if (spawnPackets.size() > 0) {
+        if (armorStands.size() > 0) {
             List<Packet> update = Lists.newArrayList();
             int size = Math.min(buffer.size(), armorStands.size());
             for (int i = 0 ; i < size; i++) {
@@ -86,6 +109,30 @@ public class Hologram implements Comparable<Hologram> {
             update.forEach(packet -> manager.packets.sendPacket(player, packet));
             this.buffer = buffer;
             changed = true;
+        }
+    }
+
+    /** Get the viewers of the hologram, then tries to clean up the viewers */
+    Collection<Player> viewers() {
+        try {
+            viewerLock.readLock().lock();
+            ImmutableSet.Builder<Player> viewers = ImmutableSet.builder();
+            this.viewers.stream().map(WeakReference::get).forEach(player -> {
+                if (player != null) {
+                    viewers.add(player);
+                }
+            });
+            return viewers.build();
+        } finally {
+            viewerLock.readLock().unlock();
+            try { // Clean up the viewers
+                viewerLock.writeLock().lock();
+                this.viewers = this.viewers.stream()
+                        .filter(weakPlayer -> weakPlayer.get() != null)
+                        .collect(Collectors.toList());
+            } finally {
+                viewerLock.writeLock().unlock();
+            }
         }
     }
 

@@ -1,21 +1,30 @@
 package net.year4000.utilities.sponge.hologram;
 
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
+import net.year4000.utilities.scheduler.Scheduler;
+import net.year4000.utilities.scheduler.ThreadedTask;
 import net.year4000.utilities.sponge.protocol.Packets;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
 /**
@@ -24,13 +33,14 @@ import javax.imageio.stream.ImageInputStream;
  */
 public class HologramManager implements Holograms {
     private static final Map<Class<?>, HologramManager> managers = Maps.newConcurrentMap();
-    final Multimap<Hologram, Player> animationViewers = MultimapBuilder.ListMultimapBuilder.treeKeys().hashSetValues().build();
     final Object plugin;
     final Packets packets;
+    final Scheduler scheduler;
 
     protected HologramManager(Object plugin) {
         this.plugin = Conditions.nonNull(plugin, "plugin");
         this.packets = Packets.manager(plugin);
+        this.scheduler = Scheduler.builder().executor(Sponge.getScheduler().createAsyncExecutor(plugin)).build();
     }
 
     /** Only one HologramManager per instance from Packets.manager() */
@@ -50,9 +60,32 @@ public class HologramManager implements Holograms {
     @Override
     public Hologram add(Collection<Player> players, Location<World> location, ImageInputStream image) {
         try {
-            Hologram hologram = new Hologram(this, location, FrameBuffer.builder().add(ImageIO.read(image)).build());
-            send(players, hologram);
-            return hologram;
+            ImageReader reader = ImageIO.getImageReaders(image).next();
+            reader.setInput(image);
+            int frames = reader.getNumImages(true);
+            FrameBuffer start = FrameBuffer.builder().add(reader.read(0)).build();
+            final SoftReference<Hologram> softHologram = new SoftReference<>(new Hologram(this, location, start));
+            // Handle the animations
+            if (frames > 1) {
+                List<FrameBuffer> frameBuffers = Lists.newArrayList();
+                frameBuffers.add(start);
+                for (int i = 1 ; i < frames; i++) {
+                    frameBuffers.add(FrameBuffer.builder().add(reader.read(i)).build());
+                }
+                Iterator<FrameBuffer> iterator = Iterators.cycle(frameBuffers);
+                AtomicReference<ThreadedTask> task = new AtomicReference<>();
+                task.set(scheduler.repeat(() -> { // Add a task to update the hologram animation
+                    Hologram hologram = softHologram.get();
+                    if (hologram == null) {
+                        task.get().stop();
+                        task.set(null);
+                    } else {
+                        hologram.viewers().forEach(player -> hologram.update(player, iterator.next()));
+                    }
+                }, 125, TimeUnit.MILLISECONDS));
+            }
+            send(players, softHologram.get());
+            return softHologram.get();
         } catch (IOException exception) {
             throw ErrorReporter.builder(exception)
                 .add("Player(s): ", players)
