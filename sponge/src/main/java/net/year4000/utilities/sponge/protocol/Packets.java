@@ -1,7 +1,7 @@
 package net.year4000.utilities.sponge.protocol;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import net.year4000.utilities.sponge.Utilities;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -22,12 +22,12 @@ public interface Packets {
 
     /** Send the packet to the player */
     default void sendPacket(Player player, Packet packet) {
-        sendPacket(Lists.newArrayList(player), packet);
+        sendPacket(ImmutableList.of(player), packet);
     }
 
     /** Send the packet to the set of players */
     default void sendPacket(Packet packet, Player... players) {
-        sendPacket(Sets.newHashSet(players), packet);
+        sendPacket(ImmutableSet.copyOf(players), packet);
     }
 
     /** Send the packet to all the online players */
@@ -40,12 +40,12 @@ public interface Packets {
 
     /** Send the packet with the offset to the player */
     default void sendPacket(Player player, Packet packet, long offset, TimeUnit unit) {
-        sendPacket(Lists.newArrayList(player), packet, offset, unit);
+        sendPacket(ImmutableList.of(player), packet, offset, unit);
     }
 
     /** Send the packet with the offset to the set of players */
     default void sendPacket(Packet packet, long offset, TimeUnit unit, Player... players) {
-        sendPacket(Sets.newHashSet(players), packet, offset, unit);
+        sendPacket(ImmutableSet.copyOf(players), packet, offset, unit);
     }
 
     /** Send the packet with the offset to all the online players */
@@ -58,12 +58,12 @@ public interface Packets {
 
     /** Repeat the packet with the delay to the player */
     default void repeatPacket(Player player, Packet packet, long delay, TimeUnit unit) {
-        repeatPacket(Lists.newArrayList(player), packet, delay, unit);
+        repeatPacket(ImmutableList.of(player), packet, delay, unit);
     }
 
     /** Repeat the packet with the delay to the set of players */
     default void repeatPacket(Packet packet, long delay, TimeUnit unit, Player... players) {
-        repeatPacket(Sets.newHashSet(players), packet, delay, unit);
+        repeatPacket(ImmutableSet.copyOf(players), packet, delay, unit);
     }
 
     /** Repeat the packet with the delay to all the players */
