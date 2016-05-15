@@ -1,6 +1,7 @@
 package net.year4000.utilities.sponge.hologram;
 
 import static net.year4000.utilities.sponge.protocol.PacketTypes.V1_8.PLAY_CLIENT_DESTROY_ENTITIES;
+import static net.year4000.utilities.sponge.protocol.PacketTypes.V1_8.PLAY_CLIENT_ENTITY_METADATA;
 import static net.year4000.utilities.sponge.protocol.PacketTypes.V1_8.PLAY_CLIENT_SPAWN_MOB;
 
 import com.flowpowered.math.vector.Vector3d;
@@ -9,6 +10,7 @@ import com.google.common.collect.Lists;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.sponge.protocol.Packet;
+import net.year4000.utilities.sponge.protocol.proxy.ProxyEntity;
 import net.year4000.utilities.value.Value;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
@@ -36,8 +38,10 @@ public class Hologram {
     private final Vector3d origin;
     private final Extent extent;
     private final List<Packet> spawnPackets;
+    private final List<ArmorStand> armorStands;
     private Packet destroyPacket;
     private FrameBuffer buffer;
+    private boolean changed;
 
     /** Create the hologram at the location and with the buffer*/
     Hologram(HologramManager manager, Location<World> location, FrameBuffer buffer) {
@@ -47,20 +51,41 @@ public class Hologram {
         this.extent = location.getExtent();
         this.buffer = Conditions.nonNull(buffer, "buffer");
         this.spawnPackets = Lists.newArrayListWithCapacity(buffer.size());
+        this.armorStands = Lists.newArrayListWithCapacity(buffer.size());
     }
 
     /** Send the hologram to the player */
     void send(Player player) {
-        if (spawnPackets.size() == 0) {
+        if (changed || spawnPackets.size() == 0) {
             generate(); // Only create the packets once we need to send them
+            changed = false;
         }
-        spawnPackets.forEach(packet -> manager.packets.sendPacket(packet));
+        spawnPackets.forEach(packet -> manager.packets.sendPacket(player, packet));
     }
 
     /** Destroy the hologram for the player */
     void destroy(Player player) {
         if (spawnPackets.size() > 0 && destroyPacket != null) {
             manager.packets.sendPacket(player, destroyPacket);
+        }
+    }
+
+    /** Update the hologram with the framebuffer */
+    void update(Player player, FrameBuffer buffer) {
+        if (spawnPackets.size() > 0) {
+            List<Packet> update = Lists.newArrayList();
+            int size = Math.min(buffer.size(), armorStands.size());
+            for (int i = 0 ; i < size; i++) {
+                Entity entity = armorStands.get(i);
+                entity.offer(Keys.DISPLAY_NAME, buffer.get(i));
+                update.add(new Packet(PLAY_CLIENT_ENTITY_METADATA).injector()
+                    .add(entity.hashCode())
+                    .add(ProxyEntity.of(entity).dataWatcher().watching())
+                    .inject());
+            }
+            update.forEach(packet -> manager.packets.sendPacket(player, packet));
+            this.buffer = buffer;
+            changed = true;
         }
     }
 
@@ -81,9 +106,10 @@ public class Hologram {
                 });
                 ids[counter.getAndIncrement()] = entity.hashCode();
                 spawnPackets.add(packet);
+                armorStands.add(entity);
             });
         }
-       // Destroy packet
+        // Destroy packet
         destroyPacket = new Packet(PLAY_CLIENT_DESTROY_ENTITIES).injector().add(ids).inject();
     }
 
