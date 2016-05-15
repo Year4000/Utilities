@@ -18,7 +18,7 @@ public interface ProxyDataWatcher {
     ReadWriteLock lock();
 
     /** The watched object map, use with caution use the lock */
-    @Getter(signature = "Ljava/util/Map;")
+    @Getter(signature = "Ljava/util/Map;", index = 1)
     Map<Integer, Object> watchedObjects();
 
     /** Get the immutable list of all the watchers */
