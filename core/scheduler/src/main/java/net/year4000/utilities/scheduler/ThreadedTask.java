@@ -22,16 +22,17 @@ import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class ThreadedTask implements Runnable {
     private final SchedulerManager manager;
     private final int id;
-    private final Runnable task;
+    private final Consumer<ThreadedTask> task;
     private final int delay;
     private final TimeUnit unit;
     private boolean repeat;
 
-    ThreadedTask(SchedulerManager manager, int id, Runnable task, int delay, TimeUnit unit, boolean repeat) {
+    ThreadedTask(SchedulerManager manager, int id, Consumer<ThreadedTask> task, int delay, TimeUnit unit, boolean repeat) {
         this.manager = Conditions.nonNull(manager, "manager");
         this.id = Conditions.isLarger(id, -1);
         this.task = Conditions.nonNull(task, "task");
@@ -60,7 +61,7 @@ public class ThreadedTask implements Runnable {
     /** Execute the code */
     private void execute() {
         try {
-            task.run();
+            task.accept(this);
         } catch (Exception error) {
             Throwables.propagate(error);
         }

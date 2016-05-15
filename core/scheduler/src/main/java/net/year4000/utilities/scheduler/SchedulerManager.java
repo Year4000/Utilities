@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public final class SchedulerManager implements Scheduler {
     final Map<Integer, ThreadedTask> tasks = new ConcurrentSkipListMap<>();
@@ -46,21 +47,36 @@ public final class SchedulerManager implements Scheduler {
 
     @Override
     public ThreadedTask run(Runnable task) {
-        return schedule(task, 0, null, false);
+        return schedule(dummy -> task.run(), 0, null, false);
     }
 
     @Override
     public ThreadedTask run(Runnable task, int delay, TimeUnit unit) {
-        return schedule(task, delay, unit, false);
+        return schedule(dummy -> task.run(), delay, unit, false);
     }
 
     @Override
     public ThreadedTask repeat(Runnable task, int delay, TimeUnit unit) {
+        return schedule(dummy -> task.run(), delay, unit, true);
+    }
+
+    @Override
+    public ThreadedTask run(Consumer<ThreadedTask> task) {
+        return schedule(task, 0, null, false);
+    }
+
+    @Override
+    public ThreadedTask run(Consumer<ThreadedTask> task, int delay, TimeUnit unit) {
+        return schedule(task, delay, unit, false);
+    }
+
+    @Override
+    public ThreadedTask repeat(Consumer<ThreadedTask> task, int delay, TimeUnit unit) {
         return schedule(task, delay, unit, true);
     }
 
     /** Schedule a task to be ran in the future */
-    private ThreadedTask schedule(Runnable task, int delay, TimeUnit unit, boolean repeat) {
+    private ThreadedTask schedule(Consumer<ThreadedTask> task, int delay, TimeUnit unit, boolean repeat) {
         Conditions.nonNull(task, "task");
         Conditions.isLarger(delay, -1);
 

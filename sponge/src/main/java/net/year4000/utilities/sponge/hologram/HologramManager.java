@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.scheduler.Scheduler;
-import net.year4000.utilities.scheduler.ThreadedTask;
 import net.year4000.utilities.sponge.protocol.Packets;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -21,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -74,13 +72,11 @@ public class HologramManager implements Holograms {
                     frameBuffers.add(FrameBuffer.builder().add(reader.read(i)).build());
                 }
                 final Iterator<FrameBuffer> iterator = Iterators.cycle(frameBuffers);
-                final AtomicReference<ThreadedTask> task = new AtomicReference<>();
                 final SoftReference<Hologram> softHologram = new SoftReference<>(hologram);
-                task.set(scheduler.repeat(() -> { // Add a task to update the hologram animation
+                scheduler.repeat(task -> { // Add a task to update the hologram animation
                     Hologram tmp = softHologram.get();
                     if (tmp == null) {
-                        task.get().stop();
-                        task.set(null);
+                        task.stop();
                     } else {
                         Collection<Player> viewers = tmp.viewers();
                         if (viewers.size() > 0) {
@@ -89,7 +85,7 @@ public class HologramManager implements Holograms {
                             softHologram.clear();
                         }
                     }
-                }, 125, TimeUnit.MILLISECONDS));
+                }, 125, TimeUnit.MILLISECONDS);
             }
             return hologram;
         } catch (IOException exception) {
