@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * the manager to do anything with it. It is only exposed to allow
  * the hologram to be stored as a reference somewhere else.
  */
-public class Hologram {
+public class Hologram implements Comparable<Hologram> {
     private static final double OFFSET = 0.25;
     private final HologramManager manager;
     private final Vector3d origin;
@@ -126,5 +126,25 @@ public class Hologram {
             return Value.of(armorStand);
         }
         return Value.empty();
+    }
+
+    @Override
+    public int compareTo(Hologram other) {
+        return origin.compareTo(other.origin);
+    }
+
+    @Override
+    public int hashCode() {
+        return origin.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other != null && Hologram.class.cast(other).origin.equals(origin);
+    }
+
+    @Override
+    public String toString() {
+        return "Hologram " + origin.toString();
     }
 }
