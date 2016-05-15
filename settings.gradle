@@ -5,6 +5,7 @@
 rootProject.name = 'Utilities'
 
 include 'core'
+include 'core:ducktape'
 include 'core:locale'
 include 'core:minecraft'
 include 'core:redis'
@@ -12,5 +13,7 @@ include 'core:scheduler'
 include 'core:sdk'
 
 include 'sponge'
+
 include 'bungee'
+
 include 'spigot'

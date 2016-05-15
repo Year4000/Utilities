@@ -4,18 +4,22 @@
 
 package net.year4000.utilities.sponge;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.Tokens;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
 import net.year4000.utilities.sponge.hologram.Holograms;
 import net.year4000.utilities.sponge.protocol.Packets;
+import net.year4000.utilities.sponge.ducktape.SpongeModuleManager;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -31,6 +35,8 @@ import java.util.function.BiConsumer;
     authors = {"ewized"}
 )
 public final class Utilities extends AbstractSpongePlugin {
+    private final SpongeModuleManager moduleManager = new SpongeModuleManager();
+
     // Services
     private Packets packets;
     private Holograms holograms;
@@ -40,23 +46,38 @@ public final class Utilities extends AbstractSpongePlugin {
         ErrorReporter.setUncaughtExceptionHandler();
     }
 
+    /** The DI injector that was used to inject this plugin */
+    @Inject
+    private Injector injector;
+
     /** Get the instance of Utilities */
     public static Utilities get() {
         return instance(Utilities.class);
+    }
+
+    /** Get the module manager */
+    public SpongeModuleManager getModuleManager() {
+        return moduleManager;
+    }
+
+    @Listener
+    public void onConstruct(GameConstructionEvent event) {
+        moduleManager.injectModules(injector); // Find and Construct the modules
     }
 
     @Listener
     public void onUtilitiesPreInit(GamePreInitializationEvent event) {
         packets = setProvider(Packets.class, Packets.manager());
         holograms = setProvider(Holograms.class, Holograms.manager());
+        moduleManager.registerListeners(); // Register the listeners of the modules
     }
 
     @Listener
     public void onUtilitiesInit(GameInitializationEvent event) {
         Messages.Factory.inst.get(); // Trigger a download from server now so it can cache it for later
-        PluginCommand.register(this);
-        // FlyCommand.register(this); todo disable, should be in drip
-        SystemCommand.register(this);
+        PluginCommand.register(this, injector);
+        // FlyCommand.register(this, injector); todo disable, should be in drip
+        SystemCommand.register(this, injector);
     }
 
     /** Internal testing method */

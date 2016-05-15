@@ -1,0 +1,19 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
+plugins {
+    id 'java'
+}
+
+apply from: utilities.file('gradle/utilities.gradle')
+
+dependencies {
+    compile utilities.project('core')
+    compile 'org.codehaus.groovy:groovy-all:2.4.6'
+    compile 'org.scala-lang:scala-library:2.11.7'
+    compile 'org.scala-lang:scala-reflect:2.11.7'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:1.0.0"
+    compile "org.jetbrains.kotlin:kotlin-reflect:1.0.0"
+    compile "org.jetbrains.kotlin:kotlin-runtime:1.0.0"
+}

@@ -1,5 +1,14 @@
 package net.year4000.utilities.sponge.command;
 
+import static net.year4000.utilities.sponge.Messages.CMD_ERROR_PLAYER;
+import static net.year4000.utilities.sponge.Messages.CMD_FLY_MODE;
+import static net.year4000.utilities.sponge.Messages.CMD_FLY_OFF;
+import static net.year4000.utilities.sponge.Messages.CMD_FLY_ON;
+import static org.spongepowered.api.text.format.TextColors.AQUA;
+import static org.spongepowered.api.text.format.TextColors.GREEN;
+import static org.spongepowered.api.text.format.TextColors.RED;
+
+import com.google.inject.Injector;
 import net.year4000.utilities.sponge.Messages;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -15,9 +24,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.title.Title;
 
-import static net.year4000.utilities.sponge.Messages.*;
-import static org.spongepowered.api.text.format.TextColors.*;
-
 public final class FlyCommand implements CommandExecutor {
     private static final String[] ALIAS = new String[] {"fly"};
     private static final CommandSpec COMMAND_SPEC = CommandSpec.builder()
@@ -27,7 +33,8 @@ public final class FlyCommand implements CommandExecutor {
         .build();
 
     /** Register this command with the manager */
-    public static void register(Object object) {
+    public static void register(Object object, Injector injector) {
+        injector.injectMembers(COMMAND_SPEC.getExecutor());
         Sponge.getCommandManager().register(object, COMMAND_SPEC, ALIAS);
     }
 
