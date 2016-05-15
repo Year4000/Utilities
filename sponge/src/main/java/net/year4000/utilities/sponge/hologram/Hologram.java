@@ -84,11 +84,13 @@ public class Hologram implements Comparable<Hologram> {
         }
         try {
             viewerLock.writeLock().lock();
+            viewerLock.readLock().lock();
             // Cleans up the viewers and removes the player from the list
             this.viewers = this.viewers.stream()
-                .filter(weakPlayer -> weakPlayer.get() != null && !weakPlayer.get().equals(player))
+                .filter(weakPlayer -> weakPlayer.get() != null && !weakPlayer.get().equals(player) && weakPlayer.get().isOnline())
                 .collect(Collectors.toList());
         } finally {
+            viewerLock.readLock().unlock();
             viewerLock.writeLock().unlock();
         }
     }
@@ -118,7 +120,7 @@ public class Hologram implements Comparable<Hologram> {
             viewerLock.readLock().lock();
             ImmutableSet.Builder<Player> viewers = ImmutableSet.builder();
             this.viewers.stream().map(WeakReference::get).forEach(player -> {
-                if (player != null) {
+                if (player != null && player.isOnline()) {
                     viewers.add(player);
                 }
             });
@@ -127,10 +129,12 @@ public class Hologram implements Comparable<Hologram> {
             viewerLock.readLock().unlock();
             try { // Clean up the viewers
                 viewerLock.writeLock().lock();
+                viewerLock.readLock().lock();
                 this.viewers = this.viewers.stream()
-                        .filter(weakPlayer -> weakPlayer.get() != null)
-                        .collect(Collectors.toList());
+                    .filter(weakPlayer -> weakPlayer.get() != null && weakPlayer.get().isOnline())
+                    .collect(Collectors.toList());
             } finally {
+                viewerLock.readLock().unlock();
                 viewerLock.writeLock().unlock();
             }
         }

@@ -64,8 +64,10 @@ public class HologramManager implements Holograms {
             reader.setInput(image);
             int frames = reader.getNumImages(true);
             FrameBuffer start = FrameBuffer.builder().add(reader.read(0)).build();
-            final SoftReference<Hologram> softHologram = new SoftReference<>(new Hologram(this, location, start));
-            // Handle the animations
+            Hologram hologram = new Hologram(this, location, start);
+            final SoftReference<Hologram> softHologram = new SoftReference<>(hologram);
+            send(players, hologram);
+            // Handle the animations, must happen after first frame was sent
             if (frames > 1) {
                 List<FrameBuffer> frameBuffers = Lists.newArrayList();
                 frameBuffers.add(start);
@@ -75,17 +77,21 @@ public class HologramManager implements Holograms {
                 Iterator<FrameBuffer> iterator = Iterators.cycle(frameBuffers);
                 AtomicReference<ThreadedTask> task = new AtomicReference<>();
                 task.set(scheduler.repeat(() -> { // Add a task to update the hologram animation
-                    Hologram hologram = softHologram.get();
-                    if (hologram == null) {
+                    Hologram tmp = softHologram.get();
+                    if (tmp == null) {
                         task.get().stop();
                         task.set(null);
                     } else {
-                        hologram.viewers().forEach(player -> hologram.update(player, iterator.next()));
+                        Collection<Player> viewers = tmp.viewers();
+                        if (viewers.size() > 0) {
+                            viewers.forEach(player -> tmp.update(player, iterator.next()));
+                        } else { // Start to enqueue the hologram reference
+                            softHologram.clear();
+                        }
                     }
                 }, 125, TimeUnit.MILLISECONDS));
             }
-            send(players, softHologram.get());
-            return softHologram.get();
+            return hologram;
         } catch (IOException exception) {
             throw ErrorReporter.builder(exception)
                 .add("Player(s): ", players)
