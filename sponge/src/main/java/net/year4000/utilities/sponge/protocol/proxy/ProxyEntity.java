@@ -23,7 +23,7 @@ public interface ProxyEntity {
     int entityId();
 
     /** Get the data watcher for the entity */
-    @Getter(signature = "Lnet/minecraft/entity/DataWatcher;")
-    @Bridge(ProxyDataWatcher.class)
-    ProxyDataWatcher dataWatcher();
+    @Getter(signature = "Lnet/minecraft/network/datasync/EntityDataManager;")
+    @Bridge(ProxyEntityDataManager.class)
+    ProxyEntityDataManager dataManager();
 }

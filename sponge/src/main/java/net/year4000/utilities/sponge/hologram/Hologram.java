@@ -1,8 +1,8 @@
 package net.year4000.utilities.sponge.hologram;
 
-import static net.year4000.utilities.sponge.protocol.PacketTypes.V1_8.PLAY_CLIENT_DESTROY_ENTITIES;
-import static net.year4000.utilities.sponge.protocol.PacketTypes.V1_8.PLAY_CLIENT_ENTITY_METADATA;
-import static net.year4000.utilities.sponge.protocol.PacketTypes.V1_8.PLAY_CLIENT_SPAWN_MOB;
+import static net.year4000.utilities.sponge.protocol.PacketTypes.PLAY_CLIENT_DESTROY_ENTITIES;
+import static net.year4000.utilities.sponge.protocol.PacketTypes.PLAY_CLIENT_ENTITY_METADATA;
+import static net.year4000.utilities.sponge.protocol.PacketTypes.PLAY_CLIENT_SPAWN_MOB;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Throwables;
@@ -105,7 +105,7 @@ public class Hologram implements Comparable<Hologram> {
                 entity.offer(Keys.DISPLAY_NAME, buffer.get(i));
                 update.add(new Packet(PLAY_CLIENT_ENTITY_METADATA).injector()
                     .add(entity.hashCode())
-                    .add(ProxyEntity.of(entity).dataWatcher().watching())
+                    .add(ProxyEntity.of(entity).dataManager().watching())
                     .inject());
             }
             update.forEach(packet -> manager.packets.sendPacket(player, packet));
