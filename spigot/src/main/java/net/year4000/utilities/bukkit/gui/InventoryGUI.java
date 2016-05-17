@@ -5,7 +5,6 @@
 package net.year4000.utilities.bukkit.gui;
 
 import com.google.common.base.Ascii;
-import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 import net.year4000.utilities.bukkit.BukkitUtil;
 import net.year4000.utilities.bukkit.ItemUtil;

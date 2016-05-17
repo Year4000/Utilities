@@ -5,7 +5,6 @@
 package net.year4000.utilities.bukkit.items;
 
 import com.google.gson.annotations.SerializedName;
-import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 
 @SuppressWarnings("unused")

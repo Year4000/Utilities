@@ -4,12 +4,12 @@
 
 package net.year4000.utilities.locale;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import net.year4000.utilities.LogUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 @SuppressWarnings("unused")
 public class FileLocaleManager extends AbstractLocaleManager {

@@ -4,14 +4,14 @@
 
 package net.year4000.utilities.cache;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import java.lang.reflect.Constructor;
 import java.util.concurrent.TimeUnit;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 @SuppressWarnings("unused")
 public final class QuickCacheBuilder<T> {

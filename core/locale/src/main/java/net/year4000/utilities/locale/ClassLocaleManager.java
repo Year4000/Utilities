@@ -4,9 +4,9 @@
 
 package net.year4000.utilities.locale;
 
-import net.year4000.utilities.LogUtil;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import net.year4000.utilities.LogUtil;
 
 @SuppressWarnings("unused")
 public class ClassLocaleManager extends AbstractLocaleManager {

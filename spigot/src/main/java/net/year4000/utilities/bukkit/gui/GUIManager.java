@@ -4,8 +4,10 @@
 
 package net.year4000.utilities.bukkit.gui;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.Sets;
-import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 import net.year4000.utilities.bukkit.ItemUtil;
 import org.bukkit.Material;
@@ -19,9 +21,6 @@ import org.bukkit.inventory.Inventory;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.Function;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GUIManager implements Listener {
     private Set<AbstractGUI> menus = Sets.newHashSet();

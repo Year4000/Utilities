@@ -4,19 +4,25 @@
 
 package net.year4000.utilities.bukkit.gui;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 import net.year4000.utilities.bukkit.Utilities;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
-
-import static com.google.common.base.Preconditions.*;
 
 public abstract class AbstractGUI implements Runnable {
     /** The locales for the menus */

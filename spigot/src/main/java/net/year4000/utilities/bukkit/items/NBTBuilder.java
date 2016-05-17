@@ -4,6 +4,8 @@
 
 package net.year4000.utilities.bukkit.items;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.Lists;
 import net.year4000.utilities.bukkit.MessageUtil;
 import org.bukkit.enchantments.Enchantment;
@@ -14,8 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class NBTBuilder {
     private ItemStack item;

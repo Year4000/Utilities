@@ -4,6 +4,8 @@
 
 package net.year4000.utilities.ducktape;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.Sets;
 import groovy.lang.GroovyClassLoader;
 
@@ -17,8 +19,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This class will support for loading Groovy files

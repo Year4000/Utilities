@@ -4,6 +4,8 @@
 
 package net.year4000.utilities.bukkit.protocol;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -18,11 +20,13 @@ import com.google.gson.JsonObject;
 import net.year4000.utilities.bukkit.Utilities;
 import org.bukkit.plugin.Plugin;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Allow sending extra json data with the ping response.

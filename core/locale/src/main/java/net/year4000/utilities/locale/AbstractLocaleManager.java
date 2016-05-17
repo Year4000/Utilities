@@ -4,10 +4,11 @@
 
 package net.year4000.utilities.locale;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import net.year4000.utilities.LogUtil;
-import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 
 import java.io.IOException;
@@ -16,8 +17,6 @@ import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This abstract class is here for another class to implement
