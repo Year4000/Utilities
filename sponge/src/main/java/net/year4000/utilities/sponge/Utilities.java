@@ -14,17 +14,11 @@ import net.year4000.utilities.sponge.ducktape.SpongeModuleManager;
 import net.year4000.utilities.sponge.hologram.Holograms;
 import net.year4000.utilities.sponge.protocol.Packets;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
-
-import java.util.function.BiConsumer;
 
 @Plugin(
     id = "utilities",
@@ -78,14 +72,6 @@ public final class Utilities extends AbstractSpongePlugin {
         PluginCommand.register(this, injector);
         // FlyCommand.register(this, injector); todo disable, should be in drip
         SystemCommand.register(this, injector);
-    }
-
-    /** Internal testing method */
-    private void test(String cmd, final BiConsumer<CommandSource, CommandContext> consumer) {
-        Sponge.getCommandManager().register(this, CommandSpec.builder().executor((src, args) -> {
-            consumer.accept(src, args);
-            return CommandResult.success();
-        }).build(), cmd);
     }
 
     /** Internal setting of service provider */
