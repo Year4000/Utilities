@@ -1,5 +1,8 @@
-package net.year4000.utilities.scheduler;
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
 
+package net.year4000.utilities.scheduler;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;

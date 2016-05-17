@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
 import com.google.common.io.Files
 import com.google.gson.Gson
 import com.google.inject.*
