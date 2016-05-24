@@ -51,3 +51,9 @@ dependencies {
     compile utilities.project('core:ducktape')
     compile 'org.spongepowered:spongeapi:5.0.0-SNAPSHOT'
 }
+
+idea {
+    module {
+        sourceDirs += file("src/debug/java")
+    }
+}

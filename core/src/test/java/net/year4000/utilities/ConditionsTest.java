@@ -1,8 +1,15 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
 package net.year4000.utilities;
 
-import org.junit.Test;
+import static net.year4000.utilities.ConditionsTest.MyEnum.FOUR;
+import static net.year4000.utilities.ConditionsTest.MyEnum.ONE;
+import static net.year4000.utilities.ConditionsTest.MyEnum.THREE;
+import static net.year4000.utilities.ConditionsTest.MyEnum.TWO;
 
-import static net.year4000.utilities.ConditionsTest.MyEnum.*;
+import org.junit.Test;
 
 public class ConditionsTest {
 
