@@ -177,6 +177,30 @@ public final class Conditions {
         return value;
     }
 
+    /** Checks if the value is smaller than the max */
+    public static long isSmaller(long value, long max) {
+        return inRange(value, Long.MIN_VALUE, max);
+    }
+
+    /** Checks if the value is larger than the min */
+    public static long isLarger(long value, long min) {
+        return inRange(value, min, Long.MAX_VALUE);
+    }
+
+    /** Checks if the value is in the range */
+    public static long inRange(long value, long min, long max) {
+        if (min > max) {
+            throw new IllegalArgumentException(rangeMessage(Ranges.RANGE, min, max));
+        }
+        if (value < min) {
+            throw new IllegalArgumentException(rangeMessage(Ranges.LARGER, value, min));
+        }
+        if (value > max) {
+            throw new IllegalArgumentException(rangeMessage(Ranges.SMALLER, value, max));
+        }
+        return value;
+    }
+
     /** Require the string to be non null or empty, or throw NullPointerException */
     public static String nonNullOrEmpty(String value, Object message) {
         if (value == null || value.isEmpty()) {
