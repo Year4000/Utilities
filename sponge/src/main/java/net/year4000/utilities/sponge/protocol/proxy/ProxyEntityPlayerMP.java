@@ -1,12 +1,17 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
 package net.year4000.utilities.sponge.protocol.proxy;
 
 import net.year4000.utilities.Conditions;
-import net.year4000.utilities.reflection.annotations.Bridge;
 import net.year4000.utilities.reflection.Gateways;
+import org.spongepowered.api.entity.living.player.Player;
+
+import net.year4000.utilities.reflection.annotations.Bridge;
 import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Proxied;
 import net.year4000.utilities.sponge.protocol.Packet;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 
 @Proxied("net.minecraft.entity.player.EntityPlayerMP")

@@ -4,8 +4,20 @@
 
 package net.year4000.utilities.sponge.command;
 
+import static net.year4000.utilities.sponge.Messages.CMD_PLUGINS;
+import static net.year4000.utilities.sponge.Messages.CMD_VERSION;
+import static org.spongepowered.api.text.format.TextColors.AQUA;
+import static org.spongepowered.api.text.format.TextColors.DARK_GRAY;
+import static org.spongepowered.api.text.format.TextColors.GRAY;
+import static org.spongepowered.api.text.format.TextColors.GREEN;
+import static org.spongepowered.api.text.format.TextColors.YELLOW;
+
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import net.year4000.utilities.Mappers;
+import net.year4000.utilities.sponge.Utilities;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -14,15 +26,12 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static net.year4000.utilities.sponge.Messages.CMD_PLUGINS;
-import static net.year4000.utilities.sponge.Messages.CMD_VERSION;
-import static org.spongepowered.api.text.format.TextColors.*;
 
 
 public final class PluginCommand implements CommandExecutor {
@@ -33,8 +42,12 @@ public final class PluginCommand implements CommandExecutor {
         .executor(new PluginCommand())
         .build();
 
+    @Inject
+    private PluginManager pluginManager;
+
     /** Register this command with the manager */
-    public static void register(Object object) {
+    public static void register(Object object, Injector injector) {
+        injector.injectMembers(COMMAND_SPEC.getExecutor());
         Sponge.getCommandManager().register(object, COMMAND_SPEC, ALIAS);
     }
 
@@ -82,8 +95,11 @@ public final class PluginCommand implements CommandExecutor {
 
     /** Get the collection of active plugins */
     public List<PluginContainer> plugins() {
-        return Sponge.getPluginManager().getPlugins().stream()
+        return ImmutableList.<PluginContainer>builder()
+            .addAll(pluginManager.getPlugins().stream()
             .filter(plugin -> plugin.getInstance().isPresent())
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()))
+            .addAll(Utilities.get().getModuleManager().getModules())
+            .build();
     }
 }

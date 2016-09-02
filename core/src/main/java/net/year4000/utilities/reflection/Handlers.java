@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
 package net.year4000.utilities.reflection;
 
 import static net.year4000.utilities.reflection.Gateways.reflectiveClass;
@@ -124,9 +128,7 @@ final class Handlers {
         Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
         constructor.setAccessible(true);
         Class<?> proxyClass = method.getDeclaringClass();
-        MethodHandle handle = constructor.newInstance(proxyClass, MethodHandles.Lookup.PRIVATE)
-                .unreflectSpecial(method, proxyClass)
-                .bindTo(proxy);
-        return (instance, args) -> handle.invokeWithArguments(args);
+        MethodHandle handle = constructor.newInstance(proxyClass, MethodHandles.Lookup.PRIVATE).unreflectSpecial(method, proxyClass);
+        return (instance, args) -> handle.bindTo(proxy).invokeWithArguments(args);
     }
 }

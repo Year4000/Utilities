@@ -37,7 +37,8 @@ assemble.dependsOn shadowJar {
     version = utilities.version
 
     dependencies {
-        include dependency('redis.clients:jedis:.*')
+        include dependency('org.codehaus.groovy:groovy-all:.*') // core:ducktape
+        include dependency('redis.clients:jedis:.*') // core:redis
         include dependency('net.year4000.utilities:.*')
     }
 }
@@ -47,5 +48,12 @@ dependencies {
     compile utilities.project('core:redis')
     compile utilities.project('core:scheduler')
     compile utilities.project('core:locale')
+    compile utilities.project('core:ducktape')
     compile 'org.spongepowered:spongeapi:4.1.0-SNAPSHOT'
+}
+
+idea {
+    module {
+        sourceDirs += file("src/debug/java")
+    }
 }

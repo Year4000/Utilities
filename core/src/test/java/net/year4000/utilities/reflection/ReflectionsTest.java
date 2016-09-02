@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
 package net.year4000.utilities.reflection;
 
 import net.year4000.utilities.value.Value;
@@ -5,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ReflectionsTest {
-    private static class MyObject {
+    private static class MyObject implements Comparable<MyObject> {
         private static String foo_bar = "foo bar";
         private String foo = "bar";
         private String bar = "foo";
@@ -21,12 +25,31 @@ public class ReflectionsTest {
         private String foo() {
             return "bar";
         }
+
+        @Override
+        public int compareTo(MyObject other) {
+            return 1;
+        }
+    }
+
+    private interface Proxy {
+        String foo();
+    }
+
+    @Test
+    public void proxyTest() {
+        // Simple handler that treated it correctly
+        Proxy proxy = Reflections.proxy(Proxy.class, (proxy1, method, args) -> (args != null) ? 1 : "bar", Comparable.class);
+        Assert.assertEquals("bar", proxy.foo());
+        Comparable<MyObject> comparable = (Comparable<MyObject>) proxy;
+        Assert.assertEquals(1, comparable.compareTo(null));
     }
 
     @Test
     public void instanceTest() {
         Assert.assertFalse(Reflections.instance(MyObject.class).isEmpty());
         Assert.assertFalse(Reflections.instance(MyObject.class, "bar").isEmpty());
+        Assert.assertFalse(Reflections.instance("(Ljava/lang/String;)V", MyObject.class, "bar").isEmpty());
     }
 
     @Test

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
 package net.year4000.utilities.sponge.protocol;
 
 import net.year4000.utilities.Conditions;
@@ -5,9 +9,9 @@ import net.year4000.utilities.Utils;
 
 /** The type of packet */
 public class PacketType {
-    private int state;
-    private int id;
-    private int bounded;
+    private final int state;
+    private final int id;
+    private final int bounded;
 
     public PacketType(int id, int state, int bounded) {
         this.id = Conditions.isLarger(id, -1);

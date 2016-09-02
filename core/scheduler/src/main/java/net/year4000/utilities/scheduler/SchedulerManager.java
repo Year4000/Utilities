@@ -1,18 +1,5 @@
 /*
- * Copyright 2015 Year4000.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2016 Year4000. All Rights Reserved.
  */
 
 package net.year4000.utilities.scheduler;
@@ -28,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public final class SchedulerManager implements Scheduler {
     final Map<Integer, ThreadedTask> tasks = new ConcurrentSkipListMap<>();
@@ -46,21 +34,36 @@ public final class SchedulerManager implements Scheduler {
 
     @Override
     public ThreadedTask run(Runnable task) {
-        return schedule(task, 0, null, false);
+        return schedule(dummy -> task.run(), 0, null, false);
     }
 
     @Override
     public ThreadedTask run(Runnable task, int delay, TimeUnit unit) {
-        return schedule(task, delay, unit, false);
+        return schedule(dummy -> task.run(), delay, unit, false);
     }
 
     @Override
     public ThreadedTask repeat(Runnable task, int delay, TimeUnit unit) {
+        return schedule(dummy -> task.run(), delay, unit, true);
+    }
+
+    @Override
+    public ThreadedTask run(Consumer<ThreadedTask> task) {
+        return schedule(task, 0, null, false);
+    }
+
+    @Override
+    public ThreadedTask run(Consumer<ThreadedTask> task, int delay, TimeUnit unit) {
+        return schedule(task, delay, unit, false);
+    }
+
+    @Override
+    public ThreadedTask repeat(Consumer<ThreadedTask> task, int delay, TimeUnit unit) {
         return schedule(task, delay, unit, true);
     }
 
     /** Schedule a task to be ran in the future */
-    private ThreadedTask schedule(Runnable task, int delay, TimeUnit unit, boolean repeat) {
+    private ThreadedTask schedule(Consumer<ThreadedTask> task, int delay, TimeUnit unit, boolean repeat) {
         Conditions.nonNull(task, "task");
         Conditions.isLarger(delay, -1);
 

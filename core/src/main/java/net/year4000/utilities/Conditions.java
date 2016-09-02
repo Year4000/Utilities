@@ -7,11 +7,7 @@ package net.year4000.utilities;
 import com.google.common.base.Joiner;
 import net.year4000.utilities.utils.UtilityConstructError;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.Collection;
 
 /** Help in the creation of object with helper util methods */
 public final class Conditions {
@@ -175,6 +171,16 @@ public final class Conditions {
             throw new IllegalArgumentException(rangeMessage(Ranges.SMALLER, value, max));
         }
         return value;
+    }
+
+    /** Checks if the value is in range of the array */
+    public static <T> int inRange(int value, T[] array) {
+        return inRange(value, 0, array.length);
+    }
+
+    /** Checks if the value is in range of the collection */
+    public static <T> int inRange(int value, Collection<T> collection) {
+        return inRange(value, 0, collection.size());
     }
 
     /** Checks if the value is smaller than the max */

@@ -1,5 +1,5 @@
 name: Utilities
-version: ${pom.version}-git-${git.commit.id.abbrev}
-author: ewized
-main: ${plugin.mainClass}
+version: @version@-@git_hash@
+author: Year4000
+main: net.year4000.utilities.bungee.Utilities
 depends: []

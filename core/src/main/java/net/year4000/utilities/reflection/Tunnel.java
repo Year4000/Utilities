@@ -1,5 +1,8 @@
-package net.year4000.utilities.reflection;
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
 
+package net.year4000.utilities.reflection;
 
 import static net.year4000.utilities.reflection.Handlers.defaultHandle;
 import static net.year4000.utilities.reflection.Handlers.getterHandle;
@@ -57,14 +60,12 @@ class Tunnel implements InvocationHandler {
             MethodHandler handle = getterHandle(method);
             cache.put(method, handle);
             return handle.handle(instance, args);
-        } else if (method.isDefault()) {
-            MethodHandler handle = defaultHandle(method, proxy);
-            cache.put(method, handle);
-            return handle.handle(instance, args);
+        } else if (method.isDefault()) { // Can not be cached currently
+            return defaultHandle(method, proxy).handle(instance, args);
         }
 
-        // Special cases
-        return Reflections.invoke(Object.class, instance, method.getName()).get();
+        // Last if no others are found use the declaring classes method
+        return Reflections.invoke(method.getDeclaringClass(), instance, method.getName()).get();
     }
 
     /** Wraps the error from invokable and print out details */
@@ -83,7 +84,7 @@ class Tunnel implements InvocationHandler {
                 .map(clazz -> "@" + clazz.getSimpleName())
                 .collect(Collectors.joining(", "));
             // The report
-            ErrorReporter.builder(exception)
+            throw ErrorReporter.builder(exception)
                 .hideStackTrace()
                 .add("Failed at: ", method.getDeclaringClass().getName())
                 .add("Message: ", exception.getMessage())
@@ -92,11 +93,10 @@ class Tunnel implements InvocationHandler {
                 .add("Arg(s): ", args)
                 .buildAndReport(System.err);
         } catch (Throwable throwable) { // General errors
-            ErrorReporter.builder(throwable)
+            throw ErrorReporter.builder(throwable)
                 .add("Failed at: ", method.getDeclaringClass().getName())
                 .add("Method: ", method.getName())
                 .buildAndReport(System.err);
         }
-        return null;
     }
 }

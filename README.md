@@ -41,11 +41,11 @@ Report issues at our meta discussion, [Meta](https://github.com/Year4000/Meta).
 
 ## License
 
-This project is licensed under the [GNU General Public License][license], version 3.
+Copyright &copy; 2016 Year4000 [www.year4000.net][year4000]. All Rights Reserved.
 
-Copyright &copy; 2016 Year4000 [www.year4000.net][year4000]
+The source code is provided for reference only.
+You may not redistribute modified versions of the source code.
 
-[license]: https://www.gnu.org/copyleft/gpl.html
 [utilities]: https://github.com/ewized/utilities/
 [year4000]: https://www.year4000.net/
 [gradle]: http://gradle.org/gradle-download/

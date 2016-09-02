@@ -1,5 +1,10 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
 package net.year4000.utilities.sponge.protocol;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -13,6 +18,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -21,13 +27,14 @@ import java.util.concurrent.TimeUnit;
 public class PacketManager implements Packets {
     public static final AttributeKey<Player> PLAYER_KEY = AttributeKey.valueOf("player");
     public static final AttributeKey<PacketManager> PACKET_MANAGER_KEY = AttributeKey.valueOf("packet_manager");
+    private static final Map<Class<?>, PacketManager> managers = Maps.newConcurrentMap();
     private final Scheduler scheduler;
     final UUID id = UUID.randomUUID();
     final Map<Class<?>, PacketListener> listeners = Maps.newConcurrentMap();
     final String plugin;
 
     /** Creates the manages and register listeners ect */
-    public PacketManager(Object plugin) {
+    protected PacketManager(Object plugin) {
         Conditions.nonNull(plugin, "plugin");
         Sponge.getEventManager().registerListeners(plugin, this);
         scheduler = Scheduler.builder().executor(Sponge.getScheduler().createAsyncExecutor(plugin)).build();
@@ -35,9 +42,17 @@ public class PacketManager implements Packets {
     }
 
     /** Used for unit tests */
+    @VisibleForTesting
     PacketManager() {
         scheduler = Scheduler.builder().build();
         plugin = "utilities";
+    }
+
+    /** Only one PacketManager per instance from Packets.manager() */
+    public static PacketManager get(Object plugin) {
+        Class<?> clazz = plugin.getClass();
+        managers.putIfAbsent(clazz, new PacketManager(plugin));
+        return managers.get(clazz);
     }
 
     /** Does the map contain any listeners*/
@@ -48,6 +63,7 @@ public class PacketManager implements Packets {
     }
 
     /** Does the map contain a listener, internal use ignores checks */
+    @VisibleForTesting
     boolean containsListener(Class<?> clazz) {
         return listeners.get(clazz) != null;
     }
@@ -60,6 +76,7 @@ public class PacketManager implements Packets {
     }
 
     /** Get the listener for the type and player, internal use ignores checks */
+    @VisibleForTesting
     PacketListener getListener(Class<?> clazz) {
         return listeners.get(clazz);
     }
@@ -72,21 +89,22 @@ public class PacketManager implements Packets {
     }
 
     /** Remove the listener unit test method */
+    @VisibleForTesting
     void removeListener(Class<?> clazz) {
         listeners.remove(clazz);
     }
 
     /** The implementation of sending a custom packet to the player */
     @Override
-    public void sendPacket(Player player, Packet packet) {
-        Conditions.nonNull(player, "player");
+    public void sendPacket(Collection<Player> players, Packet packet) {
         Conditions.nonNull(packet, "packet");
+        Conditions.nonNull(players, "players");
         try {
-            ProxyEntityPlayerMP.of(player).sendPacket(packet);
+            players.stream().map(ProxyEntityPlayerMP::of).forEach(player -> player.sendPacket(packet));
         } catch (Throwable throwable) {
             ErrorReporter.builder(throwable)
                 .hideStackTrace()
-                .add("Player: ", player.getName())
+                .add("Player(s): ", players)
                 .add("Packet ID: ", Integer.toHexString(packet.packetType().id()))
                 .add("Packet State: ", PacketTypes.State.values()[packet.packetType().state()])
                 .add("Packet Bounded: ", PacketTypes.Binding.values()[packet.packetType().bounded()])
@@ -97,13 +115,13 @@ public class PacketManager implements Packets {
     }
 
     @Override
-    public void sendPacket(Player player, Packet packet, long offset, TimeUnit unit) {
-        scheduler.run(() -> sendPacket(player, packet), (int) offset, unit);
+    public void sendPacket(Collection<Player> players, Packet packet, long offset, TimeUnit unit) {
+        scheduler.run(() -> sendPacket(players, packet), (int) offset, unit);
     }
 
     @Override
-    public void repeatPacket(Player player, Packet packet, long delay, TimeUnit unit) {
-        scheduler.repeat(() -> sendPacket(player, packet), (int) delay, unit);
+    public void repeatPacket(Collection<Player> players, Packet packet, long delay, TimeUnit unit) {
+        scheduler.repeat(() -> sendPacket(players, packet), (int) delay, unit);
     }
 
     /** The implementation on listing for packets */
@@ -116,6 +134,7 @@ public class PacketManager implements Packets {
     }
 
     /** Register the listener, used for the unit test */
+    @VisibleForTesting
     void registerListener(Class<?> clazz, PacketListener consumer) {
         listeners.put(clazz, consumer);
     }

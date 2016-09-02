@@ -1,5 +1,10 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
 package net.year4000.utilities.sponge.protocol;
 
+import com.google.common.annotations.VisibleForTesting;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.value.TypeValue;
@@ -7,11 +12,12 @@ import net.year4000.utilities.value.TypeValue;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /** Our packet class that bridges the minecraft type with our type */
 public class Packet {
-    private PacketType type;
-    private Class<?> clazz;
+    private final PacketType type;
+    private final Class<?> clazz;
     private Object injectedPacket;
 
     /** Create a packet from the type and fetch a new instance of the injected packet*/
@@ -25,10 +31,12 @@ public class Packet {
     }
 
     /** Used to create the packet instance */
+    @VisibleForTesting
     Packet(PacketType type, Class<?> clazz, Object packet) {
         this.type = Conditions.nonNull(type, "type");
         this.clazz = Conditions.nonNull(clazz, "clazz");
         this.injectedPacket = (packet == null) ? Reflections.instance(clazz).getOrThrow() : packet;
+        Conditions.condition(isOfClassType(injectedPacket), "packet");
     }
 
     /** The type this packet if for */
@@ -46,10 +54,27 @@ public class Packet {
         return injectedPacket;
     }
 
+    /** Make sure the instance is of the class type */
+    private boolean isOfClassType(Object instance) {
+        return instance != null && mcPacketClass().isAssignableFrom(instance.getClass());
+    }
+
     /** Transmute the packet's data */
     public Packet transmute(BiConsumer<Class<?>, Object> consumer) {
         consumer.accept(mcPacketClass(), mcPacket());
         return this;
+    }
+
+    /** Swap out the packet with a new instance, must be of the class type */
+    public Packet inject(Object injectedPacket) {
+        Conditions.condition(isOfClassType(injectedPacket), "injectedPacket"); // this will throw when instance is null
+        this.injectedPacket = injectedPacket;
+        return this;
+    }
+
+    /** Swap out the packet with a new instance, and provide the known class */
+    public Packet inject(Function<Class<?>, Object> function) {
+        return inject(Conditions.nonNull(function, "function").apply(mcPacketClass()));
     }
 
     /** Inject the map of fields into the instance */
