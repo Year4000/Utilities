@@ -18,7 +18,6 @@ public class ExceptionHandler extends ChannelDuplexHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        // Todo handle known errors like 404
         Router router = ctx.channel().attr(Router.ATTRIBUTE_KEY).get();
         Message message = ctx.channel().attr(Message.ATTRIBUTE_KEY).get();
         ErrorReporter.builder(cause)

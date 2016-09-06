@@ -55,7 +55,8 @@ public class RoutingManager implements Router {
 
     @Override
     public Triad<Class<?>, String, ChannelHandler> decoder(Message message) {
-        String defaultMime = mimes.get(contentTypes(message.endPoint()).iterator().next());
+        UnmodifiableIterator<Class<?>> classes = contentTypes(message.endPoint()).iterator();
+        String defaultMime = mimes.get(classes.hasNext() ? classes.next() : contentTypes.values().asList().get(0));
         String mime = message.mime().getOrElse(defaultMime);
         return new Triad<>(mimes.inverse().get(mime), mime, decoders.get(mime));
     }
@@ -108,18 +109,18 @@ public class RoutingManager implements Router {
 
         @Override
         public Router.Builder defaultDecoders() {
+            // Decoder for json objects also the default decoder
+            decoder("application/json", JsonObject.class, new StaticDecoder<JsonObject>() {
+                @Override
+                protected void decode(ChannelHandlerContext ctx, JsonObject msg, List<Object> out) throws Exception {
+                    out.add(Unpooled.wrappedBuffer(msg.toString().getBytes()));
+                }
+            });
             // Decoder for strings
             decoder("text/plain", String.class, new StaticDecoder<String>() {
                 @Override
                 protected void decode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
                     out.add(Unpooled.wrappedBuffer(msg.getBytes()));
-                }
-            });
-            // Decoder for json objects
-            decoder("application/json", JsonObject.class, new StaticDecoder<JsonObject>() {
-                @Override
-                protected void decode(ChannelHandlerContext ctx, JsonObject msg, List<Object> out) throws Exception {
-                    out.add(Unpooled.wrappedBuffer(msg.toString().getBytes()));
                 }
             });
             return this;
