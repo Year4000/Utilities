@@ -51,6 +51,8 @@ public class Message {
                     if (part.contains("=")) {
                         String[] keyValue = part.split("=");
                         query.put(keyValue[0], new TypeValue(keyValue[1]));
+                    } else {
+                        query.put(part, new TypeValue(Value.empty()));
                     }
                 }
             }
@@ -93,7 +95,9 @@ public class Message {
     public FullHttpResponse makeResponse(ByteBuf buffer) {
         Conditions.nonNull(buffer, "buffer").retain();
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(this.response.protocolVersion(), this.response.status(), buffer);
-        response.headers().add(HttpHeaders.CONTENT_LENGTH, buffer.readableBytes());
+        response.headers()
+            .add(HttpHeaders.CONTENT_TYPE, mime().get())
+            .add(HttpHeaders.CONTENT_LENGTH, buffer.readableBytes());
         return response;
     }
 

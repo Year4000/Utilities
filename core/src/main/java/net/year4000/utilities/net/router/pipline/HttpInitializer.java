@@ -11,11 +11,19 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.net.router.Router;
 
+import java.util.function.Consumer;
+
 public class HttpInitializer extends ChannelInitializer<Channel> {
     private final Router router;
+    private Consumer<ChannelPipeline> handler;
 
     public HttpInitializer(Router router) {
+        this(router, null);
+    }
+
+    public HttpInitializer(Router router, Consumer<ChannelPipeline> handler) {
         this.router = Conditions.nonNull(router, "router");
+        this.handler = handler;
     }
 
     /** Add the handlers to the channel pipeline */
@@ -24,6 +32,9 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
             .addLast(RouterDecoder.NAME, RouterDecoder.INSTANCE)
             .addLast(MessageHandler.NAME, MessageHandler.INSTANCE)
             .addLast(ExceptionHandler.NAME, ExceptionHandler.INSTANCE);
+        if (handler != null) {
+            handler.accept(pipeline);
+        }
     }
 
     @Override
