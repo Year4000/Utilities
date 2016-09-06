@@ -4,6 +4,7 @@
 
 package net.year4000.utilities.net.router.http;
 
+import com.google.common.collect.Maps;
 import com.google.common.net.HttpHeaders;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -20,6 +21,7 @@ import net.year4000.utilities.value.TypeValue;
 import net.year4000.utilities.value.Value;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class Message {
@@ -27,6 +29,7 @@ public class Message {
     private HttpRequest request;
     private HttpResponse response;
     private String[] args;
+    private Map<String, TypeValue> query = Maps.newHashMap();
 
     public Message(HttpRequest request) {
         this(request, new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK));
@@ -40,7 +43,20 @@ public class Message {
     /** Set the request of message */
     public void setRequest(HttpRequest request) {
         this.request = Conditions.nonNull(request, "request");
-        this.args = request.getUri().split("/");
+        if (request.uri().indexOf("?") > 0) {
+            String[] parts = request.uri().split("\\?");
+            this.args = parts[0].split("/");
+            if (parts.length > 1) { // if there are query parts after ?
+                for (String part : parts[1].split("&")) { // seperate the key and value from the query
+                    if (part.contains("=")) {
+                        String[] keyValue = part.split("=");
+                        query.put(keyValue[0], new TypeValue(keyValue[1]));
+                    }
+                }
+            }
+        } else {
+            this.args = request.uri().split("/");
+        }
     }
 
     /** Get the request of the message */
@@ -76,9 +92,21 @@ public class Message {
     /** Create the full response from the content of the byte buffer */
     public FullHttpResponse makeResponse(ByteBuf buffer) {
         Conditions.nonNull(buffer, "buffer").retain();
-        DefaultFullHttpResponse response = new DefaultFullHttpResponse(this.response.getProtocolVersion(), this.response.getStatus(), buffer);
+        DefaultFullHttpResponse response = new DefaultFullHttpResponse(this.response.protocolVersion(), this.response.status(), buffer);
         response.headers().add(HttpHeaders.CONTENT_LENGTH, buffer.readableBytes());
         return response;
+    }
+
+    /** Does the query contain the key value */
+    public boolean containsQuery(String key) {
+        Conditions.nonNullOrEmpty(key, "key");
+        return query.get(key) != null;
+    }
+
+    /** Return the TypeValue of the query key */
+    public TypeValue query(String key) {
+        Conditions.nonNullOrEmpty(key, "key");
+        return Conditions.nonNull(query.get(key), "query.get(key)");
     }
 
     @Override
