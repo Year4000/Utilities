@@ -96,6 +96,7 @@ public class Message {
         Conditions.nonNull(buffer, "buffer").retain();
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(this.response.protocolVersion(), this.response.status(), buffer);
         response.headers()
+            .setAll(this.response.headers()) // copy from response
             .add(HttpHeaders.CONTENT_TYPE, mime().get())
             .add(HttpHeaders.CONTENT_LENGTH, buffer.readableBytes());
         return response;
