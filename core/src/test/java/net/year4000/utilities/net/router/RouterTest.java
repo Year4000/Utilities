@@ -11,16 +11,16 @@ import org.junit.Test;
 public class RouterTest {
     private static Router router;
     private final static Router.Builder routerBuilder = Router.builder()
-            .path("test", "GET", String.class, (request, response, args) -> "test-get")
-            .path("test", "POST", String.class, (request, response, args) -> "test-post")
-            .path("test", "PUT", String.class, (request, response, args) -> "test-put")
-            .path("dummy", "GET", String.class, (request, response, args) -> "dummy");
+            .path("test", "GET", String.class, (request, response, query, args) -> "test-get")
+            .path("test", "POST", String.class, (request, response, query, args) -> "test-post")
+            .path("test", "PUT", String.class, (request, response, query, args) -> "test-put")
+            .path("dummy", "GET", String.class, (request, response, query, args) -> "dummy");
 
     @BeforeClass
     public static void setup() {
         for (char letter : "qwertyuiopasdfghjklzxcvbnm".toCharArray()) {
             String alphabet = letter + "" + letter;
-            routerBuilder.path(alphabet + "", "GET", String.class, (request, response, args) -> alphabet);
+            routerBuilder.path(alphabet + "", "GET", String.class, (request, response, query, args) -> alphabet);
         }
         router = routerBuilder.build();
     }
@@ -44,8 +44,8 @@ public class RouterTest {
         Assert.assertEquals("test", path.getEndPoint());
         Assert.assertEquals("GET", path.getMethod());
         Assert.assertEquals(String.class, path.getContentType());
-        Assert.assertEquals("test-get", path._handle(null, null));
-        Assert.assertEquals("test-post", router.findPath("test", "POST", String.class).get()._handle(null, null));
-        Assert.assertEquals("test-put", router.findPath("test", "PUT", String.class).get()._handle(null, null));
+        Assert.assertEquals("test-get", path._handle(null, null, null));
+        Assert.assertEquals("test-post", router.findPath("test", "POST", String.class).get()._handle(null, null, null));
+        Assert.assertEquals("test-put", router.findPath("test", "PUT", String.class).get()._handle(null, null, null));
     }
 }

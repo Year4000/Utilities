@@ -10,6 +10,8 @@ import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 import net.year4000.utilities.value.TypeValue;
 
+import java.util.Map;
+
 public class RoutedPath<T> {
     private final RoutingManager.Path path;
     private final Handle<T> handle;
@@ -35,16 +37,17 @@ public class RoutedPath<T> {
     }
 
     /** Handle the handle and catch any exceptions that occur and wrap it with RoutHandleException */
-    public T handle(HttpRequest request, HttpResponse response, TypeValue... args) {
+    public T handle(HttpRequest request, HttpResponse response, Map<String, TypeValue> query, TypeValue... args) {
         Conditions.nonNull(request, "request");
         Conditions.nonNull(response, "response");
-        return _handle(request, response, args);
+        Conditions.nonNull(query, "query");
+        return _handle(request, response, query, args);
     }
 
     /** Used for unit tests, ignores the request and response checking */
-    T _handle(HttpRequest request, HttpResponse response, TypeValue... args) {
+    T _handle(HttpRequest request, HttpResponse response, Map<String, TypeValue> query, TypeValue... args) {
         try {
-            return handle.handle(request, response, args);
+            return handle.handle(request, response, query, args);
         } catch (RouteHandleException error) {
             throw error;
         } catch (Throwable throwable) {

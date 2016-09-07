@@ -38,7 +38,7 @@ public class RouterDecoder extends MessageToMessageDecoder<HttpRequest> {
         Value<RoutedPath<Object>> path = router.findPath(message.endPoint(), String.valueOf(request.method()), (Class<Object>) triad.a.get());
         // Route found display the contents
         if (path.isPresent()) {
-            Object result = path.get().handle(message.getRequest(), message.getResponse(), message.arguments());
+            Object result = path.get().handle(message.getRequest(), message.getResponse(), message.queries(), message.arguments());
             if (result != null) {
                 out.add(result);
                 return;

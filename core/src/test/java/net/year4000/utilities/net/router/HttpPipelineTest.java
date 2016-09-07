@@ -15,7 +15,7 @@ import org.junit.Test;
 
 public class HttpPipelineTest {
     private static EmbeddedChannel channel;
-    private static Router router = Router.builder().path("test", "GET", String.class, ((request, response, args) -> "test")).build();
+    private static Router router = Router.builder().path("test", "GET", String.class, ((request, response, query, args) -> "test")).build();
 
     /** Create the http request with the following url */
     private HttpRequest dummyHttp(String url) {

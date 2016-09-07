@@ -114,6 +114,11 @@ public class Message {
         return Conditions.nonNull(query.get(key), "query.get(key)");
     }
 
+    /** Get the map of all the queries */
+    public Map<String, TypeValue> queries() {
+        return query;
+    }
+
     @Override
     public int hashCode() {
         return Utils.hashCode(this);
