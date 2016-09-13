@@ -38,15 +38,7 @@ public final class ErrorReporter {
 
     /** Report it to the print stream */
     public synchronized RuntimeException report(PrintStream out) {
-        String clean = "\nError Report #" + Integer.toHexString(id) + "\n";
-        for (String arg : args) {
-            clean += " -\t" + arg + "\n";
-        }
-        if (!hide) { // Hide the stacktrace
-            clean +=  "\nMsg:\t" + throwable.getMessage() + "\n";
-            clean += "Trace:\t" + Stream.of(throwable.getStackTrace()).map(String::valueOf).collect(Collectors.joining("\n -\t"));
-        }
-        out.println(clean.substring(0, clean.length() - 1)); // Strip off last endline
+        out.println(toString());
         throw new RuntimeException(getThrowable());
     }
 
@@ -134,5 +126,18 @@ public final class ErrorReporter {
         public void uncaughtException(Thread thread, Throwable throwable) {
             ErrorReporter.builder(throwable).buildAndReport(System.err);
         }
+    }
+
+    @Override
+    public String toString() {
+        String clean = "\nError Report #" + Integer.toHexString(id) + "\n";
+        for (String arg : args) {
+            clean += " -\t" + arg + "\n";
+        }
+        if (!hide) { // Hide the stacktrace
+            clean +=  "\nMsg:\t" + throwable.getMessage() + "\n";
+            clean += "Trace:\t" + Stream.of(throwable.getStackTrace()).map(String::valueOf).collect(Collectors.joining("\n -\t"));
+        }
+        return clean.substring(0, clean.length() - 1); // Strip off last endline
     }
 }
