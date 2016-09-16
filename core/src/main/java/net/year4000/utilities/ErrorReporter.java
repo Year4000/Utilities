@@ -39,7 +39,7 @@ public final class ErrorReporter {
     /** Report it to the print stream */
     public synchronized RuntimeException report(PrintStream out) {
         out.println(toString());
-        throw new RuntimeException(getThrowable());
+        return new RuntimeException(getThrowable());
     }
 
     /** Set the current threads uncaught exception handler */
