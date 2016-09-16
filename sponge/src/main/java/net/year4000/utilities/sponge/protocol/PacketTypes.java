@@ -32,18 +32,14 @@ public final class PacketTypes {
         UtilityConstructError.raise();
     }
 
-    /**
-     * Create the packet type
-     */
+    /** Create the packet type */
     public static PacketType of(State state, Binding binding, int id) {
         PacketType type = new PacketType(id, state.ordinal(), binding.ordinal());
         fromType(type); // tries to of the cache
         return type;
     }
 
-    /**
-     * Try and get the class from the type
-     */
+    /** Try and get the class from the type */
     public static Value<Class<?>> fromType(PacketType type) {
         Conditions.nonNull(type, "type");
         try {
@@ -59,27 +55,17 @@ public final class PacketTypes {
         }
     }
 
-    /**
-     * Get the PacketType from the class
-     */
+    /** Get the PacketType from the class */
     public static Value<PacketType> fromClass(Class<?> clazz) {
         Conditions.nonNull(clazz, "clazz");
         return Value.of(map.get(clazz));
     }
 
-    /**
-     * Which way the packets are bounded to from the server perspective
-     */
-    public enum Binding {
-        INBOUND, OUTBOUND
-    }
+    /** Which way the packets are bounded to from the server perspective */
+    public enum Binding {INBOUND, OUTBOUND}
 
-    /**
-     * The type of packet they are
-     */
-    public enum State {
-        HANDSHAKING, PLAY, STATUS, LOGIN
-    }
+    /** The type of packet they are */
+    public enum State {HANDSHAKING, PLAY, STATUS, LOGIN}
 
     // Protocol
     public static final int PROTOCOL_VERSION = 210;
