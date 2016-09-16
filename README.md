@@ -37,7 +37,7 @@ When there is more than one jar the suffix of `-all.jar` contains shaded jar, th
 
 ## Issues
 
-Report issues at our meta discussion, [Meta](https://github.com/Year4000/Meta).
+Report issues at our meta discussion, [Issues](https://github.com/Year4000/Issues).
 
 ## License
 
