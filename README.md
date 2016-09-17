@@ -1,4 +1,4 @@
-# Utilities [![Build Status](https://travis-ci.org/Year4000/Utilities.svg)](https://travis-ci.org/Year4000/Utilities)
+# Utilities [![Build Status](https://travis-ci.org/Year4000/Utilities.svg)](https://travis-ci.org/Year4000/Utilities) [![JitPack](https://jitpack.io/v/Year4000/Utilities.svg)](https://jitpack.io/#Year4000/Utilities)
 
 [IRC](https://webchat.esper.net/?channels=year4000): #year4000 on irc.esper.net
 
@@ -34,6 +34,14 @@ This will compile every thing that it needs and nothing else.
 
 The output of each core module is generally inside `build/libs` though core modules shade other modules.
 When there is more than one jar the suffix of `-all.jar` contains shaded jar, this is the one you want.
+
+## Using
+
+We use JitPack for the Maven repository hosting.
+
+- **Repository**: [https://jitpack.io](https://jitpack.io/#Year4000/Utilities)
+- **Version**: com.github.Year4000.Utilities:Utilities:master-SNAPSHOT
+
 
 ## Issues
 
