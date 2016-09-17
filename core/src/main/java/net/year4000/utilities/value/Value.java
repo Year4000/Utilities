@@ -7,7 +7,9 @@ package net.year4000.utilities.value;
 import net.year4000.utilities.Conditions;
 
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /** Internal use of Value for various value needs */
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -42,6 +44,16 @@ public interface Value<V> {
         try {
             if (value == null || value.isEmpty()) return empty();
             return of(Integer.parseInt(value));
+        } catch (NumberFormatException error) {
+            return empty();
+        }
+    }
+
+    /** Tries to parse the long from the String and returns the value if its found */
+    static Value<Long> parseLong(String value) {
+        try {
+            if (value == null || value.isEmpty()) return empty();
+            return of(Long.parseLong(value));
         } catch (NumberFormatException error) {
             return empty();
         }
@@ -133,10 +145,18 @@ public interface Value<V> {
         return this;
     }
 
-    /** Run a consumer instance on the value if it is empty */
-    default Value<V> ifEmpty(Consumer<V> consumer) {
+    /** Run a runnable instance on the value if it exists */
+    default Value<V> ifPresent(Runnable runnable) {
+        if (isPresent()) {
+            runnable.run();
+        }
+        return this;
+    }
+
+    /** Run a runnable instance on the value if it is empty */
+    default Value<V> ifEmpty(Runnable runnable) {
         if (isEmpty()) {
-            consumer.accept(get());
+            runnable.run();
         }
         return this;
     }
