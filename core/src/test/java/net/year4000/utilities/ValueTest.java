@@ -67,7 +67,7 @@ public class ValueTest {
     @Test
     public void miscTest() {
         Value.of("foo").getOrThrow();
-        Value.of("bar").ifPresent(value -> {}).ifEmpty(value -> {});
+        Value.of("bar").ifPresent(value -> {}).ifEmpty(() -> {});
     }
 
     @Test
@@ -76,6 +76,14 @@ public class ValueTest {
         Assert.assertTrue(value.isPresent());
         Assert.assertTrue(value.isString());
         Assert.assertFalse(value.isNumber());
+    }
+
+    @Test
+    public void longTest() {
+        TypeValue value = new TypeValue(3000000);
+        Assert.assertTrue(value.isPresent());
+        Assert.assertFalse(value.isString());
+        Assert.assertEquals(3000000, value.toLong());
     }
 
     @Test
