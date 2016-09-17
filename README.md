@@ -40,7 +40,8 @@ When there is more than one jar the suffix of `-all.jar` contains shaded jar, th
 We use JitPack for the Maven repository hosting.
 
 - **Repository**: [https://jitpack.io](https://jitpack.io/#Year4000/Utilities)
-- **Version**: com.github.Year4000.Utilities:Utilities:master-SNAPSHOT
+- **Core**: com.github.Year4000.Utilities:core:master-SNAPSHOT
+- **Sponge**: com.github.Year4000.Utilities:sponge:master-SNAPSHOT
 
 
 ## Issues
