@@ -4,6 +4,8 @@
 
 rootProject.name = 'Utilities'
 
+include 'gradle'
+
 include 'core'
 include 'core:ducktape'
 include 'core:locale'

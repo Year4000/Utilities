@@ -2,7 +2,7 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
-apply from: utilities.file('gradle/utils.gradle')
+apply from: utilities.file('gradle/src/main/groovy/net/year4000/utilities/gradle/utils.gradle')
 
 // Project Details
 group 'net.year4000.utilities'
