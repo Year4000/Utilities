@@ -8,18 +8,18 @@ buildscript {
 
     dependencies {
         classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:2.2.+'
-        classpath 'com.netflix.nebula:nebula-publishing-plugin:4.9.1'
     }
 }
 
 plugins {
     id 'idea'
     id 'groovy'
+    id 'nebula.javadoc-jar' version '4.9.1'
+    id 'nebula.source-jar' version '4.9.1'
+    id 'nebula.maven-publish' version '4.9.1'
 }
 
 apply plugin: 'nebula-aggregate-javadocs'
-apply plugin: 'nebula.source-jar'
-apply plugin: 'nebula.javadoc-jar'
 
 ext.utilities = project
 
