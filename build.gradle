@@ -14,9 +14,6 @@ buildscript {
 plugins {
     id 'idea'
     id 'groovy'
-    id 'nebula.javadoc-jar' version '4.9.1'
-    id 'nebula.source-jar' version '4.9.1'
-    id 'nebula.maven-publish' version '4.9.1'
 }
 
 apply plugin: 'nebula-aggregate-javadocs'
