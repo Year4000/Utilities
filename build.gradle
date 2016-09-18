@@ -15,7 +15,7 @@ buildscript {
 plugins {
     id 'idea'
     id 'groovy'
-    id 'maven
+    id 'maven'
 }
 
 apply plugin: 'nebula-aggregate-javadocs'
