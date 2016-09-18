@@ -20,7 +20,7 @@ apply plugin: 'nebula-aggregate-javadocs'
 
 ext.utilities = project
 
-defaultTasks 'clean', 'build'
+defaultTasks 'clean', 'build', 'aggregateJavadocs'
 
 idea {
     module {
