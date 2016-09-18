@@ -1,4 +1,4 @@
-# Utilities [![Build Status](https://travis-ci.org/Year4000/Utilities.svg)](https://travis-ci.org/Year4000/Utilities) [![JitPack](https://jitpack.io/v/Year4000/Utilities.svg)](https://jitpack.io/#Year4000/Utilities)
+# Utilities [![Build Status](https://travis-ci.org/Year4000/Utilities.svg)](https://travis-ci.org/Year4000/Utilities) [![JitPack](https://jitpack.io/v/net.year4000/utilities.svg)](https://jitpack.io/#net.year4000/utilities)
 
 [IRC](https://webchat.esper.net/?channels=year4000): #year4000 on irc.esper.net
 
@@ -39,10 +39,9 @@ When there is more than one jar the suffix of `-all.jar` contains shaded jar, th
 
 We use JitPack for the Maven repository hosting.
 
-- **Repository**: [https://jitpack.io](https://jitpack.io/#Year4000/Utilities)
-- **Core**: com.github.Year4000.Utilities:core:master-SNAPSHOT
-- **Sponge**: com.github.Year4000.Utilities:sponge:master-SNAPSHOT
-
+- **Repository**: [https://jitpack.io](https://jitpack.io/#net.year4000/utilities)
+- **Core**: net.year4000.utilities:core:master-SNAPSHOT
+- **Sponge**: net.year4000.utilities:sponge:master-SNAPSHOT
 
 ## Issues
 
