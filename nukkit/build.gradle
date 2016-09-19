@@ -1,0 +1,41 @@
+/*
+ * Copyright 2016 Year4000. All Rights Reserved.
+ */
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+apply from: utilities.file('gradle/utilities.gradle')
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': utilities.name
+        attributes 'Implementation-Version': utilities.version
+    }
+}
+
+assemble.dependsOn shadowJar {
+    baseName = utilities.name.toLowerCase()
+    version = utilities.version
+
+    dependencies {
+        include dependency('org.codehaus.groovy:groovy-all:.*') // core:ducktape
+        include dependency('redis.clients:jedis:.*') // core:redis
+        include dependency('net.year4000.utilities:.*')
+    }
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compile utilities.project('core')
+    compile utilities.project('core:redis')
+    compile utilities.project('core:scheduler')
+    compile utilities.project('core:locale')
+    compile utilities.project('core:ducktape')
+    compile 'com.github.nukkit:nukkit:master-SNAPSHOT'
+}
