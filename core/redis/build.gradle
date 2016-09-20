@@ -4,9 +4,6 @@
 
 plugins {
     id 'java'
-    id 'nebula.javadoc-jar' version '4.9.1'
-    id 'nebula.source-jar' version '4.9.1'
-    id 'nebula.maven-publish' version '4.9.1'
 }
 
 apply from: utilities.file('gradle/utilities.gradle')
