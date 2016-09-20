@@ -3,12 +3,12 @@
  */
 buildscript {
     repositories {
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
+        maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath 'gradle.plugin.org.spongepowered:SpongeGradle:0.5.1'
+        classpath 'net.year4000.utilities:gradle:gradle-SNAPSHOT'
     }
 }
 
@@ -18,12 +18,12 @@ plugins {
 }
 
 apply plugin: 'org.spongepowered.plugin'
+apply plugin: 'net.year4000.utilities.spongeplugin'
 apply from: utilities.file('gradle/utilities.gradle')
-//apply from: utilities.file('gradle/src/main/groovy/net/year4000/utilities/gradle/sponge.gradle')
 
-//spongestarter {
-//    deleteJar false
-//}
+spongestarter {
+    deleteJar false
+}
 
 jar {
     manifest {
