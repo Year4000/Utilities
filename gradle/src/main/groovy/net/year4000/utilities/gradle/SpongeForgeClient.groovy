@@ -1,76 +1,18 @@
 /*
  * Copyright 2016 Year4000. All Rights Reserved.
  */
-//package net.year4000.utilities.gradle;
 
-import com.google.common.io.Files
-import com.google.gson.Gson
-import com.google.inject.*
+package net.year4000.utilities.gradle
+
+import com.google.inject.Inject
 import groovy.transform.ToString
 import net.lingala.zip4j.core.ZipFile
+import net.year4000.utilities.OS
+import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.tasks.TaskAction
 
-import java.util.Optional as Optionals
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import java.util.stream.Collectors
-
-import static SpongePlugin.*
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.google.guava:guava:19.0'
-        classpath 'com.google.code.gson:gson:2.5'
-        classpath 'com.google.inject:guice:3.0'
-        classpath 'net.lingala.zip4j:zip4j:1.3.2'
-    }
-}
-
-apply plugin: SpongePlugin
-
-class SpongePlugin implements Plugin<Project> {
-    static final Gson GSON = new Gson()
-    static final OS PLATFORM = OS.detect()
-    static final String PS = File.separator
-    static final File MINECRAFT_HOME = {
-        def home = System.getProperty('user.home')
-        switch (PLATFORM) {
-            case OS.LINUX:
-                return new File(home, '.minecraft')
-            case OS.OSX:
-                return new File(home, '/Library/Application Support/minecraft')
-                break
-            case OS.WINDOWS:
-                return new File(home, 'Application Data\\.minecraft')
-        }
-    }.call()
-
-    @Override
-    void apply(Project project) {
-        Injector injector = Guice .createInjector Stage.DEVELOPMENT, new Module() {
-            @Override
-            void configure(Binder binder) {
-                binder.bind(Project).toInstance(project)
-                binder.bind(SpongePlugin).toInstance(SpongePlugin.this)
-            }
-        }
-
-        project.extensions.create('spongestarter', SpongeExtension)
-
-        /** Start the forge client */
-        injector.injectMembers(project.tasks.create('startForgeClient', SpongeForgeClient))
-    }
-}
-
-class SpongeExtension {
-    /** When set delete the jar when JVM closes */
-    boolean deleteJar = true
-
-    /** The port the debugger will bind on */
-    int debugPort = 5005
-}
 
 /** Sponge starter runs the needed things to start a sponge instance */
 class SpongeForgeClient extends DefaultTask {
@@ -90,7 +32,7 @@ class SpongeForgeClient extends DefaultTask {
         }
 
         File versions = new File(MINECRAFT_HOME, 'versions')
-        Optionals<File> forge = Arrays.asList(versions.listFiles()).stream()
+        Optional<File> forge = Arrays.asList(versions.listFiles()).stream()
                 .filter({file -> file.name.contains('forge')})
                 .sorted().sorted(Comparator.reverseOrder())
                 .findFirst()
@@ -176,25 +118,25 @@ class SpongeForgeClient extends DefaultTask {
         Objects.requireNonNull(version)
         String[] argParts = version.minecraftArguments.split(' ')
         def minecraftArgs = [
-            'java',
-            "-Djava.library.path=${MINECRAFT_HOME}/natives/",
-            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${project.spongestarter.debugPort}",
-            // todo launcher java args
-            '-cp',
-            classpath,
-            version.mainClass
+                'java',
+                "-Djava.library.path=${MINECRAFT_HOME}/natives/",
+                "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${project.spongestarter.debugPort}",
+                // todo launcher java args
+                '-cp',
+                classpath,
+                version.mainClass
         ]
         def varMap = [
-            assets_index_name: version.assets,
-            version_name: version.id,
-            game_directory: System.getProperty('spongeplugin.mcpath'),
-            assets_root: "${MINECRAFT_HOME}/assets/",
-            version_type: version.type,
-            user_type: 'mojang',
-            user_properties: '{}',
-            auth_player_name: login[0],
-            auth_access_token: login[1],
-            auth_uuid: login[2]
+                assets_index_name: version.assets,
+                version_name: version.id,
+                game_directory: System.getProperty('spongeplugin.mcpath'),
+                assets_root: "${MINECRAFT_HOME}/assets/",
+                version_type: version.type,
+                user_type: 'mojang',
+                user_properties: '{}',
+                auth_player_name: login[0],
+                auth_access_token: login[1],
+                auth_uuid: login[2]
         ]
 
         argParts.each {
@@ -310,88 +252,5 @@ class SpongeForgeClient extends DefaultTask {
         def natives = b
 
         ClassPaths() { super(new LinkedList<String>(), new LinkedList<String>()) }
-    }
-}
-
-// Utils for Above Script
-
-/** Run Streams to Logger */
-final class StreamToLogger implements Runnable {
-    static final ExecutorService EXECUTOR = Executors.newCachedThreadPool()
-    InputStream src
-    Logger logger
-    LogLevel level
-
-    private InputStreamReader reader
-    private BufferedReader bufferedReader
-
-    @Override
-    void run() {
-        if (reader == null && bufferedReader == null) {
-            reader = new InputStreamReader(src)
-            bufferedReader = new BufferedReader(reader)
-        }
-
-        String line = bufferedReader.readLine()
-        if (line != null) {
-            logger.log level, line
-        }
-        EXECUTOR.execute this
-    }
-
-    def execute() {
-        EXECUTOR.execute this
-        Runtime.runtime.addShutdownHook { EXECUTOR.shutdown }
-    }
-}
-
-/** Simple way of detecting the current OS of the jvm runtime */
-final enum OS {
-    LINUX,
-    OSX,
-    WINDOWS
-
-    static OS detect() {
-        def name = System.getProperty("os.name")?.toLowerCase()
-
-        if (name.contains('linux')) return LINUX
-        else if (name.contains('mac') || name.contains('osx')) return OSX
-        else if (name.contains('windows')) return WINDOWS
-
-        throw new Throwable('Could not detect os, report this issue.')
-    }
-}
-
-/** A class that helps with returing tuple vales with multiple types */
-final class Tuples {
-    /** A class for the use of pair */
-    final static class TupleValue<V> {
-        private V value
-
-        /** Get the current value, could be null */
-        V get() { value }
-
-        /** Get or else the current value */
-        V getOrElse(V value) { (V) this.value ?: value }
-
-        /** Set the current value of this tuple */
-        void set(V value) { this.value = value }
-
-        @Override
-        String toString() { "TupleValue(${value})" }
-    }
-
-    /** Represents a tuple pair */
-    static class Pair<A, B> {
-        final TupleValue<A> a;
-        final TupleValue<B> b;
-
-        Pair(A a, B b) {
-            this.a = new TupleValue<>(value: a)
-            this.b = new TupleValue<>(value: b)
-        }
-
-        @Override
-        String toString() { "Pair(${a?.get()}, ${b?.get()})" }
     }
 }

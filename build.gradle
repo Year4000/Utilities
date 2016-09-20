@@ -13,7 +13,6 @@ buildscript {
 
 plugins {
     id 'idea'
-    id 'groovy'
 }
 
 apply plugin: 'nebula-aggregate-javadocs'
@@ -21,22 +20,3 @@ apply plugin: 'nebula-aggregate-javadocs'
 ext.utilities = project
 
 defaultTasks 'clean', 'build', 'aggregateJavadocs'
-
-idea {
-    module {
-        sourceDirs += file("${projectDir}/gradle/")
-        excludeDirs += file("${projectDir}/gradle/wrapper/")
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile gradleApi()
-    compile 'com.google.guava:guava:19.0'
-    compile 'com.google.code.gson:gson:2.5'
-    compile 'com.google.inject:guice:3.0'
-    compile 'net.lingala.zip4j:zip4j:1.3.2'
-}
