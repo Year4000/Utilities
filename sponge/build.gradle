@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'gradle.plugin.org.spongepowered:SpongeGradle:0.5.1'
-        classpath 'net.year4000.utilities:gradle:gradle-SNAPSHOT'
+        //classpath 'net.year4000.utilities:gradle:gradle-SNAPSHOT'
     }
 }
 
@@ -18,12 +18,12 @@ plugins {
 }
 
 apply plugin: 'org.spongepowered.plugin'
-apply plugin: 'net.year4000.utilities.spongeplugin'
+//apply plugin: 'net.year4000.utilities.spongeplugin'
 apply from: utilities.file('gradle/utilities.gradle')
 
-spongestarter {
-    deleteJar false
-}
+//spongestarter {
+//    deleteJar false
+//}
 
 jar {
     manifest {
