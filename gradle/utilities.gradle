@@ -2,7 +2,16 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
-apply from: utilities.file('gradle/src/main/groovy/net/year4000/utilities/gradle/utils.gradle')
+buildscript {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+    dependencies {
+        //classpath 'net.year4000.utilities:gradle:gradle-SNAPSHOT'
+    }
+}
+
+//apply plugin: 'net.year4000.utilities.utils'
 
 // Project Details
 group 'net.year4000.utilities'
@@ -17,7 +26,7 @@ jar {
     manifest {
         attributes 'Implementation-Title': utilities.name
         attributes 'Implementation-Version': utilities.version
-        attributes 'Specification-Version': git()
+        //attributes 'Specification-Version': git()
     }
 }
 

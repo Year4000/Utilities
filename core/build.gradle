@@ -24,7 +24,7 @@ apply from: utilities.file('gradle/utilities.gradle')
 blossom {
     def constants = 'src/main/java/' + group.toString().replaceAll('\\.', '/') + '/Tokens.java'
     replaceToken '${version}', version, constants
-    replaceToken '${git_hash}', git(), constants
+    //replaceToken '${git_hash}', git(), constants
 }
 
 dependencies {
