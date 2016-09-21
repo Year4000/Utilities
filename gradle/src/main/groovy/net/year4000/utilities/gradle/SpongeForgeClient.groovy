@@ -14,6 +14,10 @@ import org.gradle.api.tasks.TaskAction
 
 import java.util.stream.Collectors
 
+import static net.year4000.utilities.gradle.SpongeGradlePlugin.MINECRAFT_HOME
+import static net.year4000.utilities.gradle.SpongeGradlePlugin.PS
+import static net.year4000.utilities.gradle.SpongeGradlePlugin.GSON
+
 /** Sponge starter runs the needed things to start a sponge instance */
 class SpongeForgeClient extends DefaultTask {
     SpongeForgeClient() { dependsOn += 'assemble' }
