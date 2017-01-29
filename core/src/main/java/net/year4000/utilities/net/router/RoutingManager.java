@@ -153,7 +153,7 @@ public class RoutingManager implements Router {
 
         @Override
         public int hashCode() {
-            return Utils.hashCode(this, "endPoint", "method");
+            return endPoint.hashCode() ^ method.hashCode();
         }
 
         @Override
