@@ -137,12 +137,12 @@ public class RoutingManager implements Router {
     static class Path implements Comparable<Path> {
         final String endPoint;
         final String method;
-        // final Class<?> contentType;
+        final Class<?> contentType;
 
         Path(String endPoint, String method, Class<?> contentType) {
             this.endPoint = Conditions.nonNull(endPoint, "endPoint"); // endpoint can be empty for root
             this.method = Conditions.nonNullOrEmpty(method, "method");
-            // this.contentType = Conditions.nonNull(contentType, "contentType");
+            this.contentType = Conditions.nonNull(contentType, "contentType");
         }
 
         @Override
@@ -153,7 +153,7 @@ public class RoutingManager implements Router {
 
         @Override
         public int hashCode() {
-            return Utils.hashCode(this);
+            return Utils.hashCode(this, "endPoint", "method");
         }
 
         @Override
