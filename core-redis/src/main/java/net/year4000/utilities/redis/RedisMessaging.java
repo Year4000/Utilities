@@ -6,7 +6,6 @@ package net.year4000.utilities.redis;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

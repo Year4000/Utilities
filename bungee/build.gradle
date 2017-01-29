@@ -43,11 +43,11 @@ repositories {
 
 dependencies {
     compile utilities.project('core')
-    compile utilities.project('core:redis')
-    compile utilities.project('core:minecraft')
-    compile utilities.project('core:locale')
-    compile utilities.project('core:sdk')
-    compile utilities.project('core:scheduler')
+    compile utilities.project('core-redis')
+    compile utilities.project('core-minecraft')
+    compile utilities.project('core-locale')
+    compile utilities.project('core-sdk')
+    compile utilities.project('core-scheduler')
     compile 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
     compile 'com.sk89q:command-framework-bungee:0.5-SNAPSHOT'
 }
