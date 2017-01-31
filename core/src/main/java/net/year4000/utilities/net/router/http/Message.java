@@ -97,8 +97,10 @@ public class Message {
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(this.response.protocolVersion(), this.response.status(), buffer);
         response.headers()
             .setAll(this.response.headers()) // copy from response
-            .set(HttpHeaders.CONTENT_TYPE, mime().get())
             .set(HttpHeaders.CONTENT_LENGTH, buffer.readableBytes());
+        if (!this.response.headers().contains(HttpHeaders.CONTENT_TYPE)) {
+            response.headers().set(HttpHeaders.CONTENT_TYPE, mime().get());
+        }
         return response;
     }
 
