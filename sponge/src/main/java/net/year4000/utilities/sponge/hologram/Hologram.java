@@ -30,7 +30,6 @@ import org.spongepowered.api.world.extent.Extent;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -170,10 +169,10 @@ public class Hologram implements Comparable<Hologram> {
 
     /** Create the armor stand entity */
     private Value<ArmorStand> line(double offset, Text text) {
-        Optional<Entity> entityOptional = extent.createEntity(EntityTypes.ARMOR_STAND, origin.sub(0, offset, 0));
-        if (entityOptional.isPresent()) {
-            ArmorStand armorStand = (ArmorStand) entityOptional.get();
-            armorStand.offer(Keys.ARMOR_STAND_HAS_GRAVITY, false);
+        Entity entity = extent.createEntity(EntityTypes.ARMOR_STAND, origin.sub(0, offset, 0));
+        if (entity != null) {
+            ArmorStand armorStand = (ArmorStand) entity;
+            armorStand.offer(Keys.HAS_GRAVITY, false);
             armorStand.offer(Keys.ARMOR_STAND_IS_SMALL, true);
             armorStand.offer(Keys.CUSTOM_NAME_VISIBLE, true);
             armorStand.offer(Keys.DISPLAY_NAME, text);
