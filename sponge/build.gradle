@@ -57,3 +57,6 @@ idea {
         sourceDirs += file("src/debug/java")
     }
 }
+
+// Toggle this comment if you want to add the debug into the classpath
+//sourceSets.main.java.srcDir "${projectDir}/src/debug/java/"
