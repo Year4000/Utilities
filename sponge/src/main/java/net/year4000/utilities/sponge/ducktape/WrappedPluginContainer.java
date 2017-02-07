@@ -27,11 +27,6 @@ public class WrappedPluginContainer implements PluginContainer {
     }
 
     @Override
-    public String getUnqualifiedId() {
-        return Optional.ofNullable(pluginData).map(Plugin::id).orElse("unknown");
-    }
-
-    @Override
     public String getName() {
         return Optional.ofNullable(pluginData).map(Plugin::name).orElse("Unknown");
     }
