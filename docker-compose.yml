@@ -1,0 +1,10 @@
+---
+# Help create docker images for utilities
+
+version: '2'
+
+services:
+  spongevanilla:
+    build: sponge
+    image: year4000/utilities:spongevanilla
+
