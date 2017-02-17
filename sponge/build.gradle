@@ -32,7 +32,7 @@ jar {
     }
 }
 
-assemble.dependsOn shadowJar {
+compileJava.dependsOn shadowJar {
     baseName = utilities.name.toLowerCase()
     version = utilities.version
 
