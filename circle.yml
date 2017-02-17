@@ -12,6 +12,11 @@ machine:
   java:
     version: oraclejdk8
 
+# We want to build and run tests
+test:
+  override:
+    - ./gradlew clean build test
+
 # Deploy the Docker image
 deployment:
   master:
