@@ -11,4 +11,10 @@ notifications:
       - "Build details : %{build_url}"
     use_notice: true
     skip_join: true
-services: redis
+sudo: required
+services:
+  - redis
+  - docker
+after_success:
+  - docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+  - docker-compose push
