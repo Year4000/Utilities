@@ -16,5 +16,6 @@ services:
   - redis
   - docker
 after_success:
-  - docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+  - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+  - docker-compose build
   - docker-compose push
