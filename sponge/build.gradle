@@ -59,4 +59,7 @@ idea {
 }
 
 // Toggle this comment if you want to add the debug into the classpath
-//sourceSets.main.java.srcDir "${projectDir}/src/debug/java/"
+//sourceSets.main {
+//  java.srcDir "${projectDir}/src/debug/java/"
+//  resources.srcDir "${projectDir}/src/debug/resources/"
+//}
