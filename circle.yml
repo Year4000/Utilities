@@ -1,0 +1,22 @@
+---
+# CircleCI Config to build Utilities and Deploy Docker Images
+
+# We are deploying with docker
+machine:
+  pre:
+    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
+  post:
+    - pip install --upgrade docker-compose
+  services:
+    - docker
+  java:
+    version: oraclejdk8
+
+# Deploy the Docker image
+deployment:
+  master:
+    branch: master
+    commands:
+      - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+      - docker-compose build
+      - docker-compose push
