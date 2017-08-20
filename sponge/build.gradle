@@ -49,7 +49,7 @@ dependencies {
     compile utilities.project('core-scheduler')
     compile utilities.project('core-locale')
     compile utilities.project('core-ducktape')
-    compile 'org.spongepowered:spongeapi:6.0.0-SNAPSHOT'
+    compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
 }
 
 idea {
@@ -58,8 +58,10 @@ idea {
     }
 }
 
-// Toggle this comment if you want to add the debug into the classpath
-//sourceSets.main {
-//  java.srcDir "${projectDir}/src/debug/java/"
-//  resources.srcDir "${projectDir}/src/debug/resources/"
-//}
+// If you run the command with the DEBUG env set it will add the debug files in the classpath
+if (System.getenv('DEBUG') != null) {
+  sourceSets.main {
+    java.srcDir "${projectDir}/src/debug/java/"
+    resources.srcDir "${projectDir}/src/debug/resources/"
+  }
+}

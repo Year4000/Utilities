@@ -7,4 +7,8 @@ services:
   spongevanilla:
     build: sponge
     image: year4000/utilities:spongevanilla
-
+    ports:
+      - "25565:25565"
+    volumes:
+      - ./sponge/build/libs/utilities-2.0.0-SNAPSHOT-all.jar:/opt/year4000/minecraft/mods/utilities.jar
+      - ./run/logs:/opt/year4000/minecraft/logs

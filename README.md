@@ -31,6 +31,14 @@ This will compile every thing that it needs and nothing else.
 
 > gradle --daemon
 
+## Docker
+
+If you want to spin up a quick docker instance to test the plugin, clone this repo and run the following command.
+You must run this command after you have compiled the code.
+If you know how Docker works we host this image on [Docker Hub](https://hub.docker.com/r/year4000/utilities/).
+
+> docker-compose run -p 25565:25565 --rm spongevanilla
+
 ## Output
 
 The output of each core module is generally inside `build/libs` though core modules shade other modules.
@@ -46,7 +54,7 @@ We use JitPack for the Maven repository hosting.
 
 ## License
 
-Copyright &copy; 2016 Year4000 [www.year4000.net][year4000]. All Rights Reserved.
+Copyright &copy; 2017 Year4000 [www.year4000.net][year4000]. All Rights Reserved.
 
 The source code is provided for reference only.
 You may not redistribute modified versions of the source code.
