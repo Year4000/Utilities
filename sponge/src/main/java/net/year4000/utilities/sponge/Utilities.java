@@ -41,8 +41,7 @@ public final class Utilities extends AbstractSpongePlugin {
     }
 
     /** The DI injector that was used to inject this plugin */
-    @Inject
-    private Injector injector;
+    @Inject private Injector injector;
 
     /** Get the instance of Utilities */
     public static Utilities get() {
