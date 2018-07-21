@@ -11,4 +11,6 @@ services:
       - "25565:25565"
     volumes:
       - ./sponge/build/libs/utilities-2.0.0-SNAPSHOT-all.jar:/opt/year4000/minecraft/mods/utilities.jar
+      #- ./core-ducktape/build/libs/ducktape-libs-2.0.0-SNAPSHOT-all.jar:/opt/year4000/minecraft/mods/utilities-ducktape.jar
       - ./run/logs:/opt/year4000/minecraft/logs
+      - ./run/mods:/opt/year4000/minecraft/mods

@@ -4,9 +4,19 @@
 
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
 apply from: utilities.file('gradle/utilities.gradle')
+
+assemble.dependsOn shadowJar {
+    baseName = utilities.name.toLowerCase()
+    version = utilities.version
+
+    dependencies {
+        include dependency('redis.clients:jedis:.*') // core:redis
+    }
+}
 
 dependencies {
     compile utilities.project('core')

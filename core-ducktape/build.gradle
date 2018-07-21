@@ -4,12 +4,23 @@
 
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
 apply from: utilities.file('gradle/utilities.gradle')
 
+assemble.dependsOn shadowJar {
+    baseName = 'ducktape-libs'
+    version = utilities.version
+
+    dependencies {
+        include dependency('org.codehaus.groovy:groovy-all:.*') // core:ducktape
+    }
+}
+
 dependencies {
     compile utilities.project('core')
+    compile 'com.google.inject:guice:4.0'
     compile 'org.codehaus.groovy:groovy-all:2.4.6'
     compile 'org.scala-lang:scala-library:2.11.7'
     compile 'org.scala-lang:scala-reflect:2.11.7'
