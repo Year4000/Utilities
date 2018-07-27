@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.Tokens;
+import net.year4000.utilities.ducktape.DucktapeModule;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
 import net.year4000.utilities.sponge.ducktape.SpongeModuleManager;
@@ -55,7 +56,7 @@ public final class Utilities extends AbstractSpongePlugin {
 
     @Listener
     public void onConstruct(GameConstructionEvent event) {
-        moduleManager.injectModules(injector); // Find and Construct the modules
+        moduleManager.injectModules(injector.createChildInjector(new DucktapeModule())); // Find and Construct the modules
     }
 
     @Listener

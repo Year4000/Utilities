@@ -13,12 +13,11 @@ public class Settings<T> {
     private final T instance;
     private SettingsProvider<T> settingsProvider;
 
-    public Settings() {
+    public Settings() { // for testing
         this.instance = null;
-    } // for testing
+    }
 
-    @Inject
-    private Settings(T instance, SettingsProvider<T> settingsProvider) {
+    Settings(T instance, SettingsProvider<T> settingsProvider) {
         this.instance = Conditions.nonNull(instance, "instance");
         this.settingsProvider = Conditions.nonNull(settingsProvider, "settingsProvider");
     }
