@@ -25,7 +25,11 @@ public enum Messages implements LocaleKeys<CommandSource, Text> {
 
     // Plugins Command
     CMD_PLUGINS,
-    CMD_VERSION,
+    CMD_ID,
+    CMD_AUTHORS,
+    CMD_AUTHOR,
+    CMD_URL,
+    CMD_CLASS,
 
     // Fly Command
     CMD_FLY_MODE,

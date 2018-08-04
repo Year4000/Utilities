@@ -12,6 +12,7 @@ run/
 *.tmp
 .idea/
 *.iml
+out/
 
 # Mac
 ._*
