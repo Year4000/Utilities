@@ -89,9 +89,16 @@ class SpongeForgeClient extends DefaultTask {
             ''')
         }
 
+        FileReader reader = new FileReader(new File(MINECRAFT_HOME, 'launcher_profiles.json'))
+        LauncherProfiles profiles = GSON.fromJson(reader, LauncherProfiles)
+        reader.close()
+        def profile = profiles.forgeDevProfile().orElse([
+            lastVersionId: 'forge',
+            javaArgs: '-Xmx1G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=16'
+        ])
         File versions = new File(MINECRAFT_HOME, 'versions')
         Optionals<File> forge = Arrays.asList(versions.listFiles()).stream()
-                .filter({file -> file.name.contains('forge')})
+                .filter({file -> file.name.contains(profile.get('lastVersionId'))})
                 .sorted().sorted(Comparator.reverseOrder())
                 .findFirst()
 
@@ -103,7 +110,10 @@ class SpongeForgeClient extends DefaultTask {
             ''')
         }
 
+        logger.lifecycle "Profile: ${profiles.forgeDevProfile()}"
+        logger.lifecycle "Using forge version: ${forge.get().toPath()}"
         logger.lifecycle 'Copying project jar to mods folder'
+
         File buildJar
         try {
             buildJar = project.shadowJar.archivePath
@@ -128,7 +138,7 @@ class SpongeForgeClient extends DefaultTask {
         classPaths.libs.get().add("${MINECRAFT_HOME}/versions${PS}${version.inheritsFrom}${PS}${version.inheritsFrom}.jar")
         def classpath = classPaths.libs.get().stream().collect(Collectors.joining(File.pathSeparator))
         extractJars classPaths.natives.get(), new File(MINECRAFT_HOME, 'natives')
-        String[] args = minecraftArguments(version, classpath, loginDetails())
+        String[] args = minecraftArguments(profile, version, classpath, loginDetails())
 
         logger.lifecycle 'Starting the Minecraft Client, using settings from the Minecraft Launcher'
         Process process = new ProcessBuilder(args).directory(forgeClient).start()
@@ -172,14 +182,14 @@ class SpongeForgeClient extends DefaultTask {
     }
 
     /** Create a string array of the arguments including var filtering */
-    private List<String> minecraftArguments(MinecraftVersion version, String classpath, String... login) {
+    private List<String> minecraftArguments(Object devProfile, MinecraftVersion version, String classpath, String... login) {
         Objects.requireNonNull(version)
         String[] argParts = version.minecraftArguments.split(' ')
         def minecraftArgs = [
             'java',
             "-Djava.library.path=${MINECRAFT_HOME}/natives/",
             "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${project.spongestarter.debugPort}",
-            // todo launcher java args
+            //devProfile.get('javaArgs'),
             '-cp',
             classpath,
             version.mainClass
@@ -249,8 +259,8 @@ class SpongeForgeClient extends DefaultTask {
         InputStreamReader reader = new InputStreamReader(stream)
         MinecraftVersion version = GSON.fromJson reader, MinecraftVersion
         logger.debug("Reading ${file.name}: ${version}")
-        reader.close();
-        return version;
+        reader.close()
+        return version
     }
 
     /** Generate a list of ClassPaths minecraft needs */
@@ -280,18 +290,28 @@ class SpongeForgeClient extends DefaultTask {
                 classPaths.libs.get().addFirst library
             }
         }
-
-        return classPaths;
+        return classPaths
     }
 
     @ToString(includeNames=true)
     private class LauncherProfiles {
-        private String selectedUser
+        private Map<String, String> selectedUser
         private Map<String, Object> authenticationDatabase
+        private Map<String, Object> profiles
 
-        def accessToken() { authenticationDatabase.get(selectedUser).accessToken }
-        def displayName() { authenticationDatabase.get(selectedUser).displayName }
-        def uuid() { selectedUser }
+        def authDb() { authenticationDatabase.get(selectedUser.get('account')) }
+        def accessToken() { authDb().accessToken }
+        def displayName() { authDb().get('profiles').get(uuid()).displayName }
+        def uuid() { selectedUser.get('profile') }
+
+        def forgeDevProfile() {
+            for (entry in profiles) {
+                if ('development'.equalsIgnoreCase(entry?.value?.name)) {
+                    return Optionals.of(entry.value)
+                }
+            }
+            return Optionals.empty()
+        }
     }
 
     @ToString(includeNames=true)
