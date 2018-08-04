@@ -49,7 +49,7 @@ class SpongePlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        Injector injector = Guice .createInjector Stage.DEVELOPMENT, new Module() {
+        Injector injector = Guice.createInjector Stage.DEVELOPMENT, new Module() {
             @Override
             void configure(Binder binder) {
                 binder.bind(Project).toInstance(project)
@@ -76,8 +76,7 @@ class SpongeExtension {
 class SpongeForgeClient extends DefaultTask {
     SpongeForgeClient() { dependsOn += 'assemble' }
 
-    @Inject
-    private Project project
+    @Inject private Project project
 
     @TaskAction
     def startForgeClient() {
@@ -132,20 +131,22 @@ class SpongeForgeClient extends DefaultTask {
             pluginJar.deleteOnExit()
         }
 
-        logger.lifecycle 'Setting up the client enverionment'
-        MinecraftVersion version = makeMCVersion forge.get()
-        ClassPaths classPaths = generateLibs version;
-        classPaths.libs.get().add("${MINECRAFT_HOME}/versions${PS}${version.inheritsFrom}${PS}${version.inheritsFrom}.jar")
-        def classpath = classPaths.libs.get().stream().collect(Collectors.joining(File.pathSeparator))
-        extractJars classPaths.natives.get(), new File(MINECRAFT_HOME, 'natives')
-        String[] args = minecraftArguments(profile, version, classpath, loginDetails())
+        if (project == project.rootProject) { // only start the client when its the root
+            logger.lifecycle 'Setting up the client enverionment'
+            MinecraftVersion version = makeMCVersion forge.get()
+            ClassPaths classPaths = generateLibs version;
+            classPaths.libs.get().add("${MINECRAFT_HOME}/versions${PS}${version.inheritsFrom}${PS}${version.inheritsFrom}.jar")
+            def classpath = classPaths.libs.get().stream().collect(Collectors.joining(File.pathSeparator))
+            extractJars classPaths.natives.get(), new File(MINECRAFT_HOME, 'natives')
+            String[] args = minecraftArguments(profile, version, classpath, loginDetails())
 
-        logger.lifecycle 'Starting the Minecraft Client, using settings from the Minecraft Launcher'
-        Process process = new ProcessBuilder(args).directory(forgeClient).start()
-        Runtime.runtime.addShutdownHook { process.destroy() }
-        new StreamToLogger(src: process.inputStream, logger: logger, level: LogLevel.WARN).execute()
-        new StreamToLogger(src: process.errorStream, logger: logger, level: LogLevel.ERROR).execute()
-        process.waitFor()
+            logger.lifecycle 'Starting the Minecraft Client, using settings from the Minecraft Launcher'
+            Process process = new ProcessBuilder(args).directory(forgeClient).start()
+            Runtime.runtime.addShutdownHook { process.destroy() }
+            new StreamToLogger(src: process.inputStream, logger: logger, level: LogLevel.WARN).execute()
+            new StreamToLogger(src: process.errorStream, logger: logger, level: LogLevel.ERROR).execute()
+            process.waitFor()
+        }
     }
 
     /** Get the login details of the client */
