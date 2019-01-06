@@ -29,16 +29,16 @@ public class PingerTest {
     @Ignore
     public void ping() throws IOException {
         try {
-            // Year4000 Network
-            InetSocketAddress year4000 = new InetSocketAddress("mc.year4000.net", 25565);
+            // Minecraft Server
+            InetSocketAddress year4000 = new InetSocketAddress("mc.hypixel.net", 25565);
 
             Pinger ping = new Pinger(year4000, Pinger.TIME_OUT);
 
-            logutil.debug(gson.toJson(ping.fetchData(), Pinger.StatusResponse.class));
+            logutil.log(gson.toJson(ping.fetchData(), Pinger.StatusResponse.class));
         }
         catch (IOException e) {
             if (OK_ERRORS.contains(e.getMessage())) {
-                logutil.log("Could not contact Year4000, skipping test.");
+                logutil.log("Could not contact server, skipping test.");
             }
             else {
                 throw new IOException(e.getMessage());

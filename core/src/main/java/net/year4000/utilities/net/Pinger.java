@@ -1,16 +1,16 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
 
 package net.year4000.utilities.net;
 
-import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import net.year4000.utilities.Callback;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.Utils;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unused")
 public final class Pinger {
     public static final int TIME_OUT = (int) TimeUnit.SECONDS.toMillis(5);
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder().registerTypeAdapter(String.class, new TextDeserializer()).create();
     private InetSocketAddress host;
     private int timeout = TIME_OUT;
 
@@ -29,12 +29,15 @@ public final class Pinger {
         this.timeout = Conditions.isLarger(timeout, 1);
     }
 
+    public Pinger(String address, short port, int timeout) {
+        this(new InetSocketAddress(address, port), timeout);
+    }
+
     public Pinger() {}
 
     public int readVarInt(DataInputStream in) throws IOException {
         int i = 0;
         int j = 0;
-
         while (true) {
             int k = in.readByte();
             i |= (k & 0x7F) << j++ * 7;
@@ -45,7 +48,6 @@ public final class Pinger {
                 break;
             }
         }
-
         return i;
     }
 
@@ -55,7 +57,6 @@ public final class Pinger {
                 out.writeByte(paramInt);
                 return;
             }
-
             out.writeByte(paramInt & 0x7F | 0x80);
             paramInt >>>= 7;
         }
@@ -64,8 +65,7 @@ public final class Pinger {
     public void fetchDataAsync(Callback<StatusResponse> callback) {
         try {
             callback.callback(fetchData());
-        }
-        catch (Exception error) {
+        } catch (Exception error) {
             callback.callback(error);
         }
     }
@@ -76,13 +76,11 @@ public final class Pinger {
                 setSoTimeout(TIME_OUT);
                 connect(host, TIME_OUT);
             }};
-            OutputStream outputStream = socket.getOutputStream();
-            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-            InputStream inputStream = socket.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream());
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             DataOutputStream handshake = new DataOutputStream(b);
-            DataInputStream dataInputStream = new DataInputStream(inputStream)
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream())
         ) {
             handshake.writeByte(0x00); //packet id for handshake
             writeVarInt(handshake, 4); //protocol version
@@ -90,58 +88,40 @@ public final class Pinger {
             handshake.writeBytes(host.getHostString()); //host string
             handshake.writeShort(host.getPort()); //port
             writeVarInt(handshake, 1); //state (1 for handshake)
-
             writeVarInt(dataOutputStream, b.size()); //prepend size
             dataOutputStream.write(b.toByteArray()); //write handshake packet
-
             dataOutputStream.writeByte(0x01); //size is only 1
             dataOutputStream.writeByte(0x00); //packet id for ping
-
             int one = readVarInt(dataInputStream); //size of packet
             int two = readVarInt(dataInputStream); //packet id
-
             int id = Math.min(one, two);
             int size = Math.max(one, two);
-
-            Preconditions.checkArgument(id != -1, "Premature end of stream.");
-
+            Conditions.condition(id != -1, "Premature end of stream.");
             //we want a status response
-            Preconditions.checkArgument(id == 0x00, "Invalid packetID, expecting 0x00(" + 0x00 + ") but was " + id);
-
+            Conditions.condition(id == 0x00, "Invalid packetID, expecting 0x00(" + 0x00 + ") but was " + id);
             // There was a netty header sent, off set everything by one
             if (one != size) {
                 readVarInt(dataInputStream);
             }
-
             int length = readVarInt(dataInputStream); //length of json string
-
-            Preconditions.checkArgument(length != -1, "Premature end of stream.");
-            Preconditions.checkArgument(length != 0, "Invalid string length.");
-
+            Conditions.condition(length != -1, "Premature end of stream.");
+            Conditions.condition(length != 0, "Invalid string length.");
             byte[] in = new byte[length];
             dataInputStream.readFully(in);  //read json string
             String json = new String(in);
-
             long now = System.currentTimeMillis();
             dataOutputStream.writeByte(0x09); //size of packet
             dataOutputStream.writeByte(0x01); //0x01 for ping
             dataOutputStream.writeLong(now); //time!?
-
             readVarInt(dataInputStream);
             id = readVarInt(dataInputStream);
-
-            Preconditions.checkArgument(id != -1, "Premature end of stream.");
-
-            Preconditions.checkArgument(id == 0x01, "Invalid packetID, expecting 0x01(" + 0x01 + ") but was " + id);
-
+            Conditions.condition(id != -1, "Premature end of stream.");
+            Conditions.condition(id == 0x01, "Invalid packetID, expecting 0x01(" + 0x01 + ") but was " + id);
             long pingtime = dataInputStream.readLong(); //read response
-
             StatusResponse response = gson.fromJson(json, StatusResponse.class);
             response.setTime((int) pingtime);
-
             return response;
-        }
-        catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             throw new IOException(e.getMessage());
         }
     }
@@ -185,10 +165,10 @@ public final class Pinger {
         private Integer time;
 
         public StatusResponse(String description, Players players, Version version, String favicon, Integer time) {
-            this.description = Conditions.nonNullOrEmpty(description, "description");
+            this.description = Conditions.nonNull(description, "description");
             this.players = Conditions.nonNull(players, "players");
             this.version = Conditions.nonNull(version, "version");
-            this.favicon = Conditions.nonNullOrEmpty(favicon, "favicon");
+            this.favicon = favicon;
             this.time = Conditions.nonNull(time, "time");
         }
 
@@ -196,13 +176,11 @@ public final class Pinger {
 
         public Pinger.StatusResponse copy() {
             Pinger.StatusResponse copy = new StatusResponse();
-
             copy.setDescription(description);
             copy.setFavicon(favicon);
             copy.setTime(time);
             copy.setPlayers(players.copy());
             copy.setVersion(version.copy());
-
             return copy;
         }
 
@@ -227,7 +205,7 @@ public final class Pinger {
         }
 
         public void setDescription(String description) {
-            this.description = description;
+            this.description = Conditions.nonNull(description, "description");
         }
 
         public void setPlayers(Players players) {
@@ -239,10 +217,11 @@ public final class Pinger {
         }
 
         public void setFavicon(String favicon) {
+            // the favicon is optional
             this.favicon = favicon;
         }
 
-        public void setTime(Integer time) {
+        public void setTime(int time) {
             this.time = time;
         }
 
@@ -263,13 +242,13 @@ public final class Pinger {
     }
 
     public class Players {
-        private Integer max;
-        private Integer online;
+        private int max;
+        private int online;
         private List<Player> sample;
 
-        public Players(Integer max, Integer online, List<Player> sample) {
-            this.max = Conditions.nonNull(max, "max");
-            this.online = Conditions.nonNull(online, "online");
+        public Players(int max, int online, List<Player> sample) {
+            this.max = max;
+            this.online = online;
             this.sample = Conditions.nonNull(sample, "sample");
         }
 
@@ -277,24 +256,21 @@ public final class Pinger {
 
         public Pinger.Players copy() {
             Players copy = new Players();
-
             copy.setMax(max);
             copy.setOnline(online);
-
             if (sample != null) {
                 List<Player> samples = new ArrayList<>();
                 sample.forEach(player -> samples.add(player.copy()));
                 copy.setSample(samples);
             }
-
             return copy;
         }
 
-        public Integer getMax() {
+        public int getMax() {
             return this.max;
         }
 
-        public Integer getOnline() {
+        public int getOnline() {
             return this.online;
         }
 
@@ -302,11 +278,11 @@ public final class Pinger {
             return this.sample;
         }
 
-        public void setMax(Integer max) {
+        public void setMax(int max) {
             this.max = max;
         }
 
-        public void setOnline(Integer online) {
+        public void setOnline(int online) {
             this.online = online;
         }
 
@@ -339,8 +315,7 @@ public final class Pinger {
             this.id = Conditions.nonNullOrEmpty(id, "id");
         }
 
-        public Player() {
-        }
+        public Player() {}
 
         public Pinger.Player copy() {
             return new Player(name, id);
@@ -355,11 +330,11 @@ public final class Pinger {
         }
 
         public void setName(String name) {
-            this.name = name;
+            this.name = Conditions.nonNullOrEmpty(name, "name");
         }
 
         public void setId(String id) {
-            this.id = id;
+            this.id = Conditions.nonNullOrEmpty(id, "id");
         }
 
         @Override
@@ -380,15 +355,14 @@ public final class Pinger {
 
     public class Version {
         private String name;
-        private String protocol;
+        private int protocol;
 
-        public Version(String name, String protocol) {
+        public Version(String name, int protocol) {
             this.name = Conditions.nonNullOrEmpty(name, "name");
-            this.protocol = Conditions.nonNullOrEmpty(protocol, "protocol");
+            this.protocol = protocol;
         }
 
-        public Version() {
-        }
+        public Version() {}
 
         public Pinger.Version copy() {
             return new Version(name, protocol);
@@ -398,7 +372,7 @@ public final class Pinger {
             return this.name;
         }
 
-        public String getProtocol() {
+        public int getProtocol() {
             return this.protocol;
         }
 
@@ -406,7 +380,7 @@ public final class Pinger {
             this.name = name;
         }
 
-        public void setProtocol(String protocol) {
+        public void setProtocol(int protocol) {
             this.protocol = protocol;
         }
 
@@ -423,6 +397,22 @@ public final class Pinger {
         @Override
         public int hashCode() {
             return Utils.hashCode(this);
+        }
+    }
+
+    /** This class will deserialize Minecraft text object to a string since some servers use legacy string format */
+    private static class TextDeserializer implements JsonDeserializer<String> {
+        private static final String TEXT_KEY = "text";
+
+        @Override
+        public String deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            if (json.isJsonObject()) {
+                JsonObject textObject = json.getAsJsonObject();
+                if (textObject.has(TEXT_KEY)) {
+                    return textObject.get(TEXT_KEY).getAsString();
+                }
+            }
+            return json.getAsString();
         }
     }
 }
