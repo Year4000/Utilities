@@ -30,11 +30,11 @@ public class PingerTest {
     public void ping() throws IOException {
         try {
             // Minecraft Server
-            InetSocketAddress year4000 = new InetSocketAddress("mc.hypixel.net", 25565);
+            InetSocketAddress year4000 = new InetSocketAddress("us.mineplex.com", 25565);
 
             Pinger ping = new Pinger(year4000, Pinger.TIME_OUT);
 
-            logutil.log(gson.toJson(ping.fetchData(), Pinger.StatusResponse.class));
+            logutil.debug(gson.toJson(ping.fetchData(), Pinger.StatusResponse.class));
         }
         catch (IOException e) {
             if (OK_ERRORS.contains(e.getMessage())) {

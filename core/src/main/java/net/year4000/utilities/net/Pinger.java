@@ -14,8 +14,11 @@ import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
 public final class Pinger {
@@ -403,14 +406,122 @@ public final class Pinger {
     /** This class will deserialize Minecraft text object to a string since some servers use legacy string format */
     private static class TextDeserializer implements JsonDeserializer<String> {
         private static final String TEXT_KEY = "text";
+        private static final String EXTRA_KEY = "extra";
+
+
+        /** Simplistic enumeration of all supported color values. */
+        public enum ChatColor {
+
+            BLACK('0', "black"),
+            DARK_BLUE('1', "dark_blue"),
+            DARK_GREEN('2', "dark_green"),
+            DARK_AQUA('3', "dark_aqua"),
+            DARK_RED('4', "dark_red"),
+            DARK_PURPLE('5', "dark_purple"),
+            GOLD('6', "gold"),
+            GRAY('7', "gray"),
+            DARK_GRAY('8', "dark_gray"),
+            BLUE('9', "blue"),
+            GREEN('a', "green"),
+            AQUA('b', "aqua"),
+            RED('c', "red"),
+            LIGHT_PURPLE('d', "light_purple"),
+            YELLOW('e', "yellow"),
+            WHITE('f', "white"),
+            MAGIC('k', "obfuscated"),
+            BOLD('l', "bold"),
+            STRIKETHROUGH('m', "strikethrough"),
+            UNDERLINE('n', "underline"),
+            ITALIC('o', "italic"),
+            RESET('r', "reset");
+
+            /**
+             * The special character which prefixes all chat colour codes. Use this if
+             * you need to dynamically convert colour codes from your custom format.
+             */
+            public static final char COLOR_CHAR = '\u00A7';
+            public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
+            /** Pattern to remove all colour codes. */
+            public static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
+            /** Colour instances keyed by their active character. */
+            private static final Map<String, ChatColor> BY_NAME = new HashMap<>();
+
+            static {
+                for (ChatColor colour : values()) {
+                    BY_NAME.put(colour.name, colour);
+                }
+            }
+
+            /** The code appended to {@link #COLOR_CHAR} to make usable colour. */
+            private final char code;
+            /** This colour's colour char prefixed by the {@link #COLOR_CHAR}. */
+            private final String toString;
+            private final String name;
+
+            ChatColor(char code, String name) {
+                this.code = code;
+                this.name = name;
+                this.toString = new String(new char[]{
+                    COLOR_CHAR, code
+                });
+            }
+
+            /**
+             * Get the colour represented by the specified code.
+             *
+             * @param name the name to search for
+             * @return the mapped colour, or null if non exists
+             */
+            public static ChatColor getByName(String name) {
+                return BY_NAME.get(name);
+            }
+
+            /** Get the name of the chat color */
+            public String getName() {
+                return this.name;
+            }
+
+            @Override
+            public String toString() {
+                return toString;
+            }
+        }
+
+        /** Add the chat color and effects to the chat */
+        public String deserializeChat(JsonObject chatObject) {
+            String text = chatObject.get(TEXT_KEY).getAsString();
+            if (chatObject.has("color")) {
+                text = ChatColor.getByName(chatObject.get("color").getAsString()).toString() + text;
+            }
+            if (chatObject.has(ChatColor.BOLD.getName()) && chatObject.getAsJsonPrimitive(ChatColor.BOLD.getName()).getAsBoolean()) {
+                text = ChatColor.BOLD.toString() + text;
+            }
+            if (chatObject.has(ChatColor.STRIKETHROUGH.getName()) && chatObject.getAsJsonPrimitive(ChatColor.STRIKETHROUGH.getName()).getAsBoolean()) {
+                text = ChatColor.STRIKETHROUGH.toString() + text;
+            }
+            if (chatObject.has(ChatColor.UNDERLINE.getName()) && chatObject.getAsJsonPrimitive(ChatColor.UNDERLINE.getName()).getAsBoolean()) {
+                text = ChatColor.UNDERLINE.toString() + text;
+            }
+            if (chatObject.has(ChatColor.ITALIC.getName()) && chatObject.getAsJsonPrimitive(ChatColor.ITALIC.getName()).getAsBoolean()) {
+                text = ChatColor.ITALIC.toString() + text;
+            }
+            return text;
+        }
 
         @Override
         public String deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             if (json.isJsonObject()) {
                 JsonObject textObject = json.getAsJsonObject();
                 if (textObject.has(TEXT_KEY)) {
-                    return textObject.get(TEXT_KEY).getAsString();
+                    StringBuilder extras = new StringBuilder().append(deserializeChat(textObject));
+                    if (textObject.has(EXTRA_KEY)) {
+                        for (JsonElement element : textObject.get(EXTRA_KEY).getAsJsonArray()) {
+                            extras.append(deserialize(element.getAsJsonObject(), typeOfT, context));
+                        }
+                    }
+                    return extras.toString();
                 }
+
             }
             return json.getAsString();
         }
