@@ -1,13 +1,15 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
 
 package net.year4000.utilities;
 
 import com.google.common.base.Joiner;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 
 public final class URLBuilder {
@@ -130,8 +132,13 @@ public final class URLBuilder {
             boolean first = true;
 
             for (Map.Entry<String, String> query : queries.entrySet()) {
-                url += (first ? "?" : "&") + query.getKey() + "=" + query.getValue();
-                first = false;
+                try {
+                    String value = URLEncoder.encode(query.getValue(), "utf-8");
+                    url += (first ? "?" : "&") + query.getKey() + "=" + value;
+                    first = false;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

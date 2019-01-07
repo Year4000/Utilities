@@ -30,7 +30,7 @@ public class URLBuilderTest {
             .addPath("hello")
             .addQuery("key", 123456789)
             .build();
-        String fromURL = URLBuilder.fromURL("http://localhost/jhon/smith?fname=bobby&lname=bob")
+        String fromURL = URLBuilder.fromURL("http://localhost/jhon/smith?fname=b obby&lname=bob")
             .build();
 
 
@@ -39,6 +39,6 @@ public class URLBuilderTest {
         Assert.assertEquals(path, "http://localhost/123/smith/");
         Assert.assertEquals(query, "http://localhost/?hello=&key=123456789");
         Assert.assertEquals(queryPath, "http://localhost/hello?key=123456789");
-        Assert.assertEquals(fromURL, "http://localhost/jhon/smith?fname=bobby&lname=bob");
+        Assert.assertEquals(fromURL, "http://localhost/jhon/smith?fname=b+obby&lname=bob");
     }
 }
