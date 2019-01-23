@@ -20,5 +20,5 @@ assemble.dependsOn shadowJar {
 
 dependencies {
     compile utilities.project('core')
-    compile 'redis.clients:jedis:2.8.0'
+    compile 'redis.clients:jedis:3.0.1'
 }
