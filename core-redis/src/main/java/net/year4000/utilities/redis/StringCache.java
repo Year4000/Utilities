@@ -6,6 +6,7 @@ package net.year4000.utilities.redis;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.params.SetParams;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -22,9 +23,7 @@ public class StringCache extends RedisCache<String> {
 
     /** Set this data cache to store binary data */
     public StringCache(JedisPool pool, String mode, String unit, long time) {
-        super(pool, mode, unit, time);
-        checkArgument(mode.equals(NX) || mode.equals(XX), "invalid mode");
-        checkArgument(unit.equals(EX) || unit.equals(PX), "invalid unit");
+        super(pool, createSetParams(mode, unit, time));
     }
 
     /** Set this data cache to store binary data */
@@ -32,11 +31,31 @@ public class StringCache extends RedisCache<String> {
         this(pool, mode, unit, (long) time);
     }
 
+    /** Maintain reverser compatibility for the the lib */
+    private static SetParams createSetParams(String mode, String unit, long time) {
+        checkArgument(mode.equals(NX) || mode.equals(XX), "invalid mode");
+        checkArgument(unit.equals(EX) || unit.equals(PX), "invalid unit");
+        SetParams setParams = SetParams.setParams();
+        if (mode.equals(NX)) {
+            setParams.nx();
+        }
+        if (mode.equals(XX)) {
+            setParams.xx();
+        }
+        if (unit.equals(EX)) {
+            setParams.ex((int) time);
+        }
+        if (unit.equals(PX)) {
+            setParams.px(time);
+        }
+        return setParams;
+    }
+
     /** Set the key to the specific string */
     @Override
     public void set(String key, String data) {
         try (Jedis jedis = pool.getResource()) {
-            jedis.set(key, data, mode, unit, time);
+            jedis.set(key, data, params);
         }
     }
 
