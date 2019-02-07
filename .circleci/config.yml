@@ -12,22 +12,31 @@ jobs:
             - run: ./gradlew clean build test
             - store_artifacts:
                 path: core/build/libs/
+                destination: artifacts/
             - store_artifacts:
                 path: core-ducktape/build/libs/
+                destination: artifacts/
             - store_artifacts:
                 path: core-locale/build/libs/
+                destination: artifacts/
             - store_artifacts:
                 path: core-minecraft/build/libs/
+                destination: artifacts/
             - store_artifacts:
                 path: core-redis/build/libs/
+                destination: artifacts/
             - store_artifacts:
                 path: core-scheduler/build/libs/
+                destination: artifacts/
             - store_artifacts:
                 path: core-sdk/build/libs/
+                destination: artifacts/
             - store_artifacts:
                 path: gradle/build/libs/gradle-sources.jar
+                destination: artifacts/
             - store_artifacts:
                 path: sponge/build/libs/
+                destination: artifacts/
 
     # Deploy the Docker image
     deploy:
