@@ -20,6 +20,8 @@ plugins {
 apply plugin: 'net.ellune.blossom'
 apply from: utilities.file('gradle/utilities.gradle')
 
+compileJava.options.encoding = 'UTF-8'
+
 // Insert Tokens into a java Constants file
 blossom {
     def constants = 'src/main/java/' + group.toString().replaceAll('\\.', '/') + '/Tokens.java'
