@@ -5,7 +5,6 @@ version: 2
 jobs:
     build:
         docker:
-            - image: docker:17.05.0-ce-git
             - image: sgrio/java-oracle:latest
         steps:
             - checkout
