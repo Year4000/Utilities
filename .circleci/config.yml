@@ -1,0 +1,43 @@
+---
+# CircleCI Config to build Utilities and Deploy Docker Images
+version: 2
+
+jobs:
+    build:
+        working_directory: ~/year4000-utilities
+        steps:
+            - checkout
+            - run: ./gradlew clean build test
+            - store_artifacts:
+                  - core/build/libs/
+                  - core-ducktape/build/libs/
+                  - core-locale/build/libs/
+                  - core-minecraft/build/libs/
+                  - core-redis/build/libs/
+                  - core-scheduler/build/libs/
+                  - core-sdk/build/libs/
+                  - gradle/build/libs/gradle-sources.jar
+                  - sponge/build/libs/
+
+    # Deploy the Docker image
+    deploy:
+        machine:
+            enabled: true
+        working_directory: ~/year4000-utilities
+        steps:
+            - docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+            - docker-compose build
+            - docker-compose push
+
+
+workflows:
+    version: 2
+    build-deploy:
+        jobs:
+            - build
+            - deploy:
+                  requires:
+                      - build
+                  filters:
+                      branches:
+                          only: master
