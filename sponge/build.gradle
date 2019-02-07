@@ -21,6 +21,8 @@ apply plugin: 'org.spongepowered.plugin'
 apply from: utilities.file('gradle/utilities.gradle')
 apply from: utilities.file('gradle/src/main/groovy/net/year4000/utilities/gradle/sponge.gradle')
 
+compileJava.options.encoding = 'UTF-8'
+
 spongestarter {
     deleteJar false
 }

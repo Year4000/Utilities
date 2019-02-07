@@ -9,6 +9,8 @@ plugins {
 
 apply from: utilities.file('gradle/utilities.gradle')
 
+compileJava.options.encoding = 'UTF-8'
+
 assemble.dependsOn shadowJar {
     baseName = 'ducktape-libs'
     version = utilities.version

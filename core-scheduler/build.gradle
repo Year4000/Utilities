@@ -8,6 +8,8 @@ plugins {
 
 apply from: utilities.file('gradle/utilities.gradle')
 
+compileJava.options.encoding = 'UTF-8'
+
 dependencies {
     compile utilities.project('core')
 }
