@@ -4,7 +4,6 @@ version: 2
 
 jobs:
     build:
-        working_directory: ~/year4000-utilities
         docker:
             - image: isuper/java-oracle:latest
         steps:
@@ -31,13 +30,12 @@ jobs:
 
     # Deploy the Docker image
     deploy:
-        working_directory: ~/year4000-utilities
         machine:
             enabled: true
         steps:
-            - docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
-            - docker-compose build
-            - docker-compose push
+            - run: docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+            - run: docker-compose build
+            - run: docker-compose push
 
 
 workflows:
