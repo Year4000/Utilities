@@ -9,24 +9,6 @@ jobs:
         steps:
             - checkout
             - run: ./gradlew clean build test
-            - store_artifacts:
-                  - path: core/build/libs/
-            - store_artifacts:
-                  - path: core-ducktape/build/libs/
-            - store_artifacts:
-                  - path: core-locale/build/libs/
-            - store_artifacts:
-                  - path: core-minecraft/build/libs/
-            - store_artifacts:
-                  - path: core-redis/build/libs/
-            - store_artifacts:
-                  - path: core-scheduler/build/libs/
-            - store_artifacts:
-                  - path: core-sdk/build/libs/
-            - store_artifacts:
-                  - path: gradle/build/libs/gradle-sources.jar
-            - store_artifacts:
-                  - path: sponge/build/libs/
 
     # Deploy the Docker image
     deploy:
