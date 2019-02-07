@@ -11,15 +11,15 @@ jobs:
             - checkout
             - run: ./gradlew clean build test
             - store_artifacts:
-                  - core/build/libs/
-                  - core-ducktape/build/libs/
-                  - core-locale/build/libs/
-                  - core-minecraft/build/libs/
-                  - core-redis/build/libs/
-                  - core-scheduler/build/libs/
-                  - core-sdk/build/libs/
-                  - gradle/build/libs/gradle-sources.jar
-                  - sponge/build/libs/
+                  - path: core/build/libs/
+                  - path: core-ducktape/build/libs/
+                  - path: core-locale/build/libs/
+                  - path: core-minecraft/build/libs/
+                  - path: core-redis/build/libs/
+                  - path: core-scheduler/build/libs/
+                  - path: core-sdk/build/libs/
+                  - path: gradle/build/libs/gradle-sources.jar
+                  - path: sponge/build/libs/
 
     # Deploy the Docker image
     deploy:
