@@ -5,7 +5,7 @@ version: 2
 jobs:
     build:
         docker:
-            - image: isuper/java-oracle:latest
+            - image: sgrio/java-oracle:latest
         steps:
             - checkout
             - run: ./gradlew clean build test
