@@ -5,6 +5,8 @@ version: 2
 jobs:
     build:
         working_directory: ~/year4000-utilities
+        docker:
+            - image: isuper/java-oracle:latest
         steps:
             - checkout
             - run: ./gradlew clean build test
@@ -21,9 +23,9 @@ jobs:
 
     # Deploy the Docker image
     deploy:
+        working_directory: ~/year4000-utilities
         machine:
             enabled: true
-        working_directory: ~/year4000-utilities
         steps:
             - docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
             - docker-compose build
