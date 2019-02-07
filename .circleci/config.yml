@@ -12,8 +12,8 @@ jobs:
 
     # Deploy the Docker image
     deploy:
-        machine:
-            enabled: true
+        docker:
+            - image: docker:17.05.0-ce-git
         steps:
             - run: docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
             - run: docker-compose build
