@@ -9,7 +9,7 @@ jobs:
             - image: sgrio/java-oracle:latest
         steps:
             - checkout
-            - run: ./gradlew clean build test
+            - run: ./gradlew clean assemble test
             - store_artifacts:
                 path: core/build/libs/
                 destination: artifacts/
@@ -44,7 +44,7 @@ jobs:
             enable: true
         steps:
             - checkout
-            - run: ./gradlew clean build
+            - run: ./gradlew clean assemble
             - run: curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
             - run: pip install --upgrade docker-compose
             - run: docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
