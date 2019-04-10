@@ -98,7 +98,7 @@ class SpongeForgeClient extends DefaultTask {
         File versions = new File(MINECRAFT_HOME, 'versions')
         Optionals<File> forge = Arrays.asList(versions.listFiles()).stream()
                 .filter({file -> file.name.contains(profile.get('lastVersionId'))})
-                .sorted().sorted(Comparator.reverseOrder())
+                .sorted()
                 .findFirst()
 
         // Ensure user has a copy of MinecraftForge
@@ -109,7 +109,7 @@ class SpongeForgeClient extends DefaultTask {
             ''')
         }
 
-        logger.lifecycle "Profile: ${profiles.forgeDevProfile()}"
+        logger.lifecycle "Profile: ${profile}"
         logger.lifecycle "Using forge version: ${forge.get().toPath()}"
         logger.lifecycle 'Copying project jar to mods folder'
 
