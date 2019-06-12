@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
 
 rootProject.name = 'Utilities'
@@ -9,6 +9,7 @@ include 'gradle'
 include 'core'
 include 'core-ducktape'
 include 'core-redis'
+include 'core-router'
 
 include 'sponge'
 
