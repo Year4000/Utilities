@@ -5,6 +5,7 @@
 package net.year4000.utilities.reflection;
 
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.reflection.lookups.SignatureLookup;
 import net.year4000.utilities.utils.UtilityConstructError;
 import net.year4000.utilities.value.Value;
 

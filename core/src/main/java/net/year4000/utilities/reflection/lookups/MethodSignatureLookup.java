@@ -2,7 +2,7 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
-package net.year4000.utilities.reflection;
+package net.year4000.utilities.reflection.lookups;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;

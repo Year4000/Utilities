@@ -12,6 +12,7 @@ import net.year4000.utilities.reflection.annotations.Bridge;
 import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Invoke;
 import net.year4000.utilities.reflection.annotations.Setter;
+import net.year4000.utilities.reflection.lookups.SignatureLookup;
 import net.year4000.utilities.utils.UtilityConstructError;
 import net.year4000.utilities.value.Value;
 
