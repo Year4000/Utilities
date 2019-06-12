@@ -6,7 +6,7 @@ jobs:
     # We want to build and run tests
     build:
         docker:
-            - image: java:8-jre-alpine
+            - image: circleci/openjdk:8-jdk-browsers
         steps:
             - checkout
             - run: ./gradlew clean assemble test
