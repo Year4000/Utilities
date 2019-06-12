@@ -17,16 +17,7 @@ jobs:
                 path: core-ducktape/build/libs/
                 destination: artifacts/
             - store_artifacts:
-                path: core-locale/build/libs/
-                destination: artifacts/
-            - store_artifacts:
-                path: core-minecraft/build/libs/
-                destination: artifacts/
-            - store_artifacts:
                 path: core-redis/build/libs/
-                destination: artifacts/
-            - store_artifacts:
-                path: core-scheduler/build/libs/
                 destination: artifacts/
             - store_artifacts:
                 path: core-sdk/build/libs/
@@ -57,9 +48,9 @@ workflows:
     build-deploy:
         jobs:
             - build
-            - deploy:
-                  requires:
-                      - build
-                  filters:
-                      branches:
-                          only: master
+#            - deploy:
+#                  requires:
+#                      - build
+#                  filters:
+#                      branches:
+#                          only: master
