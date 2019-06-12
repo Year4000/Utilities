@@ -86,7 +86,7 @@ class Tunnel implements InvocationHandler {
             // The report
             throw ErrorReporter.builder(exception)
                 .hideStackTrace()
-                .add("Failed at: ", method.getDeclaringClass().getName())
+                .add("Failed at: ", method.getDeclaringClass() != null ? method.getDeclaringClass().getName() : "null")
                 .add("Message: ", exception.getMessage())
                 .add("Annotation(s): ", annotations)
                 .add("Method: ", method.getName())
@@ -94,7 +94,7 @@ class Tunnel implements InvocationHandler {
                 .buildAndReport(System.err);
         } catch (Throwable throwable) { // General errors
             throw ErrorReporter.builder(throwable)
-                .add("Failed at: ", method.getDeclaringClass().getName())
+                .add("Failed at: ", method.getDeclaringClass() != null ? method.getDeclaringClass().getName() : "null")
                 .add("Method: ", method.getName())
                 .buildAndReport(System.err);
         }
