@@ -7,7 +7,7 @@ package net.year4000.utilities.sdk;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import net.year4000.utilities.mc.MessageUtil;
+import net.year4000.utilities.minecraft.MessageUtil;
 
 import java.util.concurrent.TimeUnit;
 

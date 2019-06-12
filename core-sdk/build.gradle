@@ -12,5 +12,4 @@ compileJava.options.encoding = 'UTF-8'
 
 dependencies {
     compile utilities.project('core')
-    compile utilities.project('core-minecraft')
 }

@@ -48,8 +48,6 @@ assemble.dependsOn shadowJar {
 dependencies {
     compile utilities.project('core')
     compile utilities.project('core-redis')
-    compile utilities.project('core-scheduler')
-    compile utilities.project('core-locale')
     compile utilities.project('core-ducktape')
     compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
 }

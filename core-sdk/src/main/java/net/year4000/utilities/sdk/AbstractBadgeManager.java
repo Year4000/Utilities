@@ -5,8 +5,8 @@
 package net.year4000.utilities.sdk;
 
 import net.year4000.utilities.Conditions;
-import net.year4000.utilities.mc.ChatColor;
-import net.year4000.utilities.mc.MessageUtil;
+import net.year4000.utilities.minecraft.ChatColor;
+import net.year4000.utilities.minecraft.MessageUtil;
 
 public abstract class AbstractBadgeManager<P> {
     public static final int MAX_RANK = Badges.values().length;
