@@ -6,7 +6,7 @@ jobs:
     # We want to build and run tests
     build:
         docker:
-            - image: sgrio/java-oracle:latest
+            - image: java:8-jre-alpine
         steps:
             - checkout
             - run: ./gradlew clean assemble test
@@ -48,9 +48,9 @@ workflows:
     build-deploy:
         jobs:
             - build
-#            - deploy:
-#                  requires:
-#                      - build
-#                  filters:
-#                      branches:
-#                          only: master
+            - deploy:
+                  requires:
+                      - build
+                  filters:
+                      branches:
+                          only: master
