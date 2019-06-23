@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
 
 package net.year4000.utilities.reflection;
@@ -23,9 +23,9 @@ public final class Gateways {
     public static <T> T proxy(Class<T> proxy, Object instance) {
         Conditions.nonNull(proxy, "proxy");
         if (instance == null) { // static proxy
-            return Reflections.proxy(proxy, new Tunnel(), reflectiveImplements(proxy));
+            return Reflections.proxy(proxy, new Tunnel<>(proxy), reflectiveImplements(proxy));
         }
-        return Reflections.proxy(proxy, new Tunnel(instance), reflectiveImplements(proxy));
+        return Reflections.proxy(proxy, new Tunnel<>(proxy, instance), reflectiveImplements(proxy));
     }
 
     /** Creates a static proxy instance between the interface class {@code proxy} */

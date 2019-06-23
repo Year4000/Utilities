@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
 import java.util.function.Supplier;
 
 public class ReflectionTest {
@@ -21,7 +22,7 @@ public class ReflectionTest {
         private static String other = "other";
     }
 
-    private final static class MyObject extends OtherObject implements Supplier<String> {
+    private final static class MyObject extends OtherObject implements Supplier<String>, Runnable {
         private String foo = FOO;
         private MyObject object = OBJECT;
         private int findMe = 1;
@@ -37,6 +38,11 @@ public class ReflectionTest {
         @Override
         public String get() {
             return FOO;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("I'm doing stuff in run");
         }
     }
 
@@ -73,6 +79,19 @@ public class ReflectionTest {
         void $invalidateAll();
 
         long $cacheSize();
+
+//        default void run() {
+//            System.out.println("run test overwrite");
+//            ((Runnable)$this()).run();
+//        }
+
+        // todo Replace the signature of this method with something more versatile
+        @Decorator("run")
+        default Method decorateRun(Method method) {
+            // Use the python's decorator for now, my change it to get more access
+            System.out.println("beforeOnRun");
+            return method;
+        }
     }
 
     @Test
@@ -147,6 +166,14 @@ public class ReflectionTest {
         proxy.$invalidateAll();
         // Invalidate the caches and will reset back to 1
         Assert.assertEquals(1, proxy.$cacheSize());
+    }
+
+    @Test
+    public void decoratorTest() {
+        MyObject instance = new MyObject();
+        ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, instance);
+        Assert.assertTrue(proxy instanceof Runnable);
+        ((Runnable) proxy).run();
     }
 
     @Test

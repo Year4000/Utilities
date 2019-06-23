@@ -9,11 +9,13 @@ import static net.year4000.utilities.reflection.Handlers.getterHandle;
 import static net.year4000.utilities.reflection.Handlers.invokeHandle;
 import static net.year4000.utilities.reflection.Handlers.setterHandle;
 
+import com.google.common.annotations.Beta;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
+import net.year4000.utilities.reflection.annotations.Decorator;
 import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Invoke;
 import net.year4000.utilities.reflection.annotations.Setter;
@@ -28,26 +30,53 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** Create a tunnel of the object and the under lying code */
-class Tunnel implements InvocationHandler {
+class Tunnel<T> implements InvocationHandler {
     private final static Cache<Method, MethodHandler> cache = CacheBuilder.newBuilder().softValues().build();
     private final Map<String, InvocationHandler> internalMethods;
     private final Object instance;
+    private final Class<T> clazz;
 
     // Normal proxy with an instance
-    Tunnel(Object instance) {
+    Tunnel(Class<T> clazz, Object instance) {
+        this.clazz = clazz;
         this.instance = Conditions.nonNull(instance, "instance");
         this.internalMethods = populateInternalMethods(instance);
     }
 
     // Static proxy that access statics only
-    Tunnel() {
+    Tunnel(Class<T> clazz) {
+        this.clazz = clazz;
         this.instance = null; // static proxy
         this.internalMethods = populateInternalMethods(null);
+    }
+
+    /** This is a prototype to have a decorated method of DuckType classes */
+    @Beta
+    private Map<String, InvocationHandler> createDecoratedMethods() {
+        ImmutableMap.Builder<String, InvocationHandler> decorates = ImmutableMap.builder();
+
+        if (clazz != null) {
+            for (Method methods : clazz.getMethods()) {
+                if (methods.isDefault() && methods.isAnnotationPresent(Decorator.class)) {
+                    Decorator decorator = methods.getAnnotation(Decorator.class);
+                    // todo place a different decorate depending on the signature type of the method
+                    decorates.put(decorator.value(), ((proxy, method, args) -> {
+                        // replace the reference of method with the decorated version
+                        Method decoratedMethod = (Method) defaultHandle(methods, proxy).handle(instance, new Object[]{ method });
+                        return Reflections.invoke(decoratedMethod.getDeclaringClass(), instance, decoratedMethod.getName()).get();
+                    }));
+
+                }
+            }
+        }
+
+        return decorates.build();
     }
 
     /** Create a set of internal methods that will run instead of the default behavior */
     private Map<String, InvocationHandler> populateInternalMethods(Object instance) {
         return ImmutableMap.<String, InvocationHandler>builder()
+            .putAll(createDecoratedMethods())
             // Allow getting the actual instance, bypassing proxy handles
             .put("$this", (proxy, method, args) -> instance)
             // Invalidate the method cache of the proxy
