@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
 
 package net.year4000.utilities.reflection;
@@ -11,31 +11,62 @@ import static net.year4000.utilities.reflection.Handlers.setterHandle;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.ImmutableMap;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.reflection.annotations.Getter;
 import net.year4000.utilities.reflection.annotations.Invoke;
 import net.year4000.utilities.reflection.annotations.Setter;
+import net.year4000.utilities.reflection.lookups.SignatureLookup;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** Create a tunnel of the object and the under lying code */
 class Tunnel implements InvocationHandler {
     private final static Cache<Method, MethodHandler> cache = CacheBuilder.newBuilder().softValues().build();
+    private final Map<String, InvocationHandler> internalMethods;
     private final Object instance;
 
     // Normal proxy with an instance
     Tunnel(Object instance) {
         this.instance = Conditions.nonNull(instance, "instance");
+        this.internalMethods = populateInternalMethods(instance);
     }
 
     // Static proxy that access statics only
     Tunnel() {
         this.instance = null; // static proxy
+        this.internalMethods = populateInternalMethods(null);
+    }
+
+    /** Create a set of internal methods that will run instead of the default behavior */
+    private Map<String, InvocationHandler> populateInternalMethods(Object instance) {
+        return ImmutableMap.<String, InvocationHandler>builder()
+            // Allow getting the actual instance, bypassing proxy handles
+            .put("$this", (proxy, method, args) -> instance)
+            // Invalidate the method cache of the proxy
+            .put("$invalidate", (proxy, method, args) -> {
+                if (args.length == 1 && args[0] instanceof String) {
+                    // Find the method from the signature of the method of the proxy instance
+                    Iterator<Method> signature = SignatureLookup.methods((String) args[0], proxy.getClass()).find().iterator();
+                    if (signature.hasNext()) {
+                        cache.invalidate(signature.next());
+                    }
+                }
+                return null;
+            })
+            .put("$invalidateAll", (proxy, method, args) -> {
+                cache.invalidateAll();
+                return null;
+            })
+            .put("$cacheSize", ((proxy, method, args) -> cache.size()))
+            .build();
     }
 
     /** Handle the actual invocation of the method proxy system */
@@ -64,17 +95,21 @@ class Tunnel implements InvocationHandler {
             return defaultHandle(method, proxy).handle(instance, args);
         }
 
+        // Handle internal method that exist on the proxy
+        if (internalMethods.containsKey(method.getName())) {
+            MethodHandler handle = (Object instance, Object[] arg) -> internalMethods.get(method.getName()).invoke(proxy, method, args);
+            cache.put(method, handle);
+            return handle.handle(this, args);
+        }
+
         // Last if no others are found use the declaring classes method
+        // Such as hashCode, toString, ect
         return Reflections.invoke(method.getDeclaringClass(), instance, method.getName()).get();
     }
 
     /** Wraps the error from invokable and print out details */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        // Allow getting the actual instance, bypassing proxy handles
-        if ("$this".equals(method.getName())) {
-            return instance;
-        }
         // Run the method handles to decided what to do
         try {
             return invokable(proxy, method, args);
