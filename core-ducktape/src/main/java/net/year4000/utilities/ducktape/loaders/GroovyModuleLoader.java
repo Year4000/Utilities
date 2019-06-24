@@ -2,12 +2,13 @@
  * Copyright 2016 Year4000. All Rights Reserved.
  */
 
-package net.year4000.utilities.ducktape;
+package net.year4000.utilities.ducktape.loaders;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.Sets;
 import groovy.lang.GroovyClassLoader;
+import net.year4000.utilities.ducktape.ModuleManager;
 
 import java.io.IOException;
 import java.net.URL;

@@ -56,7 +56,8 @@ public final class Utilities extends AbstractSpongePlugin {
 
     @Listener
     public void onConstruct(GameConstructionEvent event) {
-        moduleManager.injectModules(injector.createChildInjector(new DucktapeModule())); // Find and Construct the modules
+        // todo lets break this
+        //moduleManager.injectModules(injector.createChildInjector(new DucktapeModule(getModuleManager()))); // Find and Construct the modules
     }
 
     @Listener

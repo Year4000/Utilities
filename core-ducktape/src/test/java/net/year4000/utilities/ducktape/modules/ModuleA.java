@@ -1,0 +1,33 @@
+package net.year4000.utilities.ducktape.modules;
+
+import com.google.inject.Inject;
+import net.year4000.utilities.ducktape.module.Load;
+import net.year4000.utilities.ducktape.module.Module;
+import net.year4000.utilities.ducktape.settings.Comment;
+import net.year4000.utilities.ducktape.settings.InjectSettings;
+import net.year4000.utilities.ducktape.settings.Settings;
+
+@Module(id = "a")
+public class ModuleA {
+    private @Inject ModuleD moduleD;
+    private @Inject Settings<ModuleASettings> settings;
+
+    public ModuleA() {
+        System.out.println("ModuleA Constructor");
+    }
+    @Load
+    public void loasdas() {
+        System.out.println("ModuleA loader");
+        System.out.println(settings.instance().setting);
+    }
+
+    @InjectSettings
+    public static class ModuleASettings {
+        public ModuleASettings() {
+            System.out.println("ModuleASettings Constructor");
+        }
+
+        @Comment("This is a comment")
+        private String setting = "default values";
+    }
+}

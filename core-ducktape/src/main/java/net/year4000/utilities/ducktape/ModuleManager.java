@@ -7,6 +7,8 @@ package net.year4000.utilities.ducktape;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.Sets;
+import net.year4000.utilities.ducktape.loaders.GroovyModuleLoader;
+import net.year4000.utilities.ducktape.loaders.ModuleLoader;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -14,6 +16,8 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/** @Deprecated see DucktapeManager for future module stuff */
+@Deprecated
 public class ModuleManager {
     /** The set of current loaded modules */
     private Set<Class<? extends ModuleLoader>> loaded = Sets.newLinkedHashSet();

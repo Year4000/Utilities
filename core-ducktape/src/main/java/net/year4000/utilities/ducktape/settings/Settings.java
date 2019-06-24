@@ -2,30 +2,22 @@
  * Copyright 2018 Year4000. All Rights Reserved.
  */
 
-package net.year4000.utilities.ducktape;
+package net.year4000.utilities.ducktape.settings;
 
 import com.google.inject.Inject;
-import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
+import net.year4000.utilities.ducktape.module.Loader;
 
 /** The settings wrapper that will load and save the settings from the settings provider */
-public class Settings<T> {
-    private final T instance;
-    private SettingsProvider<T> settingsProvider;
+public class Settings<T> implements Loader {
+    @Inject private T instance;
+    @Inject private SaveLoad saveLoad;
 
-    public Settings() { // for testing
-        this.instance = null;
-    }
 
-    Settings(T instance, SettingsProvider<T> settingsProvider) {
-        this.instance = Conditions.nonNull(instance, "instance");
-        this.settingsProvider = Conditions.nonNull(settingsProvider, "settingsProvider");
-    }
-
-    /** Save the setttings from the provider */
+    /** Save the settings from the provider */
     public void save() {
         try {
-            settingsProvider.save(instance);
+            saveLoad.save(instance);
         } catch (SettingsException error) {
             ErrorReporter.builder(error)
                 .buildAndReport(System.err);
@@ -35,10 +27,14 @@ public class Settings<T> {
     /** Load the settings instance with the config from the provider */
     public void load() {
         try {
-            settingsProvider.load(instance);
+            this.instance = saveLoad.load((Class<T>) this.instance.getClass());
         } catch (SettingsException error) {
             ErrorReporter.builder(error)
                 .buildAndReport(System.err);
         }
+    }
+
+    public T instance() {
+        return this.instance;
     }
 }

@@ -157,12 +157,9 @@ public class ReflectionTest {
     public void internalMethodsTest() {
         MyObject instance = new MyObject();
         ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, instance);
-        // The system will cache before invoking so this will be 1
-        Assert.assertEquals(1, proxy.$cacheSize());
         // Make sure that $this returns the instance that is needed
         Assert.assertEquals(proxy.$this().getClass(), instance.getClass());
-        // At this point two methods been called
-        Assert.assertEquals(2, proxy.$cacheSize());
+        // At this point many methods been called
         proxy.$invalidateAll();
         // Invalidate the caches and will reset back to 1
         Assert.assertEquals(1, proxy.$cacheSize());

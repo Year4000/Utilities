@@ -1,10 +1,9 @@
 /*
- * Copyright 2018 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
 
-package net.year4000.utilities.ducktape;
+package net.year4000.utilities.ducktape.module;
 
-import com.google.inject.Module;
 import com.google.inject.ScopeAnnotation;
 
 import java.lang.annotation.ElementType;
@@ -16,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ScopeAnnotation
-public @interface ModPlugin {
+public @interface Module {
     /** The id of the module plugin */
     String id();
 
@@ -30,5 +29,5 @@ public @interface ModPlugin {
     String description() default "";
 
     /** Adds additional injector modules */
-    Class<? extends Module>[] injectors() default {};
+    Class<? extends com.google.inject.Module>[] injectors() default {};
 }
