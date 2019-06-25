@@ -25,11 +25,11 @@ public class SettingsModule extends AbstractModule {
         bindListener(Matchers.any(), new TypeListener() {
             @Override
             public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                System.out.println("hear: " + type);
+                //System.out.println("hear: " + type);
 
                 // inject the settings
                 if (type.getRawType() == Settings.class) {
-                    System.out.println("load settings: " + type);
+                    //System.out.println("load settings: " + type);
                     String typeString = type.toString();
                     String genericType = typeString.substring(typeString.indexOf("<") + 1, typeString.indexOf(">"));
                     Class<?> settingsClass = Reflections.clazz(genericType).getOrThrow();
@@ -47,7 +47,7 @@ public class SettingsModule extends AbstractModule {
                     // after members has been injected
                     encounter.register((InjectionListener<I>) instance -> {
                         // todo load settings here
-                        System.out.println("InjectionListener settings: " + instance);
+                        //System.out.println("InjectionListener settings: " + instance);
                     });
                 }
             }

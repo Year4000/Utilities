@@ -1,3 +1,6 @@
+/*
+ * Copyright 2019 Year4000. All Rights Reserved.
+ */
 package net.year4000.utilities.ducktape.modules;
 
 import com.google.inject.Inject;
@@ -9,12 +12,13 @@ import net.year4000.utilities.ducktape.settings.Settings;
 
 @Module(id = "a")
 public class ModuleA {
-    private @Inject ModuleD moduleD;
-    private @Inject Settings<ModuleASettings> settings;
+    @Inject private ModuleD moduleD;
+    @Inject private Settings<ModuleASettings> settings;
 
     public ModuleA() {
         System.out.println("ModuleA Constructor");
     }
+
     @Load
     public void loasdas() {
         System.out.println("ModuleA loader");

@@ -1,10 +1,17 @@
+/*
+ * Copyright 2019 Year4000. All Rights Reserved.
+ */
 package net.year4000.utilities.ducktape;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.*;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import net.year4000.utilities.Builder;
+import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ducktape.loaders.ModuleLoader;
 import net.year4000.utilities.ducktape.module.Enabler;
 import net.year4000.utilities.ducktape.module.Module;
@@ -14,10 +21,10 @@ import net.year4000.utilities.value.Value;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Consumer;
 
-public class DucktapeManager implements Ducktape {
+public class DucktapeManager extends AbstractModule implements Ducktape {
     /** The set of current loaded modules */
     private Set<Class<? extends ModuleLoader>> loaded = new LinkedHashSet<>();
 
@@ -27,50 +34,64 @@ public class DucktapeManager implements Ducktape {
     /** The guice injector that will init the modules */
     private Injector injector;
 
+    private Path modsPath = Paths.get("mods/");
+
     /**
      * The modules that are loaded, at first the order is when they are constructed but while they are loading
      * it resorts them based on load order, so when loading is done it will enable them properly.
      */
-    final Map<ModuleInfo, ModuleWrapper> modules = new LinkedHashMap<>();
+    private final Map<ModuleInfo, ModuleWrapper> modules = new LinkedHashMap<>();
 
 
     private DucktapeManager(Injector injector, Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap) {
-        //this.injector = Guice.createInjector().createChildInjector(new SettingsModule(), new DucktapeModule(this));//.createChildInjector(new DucktapeModule(this)); // child injectors dont work with settings????
+        this.injector = Conditions.nonNull(injector, "extra injector must not be null");
         this.loaders = ImmutableClassToInstanceMap.<ModuleLoader>builder()
             .putAll(loaderMap)
             .build();
     }
 
+    /** Create a snapshot of the modules that are currently in the system when this method is called */
     @Override
-    public void loadAll() {
-        Injector injector = Guice.createInjector(new DucktapeModule(this));
+    public ImmutableList<ModuleInfo> getModules() {
+        ImmutableList.Builder<ModuleInfo> moduleBuilder = ImmutableList.builder();
+        this.modules.forEach(((moduleInfo, moduleWrapper) -> moduleBuilder.add(moduleInfo)));
+        return moduleBuilder.build();
+    }
 
-        loadAll(null, classes -> {
-            for (Class clazz : classes) {
-                if (clazz.isAnnotationPresent(Module.class)) {
-                    injector.getInstance(clazz);
-                }
-            }
-
-        });
-        System.out.println("modules: " + this.modules);
+    @Override
+    public void init() throws ModuleInitException {
+        System.out.println("Loading module classes from the loaders");
+        Set<Class<?>> classes = loadAll(this.modsPath);
+        System.out.println("Setting up the injector");
+        // todo think? use child injector or our own injector, is we use a child injector sponge plugins will work, if not modules only have our bindings
+        this.injector = this.injector.createChildInjector(this, new ModulesInitModule(classes), new DucktapeModule(this.modules), new SettingsModule());
+        //this.injector = Guice.createInjector(this, new ModulesInitModule(classes), new DucktapeModule(this.modules), new SettingsModule());
+        System.out.println("Enabling modules: " + this.modules);
         this.modules.values().forEach(Enabler::enable);
     }
 
+    @Override
+    protected void configure() {
+        bind(Ducktape.class).toInstance(this);
+        bind(Path.class).annotatedWith(Names.named("mods")).toInstance(this.modsPath);
+    }
+
     /** Load all classes from the selected path */
-    protected void loadAll(Path path, Consumer<Collection<Class<?>>> consumer) {
-        loaders.forEach((key, value) -> {
+    protected Set<Class<?>> loadAll(Path path) throws ModuleInitException {
+        System.out.println("path: " + path);
+        Set<Class<?>> classes = new HashSet<>();
+        this.loaders.forEach((key, value) -> {
             try {
                 if (loaded.contains(key)) {
-                    throw new IllegalStateException("Can not load the same loader twice.");
+                    throw new ModuleInitException(ModuleInfo.Phase.LOADING, new IllegalStateException("Can not load the same loader twice."));
                 }
-                consumer.accept(value.load(path));
+                classes.addAll(value.load(path));
                 loaded.add(key);
-            } catch (IOException | IllegalStateException error) {
-                // todo
-                System.err.println(error.getMessage());
+            } catch (IOException error) {
+                throw new ModuleInitException(ModuleInfo.Phase.LOADING, error);
             }
         });
+        return classes;
     }
 
     public static DucktapeManagerBuilder builder() {

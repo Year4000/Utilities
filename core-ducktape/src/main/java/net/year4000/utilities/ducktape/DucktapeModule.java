@@ -6,46 +6,36 @@ package net.year4000.utilities.ducktape;
 
 import com.google.inject.*;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.ProvisionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
+import com.google.inject.spi.*;
 import net.year4000.utilities.ducktape.module.Module;
 import net.year4000.utilities.ducktape.module.ModuleInfo;
 import net.year4000.utilities.ducktape.module.ModuleWrapper;
 
 import java.util.Map;
 
+/** This module for Guice will register the modules life cycles with Ducktape's Manager */
 public class DucktapeModule extends AbstractModule {
-    private DucktapeManager manager;
     private final Map<ModuleInfo, ModuleWrapper> modules;
 
-    public DucktapeModule(DucktapeManager manager) {
-        this.manager = manager;
-        this.modules = manager.modules;
+    public DucktapeModule(Map<ModuleInfo, ModuleWrapper> modules) {
+        this.modules = modules;
     }
 
     @Override
     protected void configure() {
-        install(new SettingsModule());
-
-        bind(DucktapeManager.class).toInstance(manager);
         bindScope(Module.class, Scopes.SINGLETON);
 
         // Register the construction of module with the system, order matters so place in a linked hash map
         bindListener(Matchers.any(), new ProvisionListener() {
             @Override
             public <T> void onProvision(ProvisionInvocation<T> provision) {
-                Object source = provision.getBinding().getSource();
-                if (source instanceof Class<?>) {
-                    Class<?> clazz = (Class<?>) source;
-                    if (clazz.isAnnotationPresent(Module.class)) {
-                        ModuleInfo info = new ModuleInfo(clazz);
-                        synchronized (DucktapeModule.this.modules) {
-                            DucktapeModule.this.modules.put(info, null);
-                        }
-                        info.constructing();
+                Class<?> type = provision.getBinding().getKey().getTypeLiteral().getRawType();
+                if (type.isAnnotationPresent(Module.class)) {
+                    ModuleInfo info = new ModuleInfo(type);
+                    synchronized (DucktapeModule.this.modules) {
+                        DucktapeModule.this.modules.put(info, null);
                     }
+                    info.constructing();
                 }
             }
         });

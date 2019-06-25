@@ -1,3 +1,6 @@
+/*
+ * Copyright 2019 Year4000. All Rights Reserved.
+ */
 package net.year4000.utilities.ducktape;
 
 import com.google.common.collect.Lists;
@@ -15,6 +18,6 @@ public class DucktapeTest {
             //return Lists.newArrayList(ModuleB.class, ModuleC.class, ModuleD.class, ModuleA.class);
         }).build();
 
-        ducktape.loadAll();
+        ducktape.init();
     }
 }
