@@ -101,10 +101,17 @@ public class DucktapeManager extends AbstractModule implements Ducktape {
     /** This will build the ducktape manager environment with the correct module loaders and guice injector */
     public static class DucktapeManagerBuilder implements Builder<DucktapeManager> {
         private final Set<ModuleLoader> loaders = new HashSet<>();
-        private Value<Injector> injectorValue = Value.of(Guice.createInjector());
+        private Value<Injector> injectorValue = Value.empty();
 
+        /** Add a module loader system */
         public DucktapeManagerBuilder addLoader(ModuleLoader moduleLoader) {
             this.loaders.add(moduleLoader);
+            return this;
+        }
+
+        /** Set the injector for ducktape to use */
+        public DucktapeManagerBuilder setInjector(Injector injector) {
+            this.injectorValue = Value.of(injector);
             return this;
         }
 
@@ -113,7 +120,7 @@ public class DucktapeManager extends AbstractModule implements Ducktape {
             Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap = loaders.stream().map(loader -> ImmutableMap.<Class<? extends ModuleLoader>, ModuleLoader>of(loader.getClass(), loader))
                 .reduce((left, right) -> ImmutableMap.<Class<? extends ModuleLoader>, ModuleLoader>builder().putAll(left).putAll(right).build()).get();
 
-            return new DucktapeManager(injectorValue.get(), loaderMap);
+            return new DucktapeManager(injectorValue.getOrElse(Guice.createInjector()), loaderMap);
         }
     }
 }
