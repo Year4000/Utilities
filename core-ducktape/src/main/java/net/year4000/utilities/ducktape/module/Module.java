@@ -1,7 +1,6 @@
 /*
  * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities.ducktape.module;
 
 import com.google.inject.ScopeAnnotation;
