@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 /** Internal use of Value for various value needs */
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public interface Value<V> {
+public interface Value<V> extends Supplier<V> {
     /** Creates an empty instance of Value */
     static <V> Value<V> empty() {
         return new ImmutableValue<>((V) null);
@@ -108,9 +108,6 @@ public interface Value<V> {
             return empty();
         }
     }
-
-    /** Get the value of this instance could be null */
-    V get();
 
     /** Does the value instance contain a non null value */
     default boolean isPresent() {
