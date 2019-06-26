@@ -85,27 +85,27 @@ public final class Reflections {
     }
 
     /** Invoke the method from the instance, return a value if a return type exists and a non error */
-    public static Value<Object> invoke(Object instance, String method, Object... args) {
+    public static Value<Object> invoke(Object instance, String method, Object... args) throws SecurityException {
         return invoke(Conditions.nonNull(instance, "instance").getClass(), instance, method, args);
     }
 
     /** Invoke the method from the instance, return a value if a return type exists and a non error */
-    public static Value<Object> invoke(Class<?> clazz, Object instance, String method, Object... args) {
+    public static Value<Object> invoke(Class<?> clazz, Object instance, String method, Object... args) throws SecurityException {
         return invoke(instance, method(clazz, method, args).get(), args);
     }
 
     /** Invoke the method statically */
-    public static Value<Object> invoke(Class<?> clazz, String method, Object... args) {
+    public static Value<Object> invoke(Class<?> clazz, String method, Object... args) throws SecurityException {
         return invoke(method(clazz, method, args).get(), args);
     }
 
     /** Invoke the method statically */
-    public static Value<Object> invoke(Method invoke, Object... args) {
+    public static Value<Object> invoke(Method invoke, Object... args) throws SecurityException {
         return invoke(null, invoke, args);
     }
 
     /** Invoke the method from the instance */
-    public static Value<Object> invoke(Object instance, Method invoke, Object... args) {
+    public static Value<Object> invoke(Object instance, Method invoke, Object... args) throws SecurityException {
         Conditions.nonNull(invoke, "invoke");
         try {
             boolean state = invoke.isAccessible();
@@ -129,27 +129,27 @@ public final class Reflections {
     }
 
     /** Set the value of the specific field if it exists and we can access it */
-    public static boolean setter(Object instance, String name, Object set) {
+    public static boolean setter(Object instance, String name, Object set) throws SecurityException {
         return setter(Conditions.nonNull(instance, "instance").getClass(), instance, name, set);
     }
 
     /** Set the value of the specific field if it exists and we can access it */
-    public static boolean setter(Class<?> clazz, Object instance, String name, Object set) {
+    public static boolean setter(Class<?> clazz, Object instance, String name, Object set) throws SecurityException {
         return setter(instance, field(clazz, name).get(), set);
     }
 
     /** Set the value of the field */
-    public static boolean setter(Class<?> clazz, String name, Object set) {
+    public static boolean setter(Class<?> clazz, String name, Object set) throws SecurityException {
         return setter(field(clazz, name).get(), set);
     }
 
     /** Set the field of the statically */
-    public static boolean setter(Field field, Object set) {
+    public static boolean setter(Field field, Object set) throws SecurityException {
         return setter(null, field, set);
     }
 
     /** Set the value of the field from the instance */
-    public static boolean setter(Object instance, Field field, Object set) {
+    public static boolean setter(Object instance, Field field, Object set) throws SecurityException {
         Conditions.nonNull(field, "field");
         try {
             boolean state = field.isAccessible();
@@ -164,13 +164,13 @@ public final class Reflections {
 
     /** Get the value of the specific field if it exists and we can access it */
     @SuppressWarnings("unchecked")
-    public static <T> Value<T> getter(Object instance, String name) {
+    public static <T> Value<T> getter(Object instance, String name) throws SecurityException {
         return getter(Conditions.nonNull(instance, "instance").getClass(), instance, name);
     }
 
     /** Get the value of the specific field if it exists and we can access it */
     @SuppressWarnings("unchecked")
-    public static <T> Value<T> getter(Class<?> clazz, Object instance, String name) {
+    public static <T> Value<T> getter(Class<?> clazz, Object instance, String name) throws SecurityException {
         try {
             return getter(instance, clazz.getDeclaredField(Conditions.nonNullOrEmpty(name, "name")));
         } catch (ReflectiveOperationException error) {
@@ -179,18 +179,18 @@ public final class Reflections {
     }
 
     /** Get the value of the field */
-    public static <T> Value<T> getter(Class<?> clazz, String name) {
+    public static <T> Value<T> getter(Class<?> clazz, String name) throws SecurityException {
         return getter(field(clazz, name).get());
     }
 
     /** Get the value of the field statically */
-    public static <T> Value<T> getter(Field field) {
+    public static <T> Value<T> getter(Field field) throws SecurityException {
         return getter(null, field);
     }
 
     /** Get the value of the field statically */
     @SuppressWarnings("unchecked")
-    public static <T> Value<T> getter(Object instance, Field field) {
+    public static <T> Value<T> getter(Object instance, Field field) throws SecurityException {
         Conditions.nonNull(field, "field");
         try {
             boolean state = field.isAccessible();
@@ -204,7 +204,7 @@ public final class Reflections {
     }
 
     /** Create an instance of the provided object with the specific signature */
-    public static <T> Value<T> instance(String signature, Class<T> clazz, Object... args) {
+    public static <T> Value<T> instance(String signature, Class<T> clazz, Object... args) throws SecurityException {
         try {
             SignatureLookup<Constructor<T>> lookup = SignatureLookup.constructors(signature, clazz);
             Constructor<T> constructor = lookup.find().iterator().next();
@@ -221,7 +221,7 @@ public final class Reflections {
     }
 
     /** Create an instance of the provided object */
-    public static <T> Value<T> instance(Class<T> clazz, Object... args) {
+    public static <T> Value<T> instance(Class<T> clazz, Object... args) throws SecurityException {
         try {
             Constructor<T> constructor = Conditions.nonNull(clazz, "clazz").getDeclaredConstructor();
             if (args != null && args.length > 0) {
