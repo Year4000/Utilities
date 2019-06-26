@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
@@ -21,6 +22,30 @@ import java.util.stream.Stream;
 public final class Reflections {
     private Reflections() {
         UtilityConstructError.raise();
+    }
+
+    /** Create a proxy interface from the proxy interface with the handler and other interfaces the proxy must implement */
+    public static Object proxy(InvocationHandler handler, Collection<Class<?>> classes) {
+        return proxy(handler, Conditions.nonNull(classes, "classes must not be null but can be empty").toArray(new Class<?>[] {}));
+    }
+
+    /** Create a proxy interface from the proxy interface with the handler and other interfaces the proxy must implement */
+    public static Object proxy(InvocationHandler handler, Class<?>... classes) {
+        Conditions.nonNull(handler, "handler");
+        // Proxy that implements other interfaces
+        if (classes.length > 0) {
+            for (Class<?> clazz : classes) {
+                Conditions.condition(clazz.isInterface(), clazz.getSimpleName() + " must be an interface");
+            }
+            return Proxy.newProxyInstance(classes[0].getClassLoader(), classes, handler);
+        }
+        // Simple proxy
+        return Proxy.newProxyInstance(handler.getClass().getClassLoader(), new Class<?>[] {}, handler);
+    }
+
+    /** Create a proxy interface from the proxy interface with the handler and other interfaces the proxy must implement */
+    public static <T> T proxy(Class<T> proxy, InvocationHandler handler, Collection<Class<?>> classes) {
+        return proxy(proxy, handler, Conditions.nonNull(classes, "classes must not be null but can be empty").toArray(new Class<?>[] {}));
     }
 
     /** Create a proxy interface from the proxy interface with the handler and other interfaces the proxy must implement */

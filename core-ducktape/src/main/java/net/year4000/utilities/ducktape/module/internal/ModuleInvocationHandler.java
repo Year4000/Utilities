@@ -38,7 +38,6 @@ public class ModuleInvocationHandler implements InvocationHandler {
         final ModuleInvocationHandler invocationHandler = new ModuleInvocationHandler(moduleInstance);
         final List<Class<?>> interfaces = new ArrayList<>();
         // Add our custom method into the proxy
-        interfaces.add(ModuleHandle.class);
         invocationHandler.methodLookup.put("$this", ((instance, args) -> instance));
         // Add the methods that we want into the proxy class with the cached method handler
         for (Method method : moduleClass.getMethods()) {
@@ -49,7 +48,7 @@ public class ModuleInvocationHandler implements InvocationHandler {
                 }
             });
         }
-        return Proxy.newProxyInstance(moduleClass.getClassLoader(), interfaces.toArray(new Class<?>[]{}), invocationHandler);
+        return Reflections.proxy(ModuleHandle.class, invocationHandler, interfaces);
     }
 
     @Override
