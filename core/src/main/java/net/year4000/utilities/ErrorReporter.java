@@ -1,7 +1,6 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities;
 
 import com.google.common.collect.ImmutableList;
@@ -34,6 +33,11 @@ public final class ErrorReporter {
     /** Get the throwable object this is tide to this report */
     public Throwable getThrowable() {
         return throwable;
+    }
+
+    /** Report it by allowing to throw it */
+    public synchronized RuntimeException report() {
+        return new RuntimeException(getThrowable());
     }
 
     /** Report it to the print stream */
@@ -117,6 +121,11 @@ public final class ErrorReporter {
         /** Build the report and print it out to the print stream */
         public RuntimeException buildAndReport(PrintStream out) {
             return build().report(out);
+        }
+
+        /** Build the report and allow the code to throw the composed exception */
+        public RuntimeException buildAndReport() {
+            return build().report();
         }
     }
 
