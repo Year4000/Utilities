@@ -1,12 +1,13 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities.reflection;
 
 import net.year4000.utilities.value.Value;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
 
 public class ReflectionsTest {
     private static class MyObject implements Comparable<MyObject> {
@@ -34,6 +35,17 @@ public class ReflectionsTest {
 
     private interface Proxy {
         String foo();
+    }
+
+    /** This test just proves that setting accessible to a field do not change it at the class level */
+    @Test
+    public void accessibleTest() throws Throwable {
+        Field field = ReflectionTest.MyObject.class.getDeclaredField("foo");
+        boolean access = field.isAccessible();
+        field.setAccessible(!access);
+        Field field2 = ReflectionTest.MyObject.class.getDeclaredField("foo");
+        boolean access2 = field2.isAccessible();
+        Assert.assertEquals(access, access2);
     }
 
     @Test

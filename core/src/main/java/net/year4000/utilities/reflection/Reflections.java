@@ -1,7 +1,6 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities.reflection;
 
 import net.year4000.utilities.Conditions;
@@ -84,19 +83,36 @@ public final class Reflections {
         }
     }
 
+    /** Get the method from the name but give elevated access, this will avoid setting access to the method */
+    public static Value<Method> methodElevated(Class<?> clazz, String method, Object... args) throws SecurityException {
+        Value<Method> methodValue = method(clazz, method, args);
+        Method nullableMethod = methodValue.get();
+        if (nullableMethod != null) {
+            nullableMethod.setAccessible(true);
+        }
+        return methodValue;
+    }
+
     /** Invoke the method from the instance, return a value if a return type exists and a non error */
     public static Value<Object> invoke(Object instance, String method, Object... args) throws SecurityException {
         return invoke(Conditions.nonNull(instance, "instance").getClass(), instance, method, args);
     }
 
-    /** Invoke the method from the instance, return a value if a return type exists and a non error */
-    public static Value<Object> invoke(Class<?> clazz, Object instance, String method, Object... args) throws SecurityException {
-        return invoke(instance, method(clazz, method, args).get(), args);
-    }
-
     /** Invoke the method statically */
     public static Value<Object> invoke(Class<?> clazz, String method, Object... args) throws SecurityException {
-        return invoke(method(clazz, method, args).get(), args);
+        return invoke(clazz, null, method, args);
+    }
+
+    /** Invoke the method from the instance, return a value if a return type exists and a non error */
+    public static Value<Object> invoke(Class<?> clazz, Object instance, String method, Object... args) throws SecurityException {
+        try {
+            // Find the method using the parameters with elevated access
+            Method methodElevated = methodElevated(clazz, method, args).get();
+            Object inst = methodElevated.invoke(instance, args);
+            return Value.of(inst);
+        } catch (ReflectiveOperationException error) {
+            return Value.empty();
+        }
     }
 
     /** Invoke the method statically */
@@ -108,10 +124,8 @@ public final class Reflections {
     public static Value<Object> invoke(Object instance, Method invoke, Object... args) throws SecurityException {
         Conditions.nonNull(invoke, "invoke");
         try {
-            boolean state = invoke.isAccessible();
             invoke.setAccessible(true);
             Object inst = invoke.invoke(instance, args);
-            invoke.setAccessible(state);
             return Value.of(inst);
         } catch (ReflectiveOperationException error) {
             return Value.empty();
@@ -128,19 +142,38 @@ public final class Reflections {
         }
     }
 
+    /** Get the field from the class but give elevated access, this will avoid setting access to the field */
+    public static Value<Field> fieldElevated(Class<?> clazz, String name) throws SecurityException {
+        Value<Field> fieldValue = field(clazz, name);
+        Field nullableField = fieldValue.get();
+        if (nullableField != null) {
+            nullableField.setAccessible(true);
+        }
+        return fieldValue;
+    }
+
     /** Set the value of the specific field if it exists and we can access it */
     public static boolean setter(Object instance, String name, Object set) throws SecurityException {
         return setter(Conditions.nonNull(instance, "instance").getClass(), instance, name, set);
     }
 
-    /** Set the value of the specific field if it exists and we can access it */
-    public static boolean setter(Class<?> clazz, Object instance, String name, Object set) throws SecurityException {
-        return setter(instance, field(clazz, name).get(), set);
-    }
-
     /** Set the value of the field */
     public static boolean setter(Class<?> clazz, String name, Object set) throws SecurityException {
-        return setter(field(clazz, name).get(), set);
+        return setter(clazz, null, name, set);
+    }
+
+    /** Set the value of the specific field if it exists and we can access it */
+    public static boolean setter(Class<?> clazz, Object instance, String name, Object set) throws SecurityException {
+        try {
+            // Find the field using the parameters with elevated access
+            Field field = fieldElevated(clazz, name).get();
+            if (field != null) {
+                field.set(instance, set);
+            }
+            return true;
+        } catch (ReflectiveOperationException error) {
+            return false;
+        }
     }
 
     /** Set the field of the statically */
@@ -152,10 +185,8 @@ public final class Reflections {
     public static boolean setter(Object instance, Field field, Object set) throws SecurityException {
         Conditions.nonNull(field, "field");
         try {
-            boolean state = field.isAccessible();
             field.setAccessible(true);
             field.set(instance, set);
-            field.setAccessible(state);
             return true;
         } catch (ReflectiveOperationException error) {
             return false;
@@ -168,19 +199,24 @@ public final class Reflections {
         return getter(Conditions.nonNull(instance, "instance").getClass(), instance, name);
     }
 
+    /** Get the value of the field */
+    public static <T> Value<T> getter(Class<?> clazz, String name) throws SecurityException {
+        return getter(clazz, null, name);
+    }
+
     /** Get the value of the specific field if it exists and we can access it */
     @SuppressWarnings("unchecked")
     public static <T> Value<T> getter(Class<?> clazz, Object instance, String name) throws SecurityException {
         try {
-            return getter(instance, clazz.getDeclaredField(Conditions.nonNullOrEmpty(name, "name")));
+            // Find the field using the parameters with elevated access
+            Field field = fieldElevated(clazz, name).get();
+            if (field != null) {
+                return Value.of((T) field.get(instance));
+            }
+            return Value.empty();
         } catch (ReflectiveOperationException error) {
             return Value.empty();
         }
-    }
-
-    /** Get the value of the field */
-    public static <T> Value<T> getter(Class<?> clazz, String name) throws SecurityException {
-        return getter(field(clazz, name).get());
     }
 
     /** Get the value of the field statically */
@@ -193,10 +229,8 @@ public final class Reflections {
     public static <T> Value<T> getter(Object instance, Field field) throws SecurityException {
         Conditions.nonNull(field, "field");
         try {
-            boolean state = field.isAccessible();
             field.setAccessible(true);
             T value = (T) field.get(instance);
-            field.setAccessible(state);
             return Value.of(value);
         } catch (ReflectiveOperationException error) {
             return Value.empty();
@@ -209,10 +243,8 @@ public final class Reflections {
             SignatureLookup<Constructor<T>> lookup = SignatureLookup.constructors(signature, clazz);
             Constructor<T> constructor = lookup.find().iterator().next();
             Conditions.condition(constructor.getParameterCount() == args.length, "Args must match signature");
-            boolean state = constructor.isAccessible();
             constructor.setAccessible(true);
             T value = constructor.newInstance(args);
-            constructor.setAccessible(state);
             return Value.of(value);
         } catch (ReflectiveOperationException | NoSuchElementException error) {
             error.printStackTrace();
@@ -228,10 +260,8 @@ public final class Reflections {
                 Class<?>[] params = Stream.of(args).map(Object::getClass).toArray(Class<?>[]::new);
                 constructor = clazz.getDeclaredConstructor(params);
             }
-            boolean state = constructor.isAccessible();
             constructor.setAccessible(true);
             T value = constructor.newInstance(args);
-            constructor.setAccessible(state);
             return Value.of(value);
         } catch (ReflectiveOperationException error) {
             return Value.empty();
