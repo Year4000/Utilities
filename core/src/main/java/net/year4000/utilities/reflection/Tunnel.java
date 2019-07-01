@@ -1,7 +1,6 @@
 /*
  * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities.reflection;
 
 import static net.year4000.utilities.reflection.Handlers.defaultHandle;
@@ -108,7 +107,7 @@ class Tunnel<T> implements InvocationHandler {
 
         // Cache does not exist create one
         if (method.isAnnotationPresent(Invoke.class)) {
-            MethodHandler handle = invokeHandle(method, args);
+            MethodHandler handle = invokeHandle(method);
             cache.put(method, handle);
             return handle.handle(instance, args);
         } else if (method.isAnnotationPresent(Setter.class)) {
@@ -120,8 +119,10 @@ class Tunnel<T> implements InvocationHandler {
             MethodHandler handle = getterHandle(method);
             cache.put(method, handle);
             return handle.handle(instance, args);
-        } else if (method.isDefault()) { // Can not be cached currently
-            return defaultHandle(method, proxy).handle(instance, args);
+        } else if (method.isDefault()) {
+            MethodHandler handle = defaultHandle(method, proxy);
+            cache.put(method, handle);
+            return handle.handle(instance, args);
         }
 
         // Handle internal method that exist on the proxy
@@ -138,7 +139,7 @@ class Tunnel<T> implements InvocationHandler {
 
     /** Wraps the error from invokable and print out details */
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) throws RuntimeException {
         // Run the method handles to decided what to do
         try {
             return invokable(proxy, method, args);
@@ -154,12 +155,15 @@ class Tunnel<T> implements InvocationHandler {
                 .add("Message: ", exception.getMessage())
                 .add("Annotation(s): ", annotations)
                 .add("Method: ", method.getName())
+                .add("Return Type: ", method.getReturnType())
                 .add("Arg(s): ", args)
                 .buildAndReport(System.err);
         } catch (Throwable throwable) { // General errors
             throw ErrorReporter.builder(throwable)
                 .add("Failed at: ", method.getDeclaringClass() != null ? method.getDeclaringClass().getName() : "null")
                 .add("Method: ", method.getName())
+                .add("Return Type: ", method.getReturnType())
+                .add("Arg(s): ", args)
                 .buildAndReport(System.err);
         }
     }
