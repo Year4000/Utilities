@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 
 public class ReflectionsTest {
-    private static class MyObject implements Comparable<MyObject> {
+    public static class MyObject implements Comparable<MyObject> {
         private static String foo_bar = "foo bar";
         private String foo = "bar";
         private String bar = "foo";
