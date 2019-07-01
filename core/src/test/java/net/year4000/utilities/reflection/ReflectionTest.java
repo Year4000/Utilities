@@ -22,7 +22,7 @@ public class ReflectionTest {
         private static String other = "other";
     }
 
-    private final static class MyObject extends OtherObject implements Supplier<String>, Runnable {
+    public final static class MyObject extends OtherObject implements Supplier<String>, Runnable {
         private String foo = FOO;
         private MyObject object = OBJECT;
         private int findMe = 1;
@@ -138,7 +138,6 @@ public class ReflectionTest {
     }
 
     @Test
-    @Ignore
     public void defaultTest() {
         ProxyMyObject proxy = Gateways.proxy(ProxyMyObject.class, new MyObject());
         Assert.assertEquals("world", proxy.hello());
