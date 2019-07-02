@@ -1,7 +1,6 @@
 /*
  * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities.reflection;
 
 import net.year4000.utilities.reflection.annotations.*;
@@ -17,6 +16,13 @@ public class ReflectionTest {
     private static final String BAR = "bar";
     private static final String FOO_BAR = "foo bar";
     private static final MyObject OBJECT = new MyObject();
+
+    public enum MyEnum {
+        ALPHA,
+        BETA,
+        GAMMA,
+        ;
+    }
 
     public abstract static class OtherObject {
         private static String other = "other";
@@ -92,6 +98,25 @@ public class ReflectionTest {
             System.out.println("beforeOnRun");
             return method;
         }
+    }
+
+    @Proxied("net.year4000.utilities.reflection.ReflectionTest$MyEnum")
+    public interface ProxyEnumMyEnum {
+        @Invoke(signature = "()[Lnet/year4000/utilities/reflection/ReflectionTest$MyEnum;")
+        @Static
+        Object[] values();
+
+        default ProxyEnumMyEnum value(int i) {
+            return Gateways.proxy(ProxyEnumMyEnum.class, values()[i]);
+        }
+    }
+
+    @Test
+    public void enumTest() {
+        ProxyEnumMyEnum myEnum = Gateways.proxy(ProxyEnumMyEnum.class);
+        Assert.assertEquals(MyEnum.ALPHA.toString(), myEnum.value(0).toString());
+        Assert.assertEquals(MyEnum.BETA.toString(), myEnum.value(1).toString());
+        Assert.assertEquals(MyEnum.GAMMA.toString(), myEnum.value(2).toString());
     }
 
     @Test
