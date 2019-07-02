@@ -83,12 +83,26 @@ final class Handlers {
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
         if (!invoke.signature().isEmpty()) { // Search by signature
             Method signature = findMethod(invoke.signature(), classInstance, invoke.value(), invoke.index());
-            return handleBridge(method, (instance, args) -> Reflections.invoke(instance, signature, args).get());
+            MethodHandle handle = lookup.unreflect(signature);
+            return handleBridge(method, method.isAnnotationPresent(Static.class) ? (instance, args) -> handle.invokeWithArguments(args) : (instance, args) -> handle.bindTo(instance).invokeWithArguments(args));
         }
         // All else
         String name = Value.of(invoke.value()).getOrElse(method.getName());
+        if (method.isAnnotationPresent(Bridge.class)) {
+            if (method.isAnnotationPresent(Static.class)) {
+                System.out.println(method.getReturnType());
+                MethodHandle handle = lookup.findStatic(classInstance, name, MethodType.methodType(reflectiveClass(method.getReturnType()), method.getParameterTypes()));
+                return handleBridge(method, ((instance, args) -> handle.invokeWithArguments(args)));
+            }
+            MethodHandle handle = lookup.findVirtual(classInstance, name, MethodType.methodType(reflectiveClass(method.getReturnType()), method.getParameterTypes()));
+            return handleBridge(method, ((instance, args) -> handle.bindTo(instance).invokeWithArguments(args)));
+        }
+        if (method.isAnnotationPresent(Static.class)) {
+            MethodHandle handle = lookup.findStatic(classInstance, name, MethodType.methodType(method.getReturnType(), method.getParameterTypes()));
+            return handleBridge(method, ((instance, args) -> handle.invokeWithArguments(args)));
+        }
         MethodHandle handle = lookup.findVirtual(classInstance, name, MethodType.methodType(method.getReturnType(), method.getParameterTypes()));
-        return handleBridge(method, ((instance, args) -> handle.bindTo(instance).invoke()));
+        return handleBridge(method, ((instance, args) -> handle.bindTo(instance).invokeWithArguments(args)));
     }
 
     /** Create the getter handler */
