@@ -9,6 +9,8 @@ import net.year4000.utilities.reflection.annotations.Implements;
 import net.year4000.utilities.reflection.annotations.Proxied;
 import net.year4000.utilities.utils.UtilityConstructError;
 
+import java.lang.reflect.Array;
+
 /**
  * The gateway between Proxied instances and the real instances,
  * this allows for proxied instances access fields and method of
@@ -35,7 +37,15 @@ public final class Gateways {
 
     /** Grab the class instance of the reflective class */
     public static Class<?> reflectiveClass(Class<?> proxy) {
-        Proxied proxied = Conditions.nonNull(proxy.getAnnotation(Proxied.class), "@Proxied");
+        if (proxy.isArray()) {
+            Class<?> proxyArray = proxy.getComponentType();
+            int length = proxy.toString().lastIndexOf("[") - 5; // todo try to infer this better, the 5 is the string prefix "class "
+            System.out.println(length);
+            Proxied proxied = Conditions.nonNull(proxyArray.getAnnotation(Proxied.class), "@Proxied does not exist on " + proxy);
+            Class<?> proxiedClass = Reflections.clazz(proxied.value(), proxied.init(), proxy.getClassLoader()).getOrThrow("value");
+            return Array.newInstance(proxiedClass, length).getClass();
+        }
+        Proxied proxied = Conditions.nonNull(proxy.getAnnotation(Proxied.class), "@Proxied does not exist on " + proxy);
         return Reflections.clazz(proxied.value(), proxied.init(), proxy.getClassLoader()).getOrThrow("value");
     }
 
