@@ -14,7 +14,6 @@ import net.year4000.utilities.tuple.Pair;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,13 +37,13 @@ public class ModuleInvocationHandler implements InvocationHandler {
         final ModuleInvocationHandler invocationHandler = new ModuleInvocationHandler(moduleInstance);
         final List<Class<?>> interfaces = new ArrayList<>();
         // Add our custom method into the proxy
-        invocationHandler.methodLookup.put("$this", ((instance, args) -> instance));
+        invocationHandler.methodLookup.put("$this", args -> moduleInstance);
         // Add the methods that we want into the proxy class with the cached method handler
         for (Method method : moduleClass.getMethods()) {
             METHOD_MAP.forEach((annotation, pair) -> {
                 if (method.isAnnotationPresent(annotation)) {
                     interfaces.add(pair.b.get());
-                    invocationHandler.methodLookup.put(pair.a.get(), (instance, args) -> Reflections.invoke(instance, method, args).get());
+                    invocationHandler.methodLookup.put(pair.a.get(), args -> Reflections.invoke(moduleInstance, method, args).get());
                 }
             });
         }
