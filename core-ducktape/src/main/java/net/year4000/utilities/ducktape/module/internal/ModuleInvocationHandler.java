@@ -12,6 +12,8 @@ import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.tuple.Pair;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,6 +23,8 @@ import java.util.Map;
 
 /** This is the custom invocation handler that handles the module without directly invoking its methods */
 public class ModuleInvocationHandler implements InvocationHandler {
+    /** The custom Lookup instance that allows invoking of private methods and fields, see BlackMagicTest for more */
+    private static final MethodHandles.Lookup LOOKUP = Reflections.<MethodHandles.Lookup>getter(MethodHandles.Lookup.class, MethodHandles.publicLookup(), "IMPL_LOOKUP").getOrThrow();
     private static final ImmutableMap<Class<? extends Annotation>, Pair<String, Class<?>>> METHOD_MAP = ImmutableMap.of(
         Load.class, new Pair<>("load", Loader.class),
         Enable.class, new Pair<>("enable", Enabler.class)
@@ -42,8 +46,13 @@ public class ModuleInvocationHandler implements InvocationHandler {
         for (Method method : moduleClass.getMethods()) {
             METHOD_MAP.forEach((annotation, pair) -> {
                 if (method.isAnnotationPresent(annotation)) {
-                    interfaces.add(pair.b.get());
-                    invocationHandler.methodLookup.put(pair.a.get(), args -> Reflections.invoke(moduleInstance, method, args).get());
+                    try {
+                        MethodHandle handle = ModuleInvocationHandler.LOOKUP.unreflect(method).bindTo(moduleInstance);
+                        interfaces.add(pair.b.get());
+                        invocationHandler.methodLookup.put(pair.a.get(), handle::invokeWithArguments);
+                    } catch (IllegalAccessException error) {
+                        throw ErrorReporter.builder(error).buildAndReport();
+                    }
                 }
             });
         }
@@ -55,7 +64,7 @@ public class ModuleInvocationHandler implements InvocationHandler {
         try {
             MethodHandler proxyMethod = this.methodLookup.get(method.getName());
             if (proxyMethod != null) {
-                return proxyMethod.handle(this.moduleInstance, args);
+                return proxyMethod.handle(args);
             }
             return Reflections.invoke(method.getDeclaringClass(), this.moduleInstance, method.getName()).get();
         } catch (Throwable throwable) { // General errors
