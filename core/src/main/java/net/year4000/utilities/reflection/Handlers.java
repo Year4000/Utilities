@@ -7,7 +7,7 @@ import static net.year4000.utilities.reflection.Gateways.reflectiveClass;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
-import com.sun.istack.internal.Nullable;
+import net.year4000.utilities.annotations.Nullable;
 import net.year4000.utilities.reflection.annotations.*;
 import net.year4000.utilities.reflection.lookups.SignatureLookup;
 import net.year4000.utilities.utils.UtilityConstructError;
