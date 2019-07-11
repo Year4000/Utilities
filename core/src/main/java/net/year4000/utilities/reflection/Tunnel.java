@@ -134,7 +134,7 @@ class Tunnel<T> implements InvocationHandler {
 
         // Last if no others are found use the declaring classes method
         // Such as hashCode, toString, ect
-        return Reflections.invoke(method.getDeclaringClass(), this.instance, method.getName()).get();
+        return Handlers.lookup.unreflect(method).bindTo(this.instance).invokeWithArguments(args);
     }
 
     /** Wraps the error from invokable and print out details */

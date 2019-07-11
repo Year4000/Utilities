@@ -68,7 +68,7 @@ public class ModuleInvocationHandler implements InvocationHandler {
             if (proxyMethod != null) {
                 return proxyMethod.handle(args);
             }
-            return Reflections.invoke(method.getDeclaringClass(), this.moduleInstance, method.getName()).get();
+            return ModuleInvocationHandler.lookup.unreflect(method).bindTo(moduleInstance).invokeWithArguments(args);
         } catch (Throwable throwable) { // General errors
             throw ErrorReporter.builder(throwable)
                 .add("Failed at: ", method.getDeclaringClass() != null ? method.getDeclaringClass().getName() : "null")

@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 /** Creates instances of the MethodHandler for the proxy tunnel */
 final class Handlers {
     /** The custom Lookup instance that allows invoking of private methods and fields, see BlackMagicTest for more */
-    private static final MethodHandles.Lookup lookup = Reflections.<MethodHandles.Lookup>getter(MethodHandles.Lookup.class, MethodHandles.publicLookup(), "IMPL_LOOKUP").getOrThrow();
+    static final MethodHandles.Lookup lookup = Reflections.<MethodHandles.Lookup>getter(MethodHandles.Lookup.class, MethodHandles.publicLookup(), "IMPL_LOOKUP").getOrThrow();
 
     private Handlers() {
         UtilityConstructError.raise();
