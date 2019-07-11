@@ -57,6 +57,7 @@ public class ModuleInvocationHandler implements InvocationHandler {
         }
         // Add our custom methods into the proxy instance ModuleHandle.class
         invocationHandler.methodLookup.put(Reflections.method(ModuleHandle.class, "$this").get(), args -> moduleInstance);
+        invocationHandler.methodLookup.put(Reflections.method(ModuleHandle.class, "$class").get(), args -> moduleClass);
         return Reflections.proxy(ModuleHandle.class, invocationHandler, interfaces);
     }
 
