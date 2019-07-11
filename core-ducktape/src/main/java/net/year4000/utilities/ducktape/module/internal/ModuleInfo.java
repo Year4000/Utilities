@@ -1,19 +1,35 @@
 /*
  * Copyright 2019 Year4000. All Rights Reserved.
  */
-package net.year4000.utilities.ducktape.module;
+package net.year4000.utilities.ducktape.module.internal;
 
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.annotations.Nullable;
+import net.year4000.utilities.ducktape.module.Module;
+import net.year4000.utilities.ducktape.module.ModuleHandle;
+import net.year4000.utilities.value.Value;
 
-public final class ModuleInfo implements Loader, Enabler {
+/** The module info class is for the implementation of it's interface */
+public final class ModuleInfo implements net.year4000.utilities.ducktape.module.ModuleInfo {
     private Phase phase = Phase.CONSTRUCTING;
     private Class<?> moduleClass;
     private Module annotation;
+    private ModuleHandle handle;
 
     public ModuleInfo(Class<?> moduleClass) {
         this.moduleClass = Conditions.nonNull(moduleClass, "module class must not be empty");
         Conditions.condition(moduleClass.isAnnotationPresent(Module.class), "the module class must have the @Module annotation");
         this.annotation = moduleClass.getAnnotation(Module.class);
+    }
+
+    /** This will set the handle of the module info */
+    public void setHandle(@Nullable ModuleHandle handle) {
+        this.handle = handle;
+    }
+
+    /** Returns the handle for the module this will be null until the module has been loaded */
+    public Value<ModuleHandle> getHandle() {
+        return Value.of(handle);
     }
 
     /** Get the current phase the module is on */
@@ -27,6 +43,7 @@ public final class ModuleInfo implements Loader, Enabler {
     }
 
     /** Get the id of the module */
+    @Override
     public String getId() {
         return this.annotation.id().toLowerCase();
     }
@@ -63,33 +80,5 @@ public final class ModuleInfo implements Loader, Enabler {
     @Override
     public boolean equals(Object other) {
         return other instanceof ModuleInfo && this.getId().equals(((ModuleInfo) other).getId());
-    }
-
-    /** The current phase of this module */
-    public enum Phase {
-        /** This is a special phase when the classes are being loaded into the system to be constructed by Guice */
-        LOADING,
-        /** The default phase state as this is created when the mode is constructing */
-        CONSTRUCTING,
-        /** This is when the module has been loaded, settings have been populated and module specific stuff should be loaded here */
-        LOADED,
-        /** This is when the module has been enable, at this point all loading has been done and can do what they need */
-        ENABLED
-        ;
-
-        /** Return true when the phase is constructing */
-        public boolean isConstructing() {
-            return this == CONSTRUCTING;
-        }
-
-        /** Return true when the phase is loaded */
-        public boolean isLoaded() {
-            return this == LOADED;
-        }
-
-        /** Return true with the phase is enabled */
-        public boolean isEnabled() {
-            return this == ENABLED;
-        }
     }
 }

@@ -1,31 +1,19 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities.ducktape.loaders;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import net.year4000.utilities.ducktape.ModuleInitException;
+
 import java.util.Collection;
 
 /**
  * This is a functional interface that will load
  * a module from the select file path.
  */
+@FunctionalInterface
 public interface ModuleLoader {
 
-    /** This will search the path and load the module */
-    Collection<Class<?>> load(Path path) throws IOException;
-
-    /** This will create a file object from a string and load the class paths */
-    default Collection<Class<?>> load(String path) throws IOException {
-        return load(Paths.get(path));
-    }
-
-    /** This will create a file object from a string and load the class paths */
-    default Collection<Class<?>> load(File file) throws IOException {
-        return load(file.toPath());
-    }
+    /** Load classes from where ever and create the collection of classes for the modules */
+    Collection<Class<?>> load() throws ModuleInitException;
 }

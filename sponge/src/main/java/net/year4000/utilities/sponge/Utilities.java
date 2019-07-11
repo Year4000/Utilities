@@ -1,16 +1,16 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities.sponge;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.Tokens;
+import net.year4000.utilities.ducktape.loaders.GroovyModuleLoader;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
-import net.year4000.utilities.sponge.ducktape.SpongeModuleManager;
+import net.year4000.utilities.sponge.ducktape.SpongeDucktapeManager;
 import net.year4000.utilities.sponge.hologram.Holograms;
 import net.year4000.utilities.sponge.protocol.Packets;
 import org.spongepowered.api.Sponge;
@@ -19,6 +19,8 @@ import org.spongepowered.api.event.game.state.GameConstructionEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
+
+import java.nio.file.Paths;
 
 @Plugin(
     id = "utilities",
@@ -29,7 +31,7 @@ import org.spongepowered.api.plugin.Plugin;
     authors = {"ewized"}
 )
 public final class Utilities extends AbstractSpongePlugin {
-    private SpongeModuleManager moduleManager;
+    private SpongeDucktapeManager moduleManager;
 
     // Services
     private Packets packets;
@@ -49,21 +51,24 @@ public final class Utilities extends AbstractSpongePlugin {
     }
 
     /** Get the module manager */
-    public SpongeModuleManager getModuleManager() {
+    public SpongeDucktapeManager getModuleManager() {
         return moduleManager;
     }
 
     @Listener
     public void onConstruct(GameConstructionEvent event) {
-        this.moduleManager = new SpongeModuleManager();
-        this.moduleManager.injectModules(this.injector);
+        this.moduleManager = (SpongeDucktapeManager) SpongeDucktapeManager.builder()
+            .setInjector(this.injector)
+            .addLoader(new GroovyModuleLoader(Paths.get("/mods")))
+            .build();
+        this.moduleManager.load();
     }
 
     @Listener
     public void onUtilitiesPreInit(GamePreInitializationEvent event) {
         packets = setProvider(Packets.class, Packets.manager());
         holograms = setProvider(Holograms.class, Holograms.manager());
-        moduleManager.registerListeners(); // Register the listeners of the modules
+        moduleManager.enable();
     }
 
     @Listener

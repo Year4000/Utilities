@@ -33,7 +33,7 @@ public class SettingsModule extends AbstractModule {
                     String typeString = type.toString();
                     String genericType = typeString.substring(typeString.indexOf("<") + 1, typeString.indexOf(">"));
                     Class<?> settingsClass = Reflections.clazz(genericType).getOrThrow();
-                    System.out.println("foundSettingsClass: " + settingsClass);
+                    //System.out.println("foundSettingsClass: " + settingsClass);
 
                     // when members are injected
                     encounter.register((MembersInjector<I>) instance -> {
@@ -41,7 +41,7 @@ public class SettingsModule extends AbstractModule {
 
                         // create instance right now, later have something else handle it
                         //((Settings) instance).instance = Reflections.instance(settingsClass).getOrThrow();
-                        System.out.println("MembersInjector settings: " + instance);
+                        //System.out.println("MembersInjector settings: " + instance);
 
                     });
                     // after members has been injected

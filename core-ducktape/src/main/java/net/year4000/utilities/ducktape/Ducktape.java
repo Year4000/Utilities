@@ -16,12 +16,27 @@ public interface Ducktape {
         return DucktapeManager.builder();
     }
 
-    /** This will init the Ducktape systems */
-    void init() throws ModuleInitException;
+    /** Load the modules */
+    void load() throws ModuleInitException;
+
+    /** Enable the modules */
+    void enable() throws ModuleInitException;
+
+    /** This will init the Ducktape systems by calling the load and enable */
+    default void init() throws ModuleInitException {
+        load();
+        enable();
+    }
+
+    /** Get the module from the class, avoid this call and prefer the id method over this one */
+    default Value<ModuleInfo> getModule(Module module) {
+        Conditions.nonNull(module, "annotation can not be null");
+        return getModule(module.id());
+    }
 
     /** Get the module from the class, avoid this call and prefer the id method over this one */
     default Value<ModuleInfo> getModule(Class<?> clazz) {
-        if (clazz.isAnnotationPresent(Module.class)) {
+        if (Conditions.nonNull(clazz, "class can not be null").isAnnotationPresent(Module.class)) {
             return getModule(clazz.getAnnotation(Module.class).id().toLowerCase());
         }
         return Value.empty();

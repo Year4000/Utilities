@@ -1,72 +1,90 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities.sponge.ducktape;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
-import net.year4000.utilities.ducktape.ModuleManager;
+import net.year4000.utilities.ducktape.*;
+import net.year4000.utilities.ducktape.loaders.ModuleLoader;
+import net.year4000.utilities.ducktape.module.Module;
+import net.year4000.utilities.ducktape.module.internal.ModuleInfo;
 import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.sponge.Utilities;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
 
 import java.lang.reflect.Method;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /** Uses the SpongeAPI to add additional modules for Utilities */
-public class SpongeModuleManager extends ModuleManager {
+public class SpongeDucktapeManager extends DucktapeManager {
     private static final String MOD_PATH = "mods/";
-    private final Map<WrappedPluginContainer, Object> modules = Maps.newConcurrentMap();
+    private final List<WrappedPluginContainer> modules = new ArrayList<>();
 
-    /** Get the modules that were added */
-    public Collection<PluginContainer> getModules() {
-        return ImmutableList.copyOf(modules.keySet());
+    protected SpongeDucktapeManager(Injector injector, Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap) {
+        super(injector, loaderMap);
     }
 
-    /** Inject modules with the parent injector */
-    public void injectModules(Injector injector) {
-        Set<Class<?>> pluginClasses = Sets.newHashSet();
-        // Find all modules
-        loadAll(Paths.get(MOD_PATH), collection -> {
-            collection.forEach(clazz -> {
-                Plugin plugin = clazz.getAnnotation(Plugin.class);
-                if (plugin != null) {
-                    pluginClasses.add(clazz);
+    /** Load all classes from the selected path */
+    protected Set<Class<?>> loadAll() throws ModuleInitException {
+        Set<Class<?>> classes = new HashSet<>();
+        this.loaders.forEach((key, value) -> {
+            if (loaded.contains(key)) {
+                throw new ModuleInitException(ModuleInfo.Phase.LOADING, new IllegalStateException("Can not load the same loader twice."));
+            }
+            Collection<Class<?>> loadedClasses = value.load();
+                loadedClasses.forEach(clazz -> {
+                Module module = clazz.getAnnotation(Module.class);
+                if (module != null) {
+                    modules.add(new WrappedPluginContainer(clazz));
                 }
             });
+            classes.addAll(loadedClasses);
+            loaded.add(key);
         });
-        // Init the modules and inject the fields
-        pluginClasses.forEach(clazz -> {
-            try {
-                Object plugin = Reflections.instance(clazz).getOrThrow();
-                injector.injectMembers(plugin); // Inject
-                modules.put(new WrappedPluginContainer(plugin), plugin);
-            } catch (Exception error) {
-                ErrorReporter.builder(error)
-                    .add("Problem constructing module")
-                    .add("Class: ", clazz)
-                    .buildAndReport(System.err);
-            }
-        });
+        return classes;
     }
+
+    public Collection<WrappedPluginContainer> getWrappedModules() {
+        return this.modules;
+    }
+
+//    /** Inject modules with the parent injector */
+//    public void injectModules(Injector injector) {
+//        Set<Class<?>> pluginClasses = Sets.newHashSet();
+//        // Find all modules
+//        loadAll(Paths.get(MOD_PATH), collection -> {
+//            collection.forEach(clazz -> {
+//                Plugin plugin = clazz.getAnnotation(Plugin.class);
+//                if (plugin != null) {
+//                    pluginClasses.add(clazz);
+//                }
+//            });
+//        });
+//        // Init the modules and inject the fields
+//        pluginClasses.forEach(clazz -> {
+//            try {
+//                Object plugin = Reflections.instance(clazz).getOrThrow();
+//                injector.injectMembers(plugin); // Inject
+//                modules.put(new WrappedPluginContainer(plugin), plugin);
+//            } catch (Exception error) {
+//                ErrorReporter.builder(error)
+//                    .add("Problem constructing module")
+//                    .add("Class: ", clazz)
+//                    .buildAndReport(System.err);
+//            }
+//        });
+//    }
 
     /** Register the listeners found in the modules */
     public void registerListeners() {
-        modules.forEach((container, object) -> {
+        modules.forEach(container -> {
             try {
-                registerModuleListeners(container, object);
+                registerModuleListeners(container, getModule(container.getId()));
             } catch (Throwable throwable) {
                 ErrorReporter.builder(throwable)
                     .hideStackTrace()
@@ -101,6 +119,19 @@ public class SpongeModuleManager extends ModuleManager {
                         .buildAndReport(System.err);
                 }
             });
+        }
+    }
+
+    public static SpongeDucktapeManagerBuilder builder() {
+        return new SpongeDucktapeManagerBuilder();
+    }
+
+    /** This will build the ducktape manager environment with the correct module loaders and guice injector */
+    public static class SpongeDucktapeManagerBuilder extends DucktapeManagerBuilder {
+        @Override
+        public Ducktape build() {
+            Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap = loaderMapReduce();
+            return new SpongeDucktapeManager(injectorValue.getOrElse(Guice.createInjector()), loaderMap);
         }
     }
 }

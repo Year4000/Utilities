@@ -8,7 +8,7 @@ import com.google.inject.*;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.*;
 import net.year4000.utilities.ducktape.module.Module;
-import net.year4000.utilities.ducktape.module.ModuleInfo;
+import net.year4000.utilities.ducktape.module.internal.ModuleInfo;
 import net.year4000.utilities.ducktape.module.ModuleWrapper;
 
 import java.util.Map;

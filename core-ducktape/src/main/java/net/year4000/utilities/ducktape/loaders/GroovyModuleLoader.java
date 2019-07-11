@@ -1,14 +1,15 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 package net.year4000.utilities.ducktape.loaders;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.Sets;
 import groovy.lang.GroovyClassLoader;
-import net.year4000.utilities.ducktape.ModuleManager;
+import net.year4000.utilities.Conditions;
+import net.year4000.utilities.ducktape.ModuleInitException;
+import net.year4000.utilities.ducktape.module.ModuleInfo;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,12 +27,25 @@ import java.util.Set;
  * into the class loader for the current running JVM.
  */
 public class GroovyModuleLoader implements ModuleLoader {
+    private final Path dir;
+
+    public GroovyModuleLoader(Path dir) {
+        this.dir = Conditions.nonNull(dir, "dir must exist");
+    }
+
+    @Override
+    public Collection<Class<?>> load() throws ModuleInitException {
+        try {
+            return load(this.dir);
+        } catch (IOException error) {
+            throw new ModuleInitException(ModuleInfo.Phase.LOADING, error);
+        }
+    }
 
     /** Load any groovy script that ends with .groovy */
-    @Override
     public Collection<Class<?>> load(Path dir) throws IOException {
         Set<Class<?>> classes = Sets.newLinkedHashSet();
-        Class<?> clazzLoader = ModuleManager.class;
+        Class<?> clazzLoader = GroovyModuleLoader.class;
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(checkNotNull(dir))) {
             for (Path path : stream) {
                 if (!path.toString().endsWith(".groovy")) {
@@ -50,7 +64,6 @@ public class GroovyModuleLoader implements ModuleLoader {
                 classes.add(clazz);
             }
         }
-
         return classes;
     }
 }

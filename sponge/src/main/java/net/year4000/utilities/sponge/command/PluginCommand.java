@@ -134,7 +134,7 @@ public final class PluginCommand implements CommandExecutor {
     public List<PluginContainer> plugins() {
         return ImmutableList.<PluginContainer>builder()
             .addAll(new ArrayList<>(pluginManager.getPlugins()))
-            .addAll(Utilities.get().getModuleManager().getModules())
+            .addAll(Utilities.get().getModuleManager().getWrappedModules())
             .build();
     }
 }
