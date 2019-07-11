@@ -84,27 +84,22 @@ final class Handlers {
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
         if (!invoke.signature().isEmpty()) { // Search by signature
             Method signature = findMethod(invoke.signature(), classInstance, invoke.value(), invoke.index());
-            MethodHandle handle = Handlers.lookup.unreflect(signature);
-            if (instance != null) {
-                handle = handle.bindTo(instance);
-            }
+            MethodHandle handle = method.isAnnotationPresent(Static.class)
+                ? Handlers.lookup.unreflect(signature)
+                : Handlers.lookup.unreflect(signature).bindTo(instance);
             return handleBridge(method, handle::invokeWithArguments);
         }
-        // All else
+        // No signature lookup
         String name = Value.of(invoke.value()).getOrElse(method.getName());
-        if (method.isAnnotationPresent(Bridge.class)) {
-            if (method.isAnnotationPresent(Static.class)) {
-                MethodHandle handle = Handlers.lookup.findStatic(classInstance, name, MethodType.methodType(reflectiveClass(method.getReturnType()), method.getParameterTypes()));
-                return handleBridge(method, handle::invokeWithArguments);
-            }
-            MethodHandle handle = Handlers.lookup.findVirtual(classInstance, name, MethodType.methodType(reflectiveClass(method.getReturnType()), method.getParameterTypes())).bindTo(instance);
-            return handleBridge(method, handle::invokeWithArguments);
-        }
-        if (method.isAnnotationPresent(Static.class)) {
-            MethodHandle handle = Handlers.lookup.findStatic(classInstance, name, MethodType.methodType(method.getReturnType(), method.getParameterTypes()));
-            return handleBridge(method, handle::invokeWithArguments);
-        }
-        MethodHandle handle = Handlers.lookup.findVirtual(classInstance, name, MethodType.methodType(method.getReturnType(), method.getParameterTypes())).bindTo(instance);
+        // When the bridge is detected use the reflectiveClass not the class of the return type
+        Class<?> returnType = method.isAnnotationPresent(Bridge.class)
+            ? reflectiveClass(method.getReturnType())
+            : method.getReturnType();
+        MethodType methodType = MethodType.methodType(returnType, method.getParameterTypes());
+        // When static use the static method handle lookup
+        MethodHandle handle = method.isAnnotationPresent(Static.class)
+            ? Handlers.lookup.findStatic(classInstance, name, methodType)
+            : Handlers.lookup.findVirtual(classInstance, name, methodType).bindTo(instance);
         return handleBridge(method, handle::invokeWithArguments);
     }
 
@@ -112,25 +107,23 @@ final class Handlers {
     static MethodHandler getterHandle(Method method, @Nullable Object instance) throws NoSuchFieldException, IllegalAccessException {
         Getter getter = method.getAnnotation(Getter.class);
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
-        if (!getter.signature().isEmpty()) {
+        if (!getter.signature().isEmpty()) { // Search by signature
             Field signature = findField(getter.signature(), classInstance, getter.value(), getter.index());
-            MethodHandle handle = instance != null ? Handlers.lookup.unreflectGetter(signature).bindTo(instance) : Handlers.lookup.unreflectGetter(signature);
+            MethodHandle handle = method.isAnnotationPresent(Static.class)
+                ? Handlers.lookup.unreflectGetter(signature)
+                : Handlers.lookup.unreflectGetter(signature).bindTo(instance);
             return handleBridge(method, handle::invokeWithArguments);
         }
+        // No signature lookup
         String name = Value.of(getter.value()).getOrElse(method.getName());
-        if (method.isAnnotationPresent(Bridge.class)) {
-            if (method.isAnnotationPresent(Static.class)) {
-                MethodHandle handle = Handlers.lookup.findStaticGetter(classInstance, name, reflectiveClass(method.getReturnType()));
-                return handleBridge(method, handle::invokeWithArguments);
-            }
-            MethodHandle handle = Handlers.lookup.findGetter(classInstance, name, reflectiveClass(method.getReturnType())).bindTo(instance);
-            return handleBridge(method, handle::invokeWithArguments);
-        }
-        if (method.isAnnotationPresent(Static.class)) {
-            MethodHandle handle = Handlers.lookup.findStaticGetter(classInstance, name, method.getReturnType());
-            return handleBridge(method, handle::invokeWithArguments);
-        }
-        MethodHandle handle = Handlers.lookup.findGetter(classInstance, name, method.getReturnType()).bindTo(instance);
+        // When the bridge is detected use the reflectiveClass not the class of the return type
+        Class<?> returnType = method.isAnnotationPresent(Bridge.class)
+            ? reflectiveClass(method.getReturnType())
+            : method.getReturnType();
+        // When static use the static method handle lookup
+        MethodHandle handle = method.isAnnotationPresent(Static.class)
+            ? Handlers.lookup.findStaticGetter(classInstance, name, returnType)
+            : Handlers.lookup.findGetter(classInstance, name, returnType).bindTo(instance);
         return handleBridge(method, handle::invokeWithArguments);
     }
 
@@ -138,32 +131,29 @@ final class Handlers {
     static MethodHandler setterHandle(Method method, @Nullable Object instance) throws NoSuchFieldException, IllegalAccessException {
         Setter setter = method.getAnnotation(Setter.class);
         Class<?> classInstance = reflectiveClass(method.getDeclaringClass());
-        if (!setter.signature().isEmpty()) {
+        if (!setter.signature().isEmpty()) { // Search by signature
             Field signature = findField(setter.signature(), classInstance, setter.value(), setter.index());
-            MethodHandle handle = instance != null ? Handlers.lookup.unreflectSetter(signature).bindTo(instance) : Handlers.lookup.unreflectSetter(signature);
+            MethodHandle handle = method.isAnnotationPresent(Static.class)
+                ? Handlers.lookup.unreflectSetter(signature)
+                : Handlers.lookup.unreflectSetter(signature).bindTo(instance);
             return handle::invokeWithArguments;
         }
+        // No signature lookup
         String name = Value.of(method.getAnnotation(Setter.class).value()).getOrElse(method.getName());
-        if (method.isAnnotationPresent(Static.class)) {
-            Class<?> setterArgument = method.getParameterTypes()[0];
-            if (setterArgument.isAnnotationPresent(Proxied.class)) {
-                MethodHandle handle = Handlers.lookup.findStaticSetter(classInstance, name, reflectiveClass(setterArgument));
-                return handle::invokeWithArguments;
-            }
-            MethodHandle handle = Handlers.lookup.findStaticSetter(classInstance, name, method.getParameterTypes()[0]);
-            return handle::invokeWithArguments;
-        }
-        Class<?> setterArgument = method.getParameterTypes()[0];
-        if (setterArgument.isAnnotationPresent(Proxied.class)) {
-            MethodHandle handle = Handlers.lookup.findSetter(classInstance, name, reflectiveClass(setterArgument)).bindTo(instance);
-            return handle::invokeWithArguments;
-        }
-        MethodHandle handle = Handlers.lookup.findSetter(classInstance, name, method.getParameterTypes()[0]).bindTo(instance);
+        Class<?> setterParameter = method.getParameterTypes()[0];
+        // When a proxy is detected as the parameter use the reflectiveClass not the class of the parameter
+        Class<?> setterArgument = setterParameter.isAnnotationPresent(Proxied.class)
+            ? reflectiveClass(setterParameter)
+            : setterParameter;
+        // When static use the static method handle lookup
+        MethodHandle handle = setterArgument.isAnnotationPresent(Static.class)
+            ? Handlers.lookup.findStaticSetter(classInstance, name, setterArgument)
+            : Handlers.lookup.findSetter(classInstance, name, setterArgument).bindTo(instance);
         return handle::invokeWithArguments;
     }
 
     /** Create the default keyword method handle */
-    static MethodHandler defaultHandle(Method method, @Nullable Object instance) throws Throwable {
+    static MethodHandler defaultHandle(Method method, Object instance) throws Throwable {
         Class<?> proxyClass = method.getDeclaringClass();
         MethodHandle handle = Handlers.lookup.unreflectSpecial(method, proxyClass).bindTo(instance);
         return handle::invokeWithArguments;
