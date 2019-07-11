@@ -35,10 +35,24 @@ public class SettingsModule extends AbstractModule {
                     String typeString = type.toString();
                     String genericType = typeString.substring(typeString.indexOf("<") + 1, typeString.indexOf(">"));
                     Class<?> settingsClass = Reflections.clazz(genericType).getOrThrow();
-                    System.out.println("foundSettingsClass: " + settingsClass);
-                    String fileName = settingsClass.getAnnotation(SettingsBase.class).value();
-                    System.out.println("foundSettingsClass: " + fileName);
-
+//<<<<<<< HEAD
+//                    System.out.println("foundSettingsClass: " + settingsClass);
+//                    String fileName = settingsClass.getAnnotation(SettingsBase.class).value();
+//                    System.out.println("foundSettingsClass: " + fileName);
+//
+//=======
+//                    //System.out.println("foundSettingsClass: " + settingsClass);
+//
+//                    // when members are injected
+//                    encounter.register((MembersInjector<I>) instance -> {
+//                        Gson gson = new GsonBuilder().create();
+//
+//                        // create instance right now, later have something else handle it
+//                        //((Settings) instance).instance = Reflections.instance(settingsClass).getOrThrow();
+//                        //System.out.println("MembersInjector settings: " + instance);
+//
+//                    });
+//>>>>>>> More ducktape work
                     // after members has been injected
                     encounter.register((InjectionListener<I>) instance -> {
 

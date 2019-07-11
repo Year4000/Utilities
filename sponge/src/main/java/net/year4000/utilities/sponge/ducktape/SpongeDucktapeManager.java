@@ -11,6 +11,7 @@ import net.year4000.utilities.ducktape.*;
 import net.year4000.utilities.ducktape.loaders.ModuleLoader;
 import net.year4000.utilities.ducktape.module.Module;
 import net.year4000.utilities.ducktape.module.internal.ModuleInfo;
+import net.year4000.utilities.reflection.Reflections;
 import net.year4000.utilities.sponge.Utilities;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Event;
