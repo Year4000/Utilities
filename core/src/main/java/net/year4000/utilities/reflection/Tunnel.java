@@ -39,14 +39,14 @@ class Tunnel<T> implements InvocationHandler {
     Tunnel(Class<T> clazz, Object instance) {
         this.clazz = clazz;
         this.instance = Conditions.nonNull(instance, "instance");
-        this.internalMethods = populateInternalMethods(instance);
+        this.internalMethods = populateInternalMethods();
     }
 
     // Static proxy that access statics only
     Tunnel(Class<T> clazz) {
         this.clazz = clazz;
         this.instance = null; // static proxy
-        this.internalMethods = populateInternalMethods(null);
+        this.internalMethods = populateInternalMethods();
     }
 
     /** This is a prototype to have a decorated method of DuckType classes */
@@ -73,7 +73,7 @@ class Tunnel<T> implements InvocationHandler {
     }
 
     /** Create a set of internal methods that will run instead of the default behavior */
-    private Map<String, InvocationHandler> populateInternalMethods(Object instance) {
+    private Map<String, InvocationHandler> populateInternalMethods() {
         return ImmutableMap.<String, InvocationHandler>builder()
             .putAll(createDecoratedMethods())
             // Allow getting the actual instance, bypassing proxy handles
