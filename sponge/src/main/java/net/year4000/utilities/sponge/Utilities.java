@@ -8,6 +8,7 @@ import com.google.inject.Injector;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.Tokens;
 import net.year4000.utilities.ducktape.loaders.GroovyModuleLoader;
+import net.year4000.utilities.sponge.command.FlyCommand;
 import net.year4000.utilities.sponge.command.PluginCommand;
 import net.year4000.utilities.sponge.command.SystemCommand;
 import net.year4000.utilities.sponge.ducktape.SpongeDucktapeManager;
@@ -75,7 +76,7 @@ public final class Utilities extends AbstractSpongePlugin {
     public void onUtilitiesInit(GameInitializationEvent event) {
         Messages.Factory.inst.get(); // Trigger a download from server now so it can cache it for later
         PluginCommand.register(this, injector);
-        // FlyCommand.register(this, injector); todo disable, should be in drip
+        FlyCommand.register(this, injector);
         SystemCommand.register(this, injector);
     }
 
