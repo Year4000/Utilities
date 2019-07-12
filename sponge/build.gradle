@@ -25,6 +25,7 @@ compileJava.options.encoding = 'UTF-8'
 
 spongestarter {
     deleteJar false
+    rootProject 'sponge'
 }
 
 jar {
