@@ -70,6 +70,7 @@ public final class Utilities extends AbstractSpongePlugin {
         packets = setProvider(Packets.class, Packets.manager());
         holograms = setProvider(Holograms.class, Holograms.manager());
         moduleManager.enable();
+        moduleManager.registerListeners();
     }
 
     @Listener
