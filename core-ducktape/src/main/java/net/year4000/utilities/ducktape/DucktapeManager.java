@@ -15,10 +15,13 @@ import net.year4000.utilities.ducktape.module.Enabler;
 import net.year4000.utilities.ducktape.module.internal.ModuleInfo;
 import net.year4000.utilities.ducktape.module.ModuleWrapper;
 import net.year4000.utilities.value.Value;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class DucktapeManager extends AbstractModule implements Ducktape {
+    private final Logger logger = LogManager.getLogger("utilities/ducktape");
     /** The set of current loaded modules */
     protected Set<Class<? extends ModuleLoader>> loaded = new LinkedHashSet<>();
     /** A map of all loaders stored by their class */
@@ -48,9 +51,9 @@ public class DucktapeManager extends AbstractModule implements Ducktape {
 
     @Override
     public void load() throws ModuleInitException {
-        System.out.println("Loading module classes from the loaders");
+        logger.info("Loading module classes from the loaders");
         Set<Class<?>> classes = loadAll();
-        System.out.println("Setting up the injector");
+        logger.info("Setting up the injector");
         // todo think? use child injector or our own injector, is we use a child injector sponge plugins will work, if not modules only have our bindings
         this.injector = this.injector.createChildInjector(this, new ModulesInitModule(classes), new DucktapeModule(this.modules), new SettingsModule());
         //this.injector = Guice.createInjector(this, new ModulesInitModule(classes), new DucktapeModule(this.modules), new SettingsModule());
@@ -58,7 +61,7 @@ public class DucktapeManager extends AbstractModule implements Ducktape {
 
     @Override
     public void enable() throws ModuleInitException {
-        System.out.println("Enabling modules: " + this.modules);
+        logger.info("Enabling modules: " + this.modules);
         this.modules.values().forEach(Enabler::enable);
     }
 

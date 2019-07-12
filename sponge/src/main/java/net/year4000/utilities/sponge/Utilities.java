@@ -59,7 +59,7 @@ public final class Utilities extends AbstractSpongePlugin {
     public void onConstruct(GameConstructionEvent event) {
         this.moduleManager = (SpongeDucktapeManager) SpongeDucktapeManager.builder()
             .setInjector(this.injector)
-            .addLoader(new GroovyModuleLoader(Paths.get("/mods")))
+            .addLoader(new GroovyModuleLoader(Paths.get(SpongeDucktapeManager.MOD_PATH)))
             .build();
         this.moduleManager.load();
     }

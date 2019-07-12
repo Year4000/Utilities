@@ -8,9 +8,12 @@ import net.year4000.utilities.annotations.Nullable;
 import net.year4000.utilities.ducktape.module.Module;
 import net.year4000.utilities.ducktape.module.ModuleHandle;
 import net.year4000.utilities.value.Value;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** The module info class is for the implementation of it's interface */
 public final class ModuleInfo implements net.year4000.utilities.ducktape.module.ModuleInfo {
+    private final Logger logger = LogManager.getLogger("utilities/ducktape");
     private Phase phase = Phase.CONSTRUCTING;
     private Class<?> moduleClass;
     private Module annotation;
@@ -50,20 +53,20 @@ public final class ModuleInfo implements net.year4000.utilities.ducktape.module.
 
     /** Called when the module class is being constructed */
     public void constructing() {
-        System.out.println("Constructing: " + this);
+        logger.info("Constructing: {}", this);
     }
 
     /** Called when the module is being loaded*/
     @Override
     public void load() {
-        System.out.println("Loading: " + this);
+        logger.info("Loading: {}", this);
         this.phase = Phase.LOADED;
     }
 
     /** Called when the module is being enabled */
     @Override
     public void enable() {
-        System.out.println("Enabling: " + this);
+        logger.info("Enabling: {}", this);
         this.phase = Phase.ENABLED;
     }
 
