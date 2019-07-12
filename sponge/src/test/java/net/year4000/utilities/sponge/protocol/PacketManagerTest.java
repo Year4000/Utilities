@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class PacketManagerTest {
     private final PacketManager packets = new PacketManager();
-    private final Class<?> clazz = PacketManagerTest.class;
+    private final Class<?> clazz = getClass();
     private final PacketListener packetListener = (player, packet) -> false;
 
     @Test

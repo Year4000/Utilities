@@ -14,7 +14,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
 apply plugin: 'org.spongepowered.plugin'
@@ -37,20 +37,23 @@ jar {
 assemble.dependsOn shadowJar {
     baseName = utilities.name.toLowerCase()
     version = utilities.version
+    configurations += [project.configurations.compile]
+    configurations += [project.configurations.shadow]
 
-    dependencies {
-        include dependency('org.codehaus.groovy:groovy-all:.*') // core:ducktape
-        include dependency('redis.clients:jedis:.*') // core:redis
-        include dependency('net.year4000.utilities:.*')
-    }
+    exclude 'overview.html'
+    exclude 'overviewj.html'
+    exclude 'NOTICE'
+    exclude 'LICENSE'
 }
 
 dependencies {
     compile utilities.project('core')
     compile utilities.project('core-redis')
     compile utilities.project('core-ducktape')
-    compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
+    compile utilities.project('core-ducktape:loaders-groovy')
     compile 'io.netty:netty-all:4.1.5.Final'
+    compileOnly 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
+    testCompile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
 }
 
 idea {

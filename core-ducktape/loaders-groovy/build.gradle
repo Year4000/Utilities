@@ -1,7 +1,6 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
-
 plugins {
     id 'java'
 }
@@ -12,5 +11,6 @@ compileJava.options.encoding = 'UTF-8'
 
 dependencies {
     compile utilities.project('core')
-    compile 'com.google.inject:guice:4.0'
+    compile utilities.project('core-ducktape')
+    compile 'org.codehaus.groovy:groovy-all:2.4.6'
 }

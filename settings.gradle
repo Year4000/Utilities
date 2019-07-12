@@ -6,6 +6,7 @@ rootProject.name = 'Utilities'
 
 include 'core'
 include 'core-ducktape'
+include 'core-ducktape:loaders-groovy'
 include 'core-redis'
 include 'core-router'
 
