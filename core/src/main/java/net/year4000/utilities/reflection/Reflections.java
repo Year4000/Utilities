@@ -72,12 +72,11 @@ public final class Reflections {
         Conditions.nonNull(clazz, "clazz");
         Conditions.nonNullOrEmpty(method, "method");
         try {
-            Method invoke = clazz.getDeclaredMethod(method);
             if (args != null && args.length > 0) {
                 Class<?>[] types = Stream.of(args).map(Object::getClass).toArray(Class<?>[]::new);
-                invoke = clazz.getDeclaredMethod(method, types);
+                return Value.of(clazz.getDeclaredMethod(method, types));
             }
-            return Value.of(invoke);
+            return Value.of(clazz.getDeclaredMethod(method));
         } catch (ReflectiveOperationException error) {
             return Value.empty();
         }
@@ -107,10 +106,10 @@ public final class Reflections {
     public static Value<Object> invoke(Class<?> clazz, Object instance, String method, Object... args) throws SecurityException {
         try {
             // Find the method using the parameters with elevated access
-            Method methodElevated = methodElevated(clazz, method, args).get();
+            Method methodElevated = methodElevated(clazz, method, args).getOrThrow();
             Object inst = methodElevated.invoke(instance, args);
             return Value.of(inst);
-        } catch (ReflectiveOperationException error) {
+        } catch (ReflectiveOperationException | NullPointerException error) {
             return Value.empty();
         }
     }
@@ -166,12 +165,12 @@ public final class Reflections {
     public static boolean setter(Class<?> clazz, Object instance, String name, Object set) throws SecurityException {
         try {
             // Find the field using the parameters with elevated access
-            Field field = fieldElevated(clazz, name).get();
+            Field field = fieldElevated(clazz, name).getOrThrow();
             if (field != null) {
                 field.set(instance, set);
             }
             return true;
-        } catch (ReflectiveOperationException error) {
+        } catch (ReflectiveOperationException | NullPointerException error) {
             return false;
         }
     }
@@ -209,12 +208,12 @@ public final class Reflections {
     public static <T> Value<T> getter(Class<?> clazz, Object instance, String name) throws SecurityException {
         try {
             // Find the field using the parameters with elevated access
-            Field field = fieldElevated(clazz, name).get();
+            Field field = fieldElevated(clazz, name).getOrThrow();
             if (field != null) {
                 return Value.of((T) field.get(instance));
             }
             return Value.empty();
-        } catch (ReflectiveOperationException error) {
+        } catch (ReflectiveOperationException | NullPointerException error) {
             return Value.empty();
         }
     }
