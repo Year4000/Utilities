@@ -2,6 +2,10 @@ net.year4000.utilities
 net.year4000.utilities.cache
 net.year4000.utilities.database
 net.year4000.utilities.ducktape
+net.year4000.utilities.ducktape.loaders
+net.year4000.utilities.ducktape.module
+net.year4000.utilities.ducktape.module.internal
+net.year4000.utilities.ducktape.settings
 net.year4000.utilities.locale
 net.year4000.utilities.minecraft
 net.year4000.utilities.net
@@ -11,6 +15,7 @@ net.year4000.utilities.net.router.pipline
 net.year4000.utilities.redis
 net.year4000.utilities.reflection
 net.year4000.utilities.reflection.annotations
+net.year4000.utilities.reflection.lookups
 net.year4000.utilities.scheduler
 net.year4000.utilities.sponge
 net.year4000.utilities.sponge.command
