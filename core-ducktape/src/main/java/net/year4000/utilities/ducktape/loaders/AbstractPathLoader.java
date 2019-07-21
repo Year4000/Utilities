@@ -3,15 +3,18 @@
  */
 package net.year4000.utilities.ducktape.loaders;
 
+import com.google.common.collect.Sets;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.ducktape.ModuleInitException;
 import net.year4000.utilities.ducktape.module.ModuleInfo;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Set;
 
 /** An abstract class that will handle the checking of directory */
 public abstract class AbstractPathLoader {
@@ -44,13 +47,20 @@ public abstract class AbstractPathLoader {
 
     /** Load classes from where ever and create the collection of classes for the modules */
     public Collection<Class<?>> load() throws ModuleInitException {
+        Set<Class<?>> classes = Sets.newLinkedHashSet();
         try {
-            return load(this.directory());
+            classes.addAll(load(this.directory()));
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.directory())) {
+                for (Path path : stream) {
+                    classes.addAll(load(path));
+                }
+            }
         } catch (IOException error) {
             throw new ModuleInitException(ModuleInfo.Phase.LOADING, error);
         }
+        return classes;
     }
 
-    /** The implementation to gather the collection of classes */
-    protected abstract Collection<Class<?>> load(Path dir) throws IOException;
+    /** The implementation to gather the class for each directory */
+    protected abstract Collection<Class<?>> load(Path directory) throws IOException;
 }
