@@ -30,6 +30,6 @@ blossom {
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.5'
-    compile 'com.google.guava:guava:19.0'
+    compile 'com.google.code.gson:gson:2.8.5'
+    compile 'com.google.guava:guava:28.0-jre'
 }
