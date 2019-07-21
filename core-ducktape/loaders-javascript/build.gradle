@@ -1,0 +1,100 @@
+/*
+ * Copyright 2019 Year4000. All Rights Reserved.
+ */
+plugins {
+    id 'java'
+    id 'cpp'
+    id 'idea'
+}
+
+apply from: utilities.file('gradle/utilities.gradle')
+
+compileJava.options.encoding = 'UTF-8'
+
+sourceSets.main {
+    java.srcDir "${projectDir}/src/main/jni/"
+}
+
+dependencies {
+    compile utilities.project('core')
+    compile utilities.project('core-ducktape')
+}
+
+// todo install v8 within .gradle and compile it
+// todo look at this https://github.com/v8/v8/wiki/Getting-Started-with-Embedding
+
+// This ensures the library is generated before packaging the resources to be added to the jar
+processResources.dependsOn 'mapnodesSharedLibrary'
+
+// Compile the C++ JNI files for the project
+model {
+    components {
+        ducktape(NativeLibrarySpec) {
+            println "props: ${System.properties}"
+            println "Building on OS: ${System.getProperty('os.name')}"
+            def JAVA_HOME = System.getProperty('java.home')
+            println "Using JDK: ${JAVA_HOME}"
+
+            sources.cpp {
+                source {
+                    srcDir 'src/main/jni'
+                    include "**/*.cpp"
+                }
+
+                // JNI and extra lib header files
+                exportedHeaders {
+                    srcDir "${JAVA_HOME}/include"
+                    srcDir "${JAVA_HOME}/include/darwin"
+                    srcDir "${JAVA_HOME}/include/linux"
+                    srcDir "${rootProject.projectDir}/.gradle/v8/include"
+                    srcDir "${rootProject.projectDir}/.gradle/v8/include/libplatform"
+                }
+            }
+
+            buildTypes {
+                release
+            }
+        }
+    }
+
+    /*
+      Raw Command that gets ran at project root, if any problems just use this command.
+      Must have v8 cloned and compiled in the .gradle folder within the core sub module.
+
+      g++ -I ./core/.gradle/v8/include -I /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/include -I /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/include/darwin ./core/src/main/jni/net_year4000_mapnodes_v8_V8Engine.cpp -o ./core/build/libs/mapnodes/shared/libmapnodes.dylib -std=c++11 -fPIC -shared -Wl,./core/.gradle/v8/out.gn/x64.release/obj/libv8_lib{base,platform}.a
+
+      clang -I ./core/.gradle/v8/include -I /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/include -I /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/include/darwin ./core/src/main/jni/net_year4000_mapnodes_v8_V8Engine.cpp -o ./core/build/libs/mapnodes/shared/libmapnodes.dylib -std=c++11 -fPIC -Wl,-undefined -Wl,dynamic_lookup -Wl,./core/.gradle/v8/out.gn/x64.release/obj/libv8_lib{base,platform}.a
+     */
+    toolChains {
+        all {
+            eachPlatform {
+                cppCompiler.withArguments { args ->
+                    args << "-std=c++17"
+                    args << "-fPIC"
+                }
+                linker.withArguments { args ->
+                    args << "-shared"
+                    args << "${rootProject.projectDir}/.gradle/v8/out.gn/x64.release/obj/libv8_base.a"
+                    args << "${rootProject.projectDir}/.gradle/v8/out.gn/x64.release/obj/libv8_libbase.a"
+                    args << "${rootProject.projectDir}/.gradle/v8/out.gn/x64.release/obj/libv8_external_snapshot.a"
+                    args << "${rootProject.projectDir}/.gradle/v8/out.gn/x64.release/obj/libv8_libplatform.a"
+                    args << "${rootProject.projectDir}/.gradle/v8/out.gn/x64.release/obj/libv8_libsampler.a"
+                    args << "${rootProject.projectDir}/.gradle/v8/out.gn/x64.release/obj/third_party/icu/libicuuc.a"
+                    args << "${rootProject.projectDir}/.gradle/v8/out.gn/x64.release/obj/third_party/icu/libicui18n.a"
+                    args << "${rootProject.projectDir}/.gradle/v8/out.gn/x64.release/obj/src/inspector/libinspector.a"
+                }
+            }
+        }
+
+        gcc(Gcc) {}
+
+        clang(Clang) {
+            eachPlatform {
+                linker.withArguments { args ->
+                    args << "-undefined"
+                    args << "dynamic_lookup"
+                }
+            }
+        }
+    }
+}
