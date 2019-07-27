@@ -3,10 +3,13 @@
  */
 package net.year4000.utilities.reflection;
 
-import static net.year4000.utilities.reflection.Handlers.defaultHandle;
-import static net.year4000.utilities.reflection.Handlers.getterHandle;
-import static net.year4000.utilities.reflection.Handlers.invokeHandle;
-import static net.year4000.utilities.reflection.Handlers.setterHandle;
+import static net.year4000.utilities.reflection.MethodHandleHandlers.defaultHandle;
+import static net.year4000.utilities.reflection.MethodHandleHandlers.methodHandle$getterHandle;
+import static net.year4000.utilities.reflection.MethodHandleHandlers.methodHandle$invokeHandle;
+import static net.year4000.utilities.reflection.MethodHandleHandlers.methodHandle$setterHandle;
+import static net.year4000.utilities.reflection.ReflectionHandlers.reflection$getterHandle;
+import static net.year4000.utilities.reflection.ReflectionHandlers.reflection$invokeHandle;
+import static net.year4000.utilities.reflection.ReflectionHandlers.reflection$setterHandle;
 
 import com.google.common.annotations.Beta;
 import com.google.common.cache.Cache;
@@ -14,10 +17,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.ErrorReporter;
-import net.year4000.utilities.reflection.annotations.Decorator;
-import net.year4000.utilities.reflection.annotations.Getter;
-import net.year4000.utilities.reflection.annotations.Invoke;
-import net.year4000.utilities.reflection.annotations.Setter;
+import net.year4000.utilities.reflection.annotations.*;
 import net.year4000.utilities.reflection.lookups.SignatureLookup;
 
 import java.lang.annotation.Annotation;
@@ -107,16 +107,25 @@ class Tunnel<T> implements InvocationHandler {
 
         // Cache does not exist create one
         if (method.isAnnotationPresent(Invoke.class)) {
-            MethodHandler handle = invokeHandle(method, this.instance);
+            Invoke invoke = method.getAnnotation(Invoke.class);
+            MethodHandler handle = invoke.methodHandle()
+                ? methodHandle$invokeHandle(invoke, method, this.instance)
+                : reflection$invokeHandle(invoke, method, this.instance);
             this.cache.put(method, handle);
             return handle.handle(args);
         } else if (method.isAnnotationPresent(Setter.class)) {
             Conditions.inRange(args.length, 1, 1); // make sure there is only one argument
-            MethodHandler handle = setterHandle(method, this.instance);
+            Setter setter = method.getAnnotation(Setter.class);
+            MethodHandler handle = setter.methodHandle()
+                ? methodHandle$setterHandle(setter, method, this.instance)
+                : reflection$setterHandle(setter, method, this.instance);
             this.cache.put(method, handle);
             return handle.handle(args);
         } else if (method.isAnnotationPresent(Getter.class)) {
-            MethodHandler handle = getterHandle(method, this.instance);
+            Getter getter = method.getAnnotation(Getter.class);
+            MethodHandler handle = getter.methodHandle()
+                ? methodHandle$getterHandle(getter, method, this.instance)
+                : reflection$getterHandle(getter, method, this.instance);
             this.cache.put(method, handle);
             return handle.handle(args);
         } else if (method.isDefault()) {
@@ -134,7 +143,7 @@ class Tunnel<T> implements InvocationHandler {
 
         // Last if no others are found use the declaring classes method
         // Such as hashCode, toString, ect
-        return Handlers.lookup.unreflect(method).bindTo(this.instance).invokeWithArguments(args);
+        return MethodHandleHandlers.lookup.unreflect(method).bindTo(this.instance).invokeWithArguments(args);
     }
 
     /** Wraps the error from invokable and print out details */
