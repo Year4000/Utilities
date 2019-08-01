@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
 
-/** @Deprecated see DucktapeManager for future module stuff */
+/** Deprecated see DucktapeManager for future module stuff */
 @Deprecated
 public class ModuleManager {
     /** The set of current loaded modules */
