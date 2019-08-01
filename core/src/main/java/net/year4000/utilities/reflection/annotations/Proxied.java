@@ -17,4 +17,7 @@ public @interface Proxied {
 
     /** When fetching the class by the name should the class be inited */
     boolean init() default false;
+
+    /** Should this proxy use the method handles implementation or just use reflection by default */
+    boolean methodHandle() default false;
 }

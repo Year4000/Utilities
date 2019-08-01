@@ -34,10 +34,12 @@ class Tunnel<T> implements InvocationHandler {
     private final Map<String, InvocationHandler> internalMethods;
     private final Object instance;
     private final Class<T> clazz;
+    private final boolean useMethodHandle;
 
     // Normal proxy with an instance
     Tunnel(Class<T> clazz, Object instance) {
         this.clazz = clazz;
+        this.useMethodHandle = clazz.getAnnotation(Proxied.class).methodHandle();
         this.instance = Conditions.nonNull(instance, "instance");
         this.internalMethods = populateInternalMethods();
     }
@@ -45,6 +47,7 @@ class Tunnel<T> implements InvocationHandler {
     // Static proxy that access statics only
     Tunnel(Class<T> clazz) {
         this.clazz = clazz;
+        this.useMethodHandle = clazz.getAnnotation(Proxied.class).methodHandle();
         this.instance = null; // static proxy
         this.internalMethods = populateInternalMethods();
     }
@@ -108,7 +111,7 @@ class Tunnel<T> implements InvocationHandler {
         // Cache does not exist create one
         if (method.isAnnotationPresent(Invoke.class)) {
             Invoke invoke = method.getAnnotation(Invoke.class);
-            MethodHandler handle = invoke.methodHandle()
+            MethodHandler handle = this.useMethodHandle || invoke.methodHandle()
                 ? methodHandle$invokeHandle(invoke, method, this.instance)
                 : reflection$invokeHandle(invoke, method, this.instance);
             this.cache.put(method, handle);
@@ -116,14 +119,14 @@ class Tunnel<T> implements InvocationHandler {
         } else if (method.isAnnotationPresent(Setter.class)) {
             Conditions.inRange(args.length, 1, 1); // make sure there is only one argument
             Setter setter = method.getAnnotation(Setter.class);
-            MethodHandler handle = setter.methodHandle()
+            MethodHandler handle = this.useMethodHandle || setter.methodHandle()
                 ? methodHandle$setterHandle(setter, method, this.instance)
                 : reflection$setterHandle(setter, method, this.instance);
             this.cache.put(method, handle);
             return handle.handle(args);
         } else if (method.isAnnotationPresent(Getter.class)) {
             Getter getter = method.getAnnotation(Getter.class);
-            MethodHandler handle = getter.methodHandle()
+            MethodHandler handle = this.useMethodHandle || getter.methodHandle()
                 ? methodHandle$getterHandle(getter, method, this.instance)
                 : reflection$getterHandle(getter, method, this.instance);
             this.cache.put(method, handle);
