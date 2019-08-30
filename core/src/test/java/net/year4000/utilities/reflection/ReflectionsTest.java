@@ -27,6 +27,10 @@ public class ReflectionsTest {
             return "bar";
         }
 
+        private String echo(String echo) {
+            return echo;
+        }
+
         @Override
         public int compareTo(MyObject other) {
             return 1;
@@ -96,5 +100,13 @@ public class ReflectionsTest {
         Assert.assertTrue(value.isPresent());
         Assert.assertEquals(object.foo(), value.get());
         Assert.assertEquals("foo", Reflections.invoke(MyObject.class, "bar").get());
+    }
+
+    @Test
+    public void methodWithArgsTest() {
+        MyObject object = new MyObject();
+        Value<Object> value = Reflections.invoke(object, "echo", "echo");
+        Assert.assertTrue(value.isPresent());
+        Assert.assertEquals(object.echo("echo"), value.get());
     }
 }
