@@ -27,44 +27,49 @@ build.dependsOn shadowJar {
     dependencies {
         include dependency('redis.clients:jedis:.*')
         include dependency('com.comphenix.packetwrapper:PacketWrapper:.*')
-        include dependency('com.sk89q:command-framework-bukkit:.*')
+//        include dependency('com.sk89q:command-framework-bukkit:.*')
         include dependency('net.year4000.utilities:.*')
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': utilities.name
+        attributes 'Implementation-Version': utilities.version
     }
 }
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'oc-tc'
-        url = 'https://repo.oc.tc/content/repositories/public'
-    }
+//    maven {
+//        name = 'oc-tc'
+//        url = 'https://repo.oc.tc/content/repositories/public'
+//    }
     maven {
         name = 'spigot'
         url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
     }
     maven {
         name = 'dmulloy2'
-        url = 'http://repo.dmulloy2.net/content/groups/public/'
+        url = 'http://repo.dmulloy2.net/nexus/repository/public/'
     }
 }
 
 dependencies {
     compile utilities.project('core')
     compile utilities.project('core-redis')
-    compile utilities.project('core-minecraft')
-    compile utilities.project('core-locale')
-    compile utilities.project('core-sdk')
-    compile utilities.project('core-scheduler')
-    compile 'org.spigotmc:spigot-api:1.8.7-R0.1-SNAPSHOT'
-    compile ('com.comphenix.protocol:ProtocolLib:3.6.5-SNAPSHOT') {
+    compile 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
+    // update to 1.14, using 1.13 for compile only
+    compile ('com.comphenix.protocol:ProtocolLib:4.4.0') {
         exclude module: 'bukkit'
     }
-    compile ('com.comphenix.packetwrapper:PacketWrapper:1.8.7-R0.1-SNAPSHOT') {
+    // update to 1.14, using 1.13 for compile only
+    compile ('com.comphenix.packetwrapper:PacketWrapper:1.13-R0.1-SNAPSHOT') {
         exclude module: 'bukkit'
         exclude module: 'spigot'
     }
-    compile ('com.sk89q:command-framework-bukkit:0.5-SNAPSHOT') {
-        exclude module: 'spigot'
-        exclude module: 'bukkit'
-    }
+//    compile ('com.sk89q:command-framework-bukkit:0.5-SNAPSHOT') {
+//        exclude module: 'spigot'
+//        exclude module: 'bukkit'
+//    }
 }

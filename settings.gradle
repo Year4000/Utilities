@@ -15,4 +15,4 @@ include 'sponge'
 
 //include 'bungee'
 
-//include 'spigot'
+include 'spigot'

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
 
 package net.year4000.utilities.bukkit.protocol;
@@ -110,7 +110,7 @@ public class ResourcePacks implements Closeable {
             WrapperPlayClientResourcePackStatus resource = new WrapperPlayClientResourcePackStatus(event.getPacket());
 
             Optional<PackWrapper> wrapper = packs.values().stream()
-                .filter(packWrapper -> packWrapper.hash.equals(resource.getHash()))
+                .filter(packWrapper -> packWrapper.hash.equals(resource.getResult().name()))
                 .findFirst();
 
             wrapper.ifPresent(packWrapper -> packWrapper.consumer.accept(event.getPlayer(), resource.getResult()));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
 
 package net.year4000.utilities.bukkit;
@@ -30,7 +30,7 @@ public final class BukkitUtil {
             put(Color.ORANGE, DyeColor.ORANGE);
             put(Color.PURPLE, DyeColor.PURPLE);
             put(Color.RED, DyeColor.RED);
-            put(Color.SILVER, DyeColor.SILVER);
+            put(Color.SILVER, DyeColor.LIGHT_GRAY);
             put(Color.YELLOW, DyeColor.YELLOW);
             put(Color.WHITE, DyeColor.WHITE);
             put(Color.TEAL, DyeColor.LIGHT_BLUE);
@@ -49,7 +49,7 @@ public final class BukkitUtil {
             put(DyeColor.ORANGE, Color.ORANGE);
             put(DyeColor.PURPLE, Color.PURPLE);
             put(DyeColor.RED, Color.RED);
-            put(DyeColor.SILVER, Color.SILVER);
+            put(DyeColor.LIGHT_GRAY, Color.SILVER);
             put(DyeColor.YELLOW, Color.YELLOW);
             put(DyeColor.WHITE, Color.WHITE);
             put(DyeColor.CYAN, Color.TEAL);
@@ -67,7 +67,7 @@ public final class BukkitUtil {
             put(ChatColor.DARK_PURPLE, DyeColor.PURPLE);
             put(ChatColor.DARK_RED, DyeColor.RED);
             put(ChatColor.GOLD, DyeColor.ORANGE);
-            put(ChatColor.GRAY, DyeColor.SILVER);
+            put(ChatColor.GRAY, DyeColor.LIGHT_GRAY);
             put(ChatColor.GREEN, DyeColor.LIME);
             put(ChatColor.LIGHT_PURPLE, DyeColor.MAGENTA);
             put(ChatColor.RED, DyeColor.RED);

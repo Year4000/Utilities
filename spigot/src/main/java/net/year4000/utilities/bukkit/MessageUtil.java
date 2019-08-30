@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Year4000. All Rights Reserved.
+ * Copyright 2019 Year4000. All Rights Reserved.
  */
 
 package net.year4000.utilities.bukkit;
@@ -7,7 +7,7 @@ package net.year4000.utilities.bukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public final class MessageUtil extends net.year4000.utilities.mc.MessageUtil {
+public final class MessageUtil extends net.year4000.utilities.minecraft.MessageUtil {
     private MessageUtil() {
     }
 
