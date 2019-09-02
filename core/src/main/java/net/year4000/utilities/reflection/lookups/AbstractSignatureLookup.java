@@ -99,7 +99,7 @@ public abstract class AbstractSignatureLookup<T> implements SignatureLookup<T> {
             for (int i = 0 ; i < str.length(); i++) {
                 int a = i;
                 if (str.charAt(i) == '[') { // Process arrays
-                    while (str.charAt(a) == '[' && i < str.length()) {
+                    while (str.charAt(a) == '[') {
                         a++;
                     }
                 }
@@ -112,7 +112,7 @@ public abstract class AbstractSignatureLookup<T> implements SignatureLookup<T> {
                     i = a;
                 }
             }
-            return Value.of(args.toArray(new Class<?>[args.size()]));
+            return Value.of(args.toArray(new Class<?>[]{}));
         } catch (ClassNotFoundException exception) {
             return Value.empty();
         }

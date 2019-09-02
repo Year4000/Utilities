@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 
 import java.lang.reflect.Field;
+import java.util.Comparator;
 
 /** Look of fields know for the class */
 class FieldSignatureLookup extends AbstractSignatureLookup<Field> {
@@ -39,6 +40,6 @@ class FieldSignatureLookup extends AbstractSignatureLookup<Field> {
     /** Sort by field name as that is the only valid choice */
     @Override
     public ImmutableSortedSet<Field> findSorted() {
-        return ImmutableSortedSet.copyOf((left, right) -> left.getName().compareTo(right.getName()), find());
+        return ImmutableSortedSet.copyOf(Comparator.comparing(Field::getName), find());
     }
 }

@@ -20,4 +20,7 @@ public @interface Setter {
 
     /** The index to grab from the SignatureLookup */
     int index() default 0;
+
+    /** Should this proxy use the method handles implementation or just use reflection by default */
+    boolean methodHandle() default false;
 }
