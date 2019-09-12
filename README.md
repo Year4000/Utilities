@@ -1,4 +1,4 @@
-# Utilities [![Build Status](https://circleci.com/gh/Year4000/Utilities/tree/master.svg?style=svg)](https://circleci.com/gh/Year4000/Utilities/tree/master) [![JitPack](https://jitpack.io/v/net.year4000/utilities.svg)](https://jitpack.io/#net.year4000/utilities) [![Github Actions](https://github.com/Year4000/Utilities/workflows/Java%20CI/badge.svg)]
+# Utilities [![Build Status](https://circleci.com/gh/Year4000/Utilities/tree/master.svg?style=svg)](https://circleci.com/gh/Year4000/Utilities/tree/master) [![JitPack](https://jitpack.io/v/net.year4000/utilities.svg)](https://jitpack.io/#net.year4000/utilities) [![Github Actions](https://github.com/Year4000/Utilities/workflows/Java%20CI/badge.svg)](https://github.com/Year4000/Utilities)
 
 - [Discord](https://discord.gg/ySj69qR): #year4000 on Discord
 - [SpongeVanilla Dockerfile](https://github.com/Year4000/Utilities/blob/master/sponge/Dockerfile): year4000/utilities:spongevanilla
