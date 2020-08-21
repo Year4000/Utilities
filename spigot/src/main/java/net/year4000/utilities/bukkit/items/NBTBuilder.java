@@ -97,13 +97,13 @@ public class NBTBuilder {
 
     /** Make the item unbreakable */
     public NBTBuilder setUnbreakable() {
-        handleMeta(meta -> meta.spigot().setUnbreakable(true));
+        handleMeta(meta -> meta.setUnbreakable(true));
         return this;
     }
 
     /** Make the item breakable */
     public NBTBuilder unsetUnbreakable() {
-        handleMeta(meta -> meta.spigot().setUnbreakable(false));
+        handleMeta(meta -> meta.setUnbreakable(false));
         return this;
     }
 

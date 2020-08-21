@@ -6,10 +6,7 @@ package net.year4000.utilities.bukkit;
 
 import com.google.gson.Gson;
 import net.year4000.utilities.bukkit.items.NBT;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -201,7 +198,7 @@ public final class ItemUtil {
             for (NBT.Enchantments enchantment : nbt.getEnchantments()) {
                 // The true is forcing the item to have enchantments even if the items can't have it.
                 itemMeta.addEnchant(
-                    Enchantment.getByName(enchantment.getName().toUpperCase()),
+                    Enchantment.getByKey(NamespacedKey.minecraft(enchantment.getName())),
                     enchantment.getLevel(),
                     true
                 );
@@ -209,7 +206,7 @@ public final class ItemUtil {
         }
 
         // Set the item's unbreakable tag
-        itemMeta.spigot().setUnbreakable(nbt.isUnbreakable());
+        itemMeta.setUnbreakable(nbt.isUnbreakable());
 
         // Set hide flags
         if (nbt.getHideFlags().length > 0) {

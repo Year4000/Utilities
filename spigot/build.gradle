@@ -58,7 +58,7 @@ repositories {
 dependencies {
     compile utilities.project('core')
     compile utilities.project('core-redis')
-    compile 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
     // update to 1.14, using 1.13 for compile only
     compile ('com.comphenix.protocol:ProtocolLib:4.4.0') {
         exclude module: 'bukkit'
