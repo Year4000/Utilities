@@ -4,9 +4,20 @@
 
 package net.year4000.utilities.bukkit;
 
+import com.sk89q.bukkit.util.BukkitCommandsManager;
+import com.sk89q.bukkit.util.CommandsManagerRegistration;
+import com.sk89q.minecraft.util.commands.*;
 import net.year4000.utilities.LogUtil;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.*;
+
+import static net.year4000.utilities.bukkit.Messages.*;
 
 /**
  * This is a wrapper for Bukkit plugins, this will allow for
@@ -15,7 +26,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 @SuppressWarnings("unused")
 public class BukkitPlugin extends JavaPlugin {
     private static BukkitPlugin inst;
-//    private final BukkitCommandsManager commands = new BukkitCommandsManager();
+    private final BukkitCommandsManager commands = new BukkitCommandsManager();
     public LogUtil log = new LogUtil(getLogger());
     public boolean debug = log.isDebug();
 
@@ -57,64 +68,64 @@ public class BukkitPlugin extends JavaPlugin {
         log.setDebug(debug);
     }
 
-//    /** Register a command for this plugin */
-//    public void registerCommand(Class<?> commandClass) {
-//        new CommandsManagerRegistration(this, commands).register(commandClass);
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public boolean onCommand(CommandSender sender, Command cmd, String commandName, String[] args) {
-//        List<String> msg = new ArrayList<>();
-//        Optional<Locale> locale = Optional.empty();
-//
-//        if (sender instanceof Player) {
-//            Player player = (Player) sender;
-//            locale = Optional.of(new Locale(player.spigot().getLocale()));
-//        }
-//
-//        try {
-//            commands.execute(cmd.getName(), args, sender, sender);
-//        }
-//        catch (CommandPermissionsException e) {
-//            msg.add(CMD_ERROR_PERMISSION.get(locale));
-//        }
-//        catch (MissingNestedCommandException e) {
-//            msg.add(CMD_ERROR_USAGE.get(locale, e.getUsage()));
-//        }
-//        catch (CommandUsageException e) {
-//            msg.add(ChatColor.RED + e.getMessage());
-//            msg.add(CMD_ERROR_USAGE.get(locale, e.getUsage()));
-//        }
-//        catch (WrappedCommandException e) {
-//            if (e.getCause() instanceof NumberFormatException) {
-//                msg.add(CMD_ERROR_NUMBER.get(locale));
-//            }
-//            else {
-//                msg.add(CMD_ERROR.get(locale));
-//                e.printStackTrace();
-//            }
-//        }
-//        catch (CommandException e) {
-//            msg.add(ChatColor.RED + e.getMessage());
-//        }
-//        finally {
-//            Iterator<String> line = msg.listIterator();
-//
-//            if (line.hasNext()) {
-//                sender.sendMessage(MessageUtil.message(" &7[&e!&7] &e") + line.next());
-//
-//                while (line.hasNext()) {
-//                    sender.sendMessage(line.next());
-//                }
-//            }
-//        }
-//
-//        return true;
-//    }
-//
-//    public BukkitCommandsManager getCommands() {
-//        return this.commands;
-//    }
+    /** Register a command for this plugin */
+    public void registerCommand(Class<?> commandClass) {
+        new CommandsManagerRegistration(this, commands).register(commandClass);
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean onCommand(CommandSender sender, Command cmd, String commandName, String[] args) {
+        List<String> msg = new ArrayList<>();
+        Optional<Locale> locale = Optional.empty();
+
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            locale = Optional.of(new Locale(player.getLocale()));
+        }
+
+        try {
+            commands.execute(cmd.getName(), args, sender, sender);
+        }
+        catch (CommandPermissionsException e) {
+            msg.add(CMD_ERROR_PERMISSION.get(locale));
+        }
+        catch (MissingNestedCommandException e) {
+            msg.add(CMD_ERROR_USAGE.get(locale, e.getUsage()));
+        }
+        catch (CommandUsageException e) {
+            msg.add(ChatColor.RED + e.getMessage());
+            msg.add(CMD_ERROR_USAGE.get(locale, e.getUsage()));
+        }
+        catch (WrappedCommandException e) {
+            if (e.getCause() instanceof NumberFormatException) {
+                msg.add(CMD_ERROR_NUMBER.get(locale));
+            }
+            else {
+                msg.add(CMD_ERROR.get(locale));
+                e.printStackTrace();
+            }
+        }
+        catch (CommandException e) {
+            msg.add(ChatColor.RED + e.getMessage());
+        }
+        finally {
+            Iterator<String> line = msg.listIterator();
+
+            if (line.hasNext()) {
+                sender.sendMessage(MessageUtil.message(" &7[&e!&7] &e") + line.next());
+
+                while (line.hasNext()) {
+                    sender.sendMessage(line.next());
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public BukkitCommandsManager getCommands() {
+        return this.commands;
+    }
 
     public LogUtil getLog() {
         return this.log;

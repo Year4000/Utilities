@@ -20,14 +20,14 @@ processResources {
     }
 }
 
-build.dependsOn shadowJar {
+assemble.dependsOn shadowJar {
     baseName = utilities.name.toLowerCase()
     version = utilities.version
 
     dependencies {
         include dependency('redis.clients:jedis:.*')
         include dependency('com.comphenix.packetwrapper:PacketWrapper:.*')
-//        include dependency('com.sk89q:command-framework-bukkit:.*')
+        include dependency('com.github.OvercastNetwork.sk89q-command-framework:command-framework-bukkit:.*')
         include dependency('net.year4000.utilities:.*')
     }
 }
@@ -41,10 +41,10 @@ jar {
 
 repositories {
     mavenCentral()
-//    maven {
-//        name = 'oc-tc'
-//        url = 'https://repo.oc.tc/content/repositories/public'
-//    }
+    maven {
+        name = 'jitpack'
+        url = 'https://jitpack.io'
+    }
     maven {
         name = 'spigot'
         url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
@@ -68,8 +68,9 @@ dependencies {
         exclude module: 'bukkit'
         exclude module: 'spigot'
     }
-//    compile ('com.sk89q:command-framework-bukkit:0.5-SNAPSHOT') {
-//        exclude module: 'spigot'
-//        exclude module: 'bukkit'
-//    }
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
+    compile ('com.github.OvercastNetwork.sk89q-command-framework:command-framework-bukkit:master-SNAPSHOT') {
+        exclude module: 'spigot'
+        exclude module: 'bukkit'
+    }
 }
