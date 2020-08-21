@@ -1,5 +1,6 @@
 name: Utilities
 version: @version@-@git_hash@
+api-version: 1.16
 author: Year4000
 main: net.year4000.utilities.bukkit.Utilities
 load: STARTUP
