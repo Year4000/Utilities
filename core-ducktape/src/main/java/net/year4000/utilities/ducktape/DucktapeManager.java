@@ -3,17 +3,16 @@
  */
 package net.year4000.utilities.ducktape;
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.*;
 import com.google.inject.*;
 import net.year4000.utilities.Builder;
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.annotations.Nullable;
 import net.year4000.utilities.ducktape.loaders.ModuleLoader;
 import net.year4000.utilities.ducktape.module.Enabler;
 import net.year4000.utilities.ducktape.module.internal.ModuleInfo;
 import net.year4000.utilities.ducktape.module.ModuleWrapper;
+import net.year4000.utilities.ducktape.settings.SaveLoad;
 import net.year4000.utilities.value.Value;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,17 +27,20 @@ public class DucktapeManager extends AbstractModule implements Ducktape {
     protected ClassToInstanceMap<ModuleLoader> loaders;
     /** The guice injector that will init the modules */
     protected Injector injector;
+    /** The save load provider for configs */
+    protected SaveLoad saveLoadProvider;
     /**
      * The modules that are loaded, at first the order is when they are constructed but while they are loading
      * it resorts them based on load order, so when loading is done it will enable them properly.
      */
     protected final Map<ModuleInfo, ModuleWrapper> modules = new LinkedHashMap<>();
 
-    protected DucktapeManager(Injector injector, Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap) {
+    protected DucktapeManager(Injector injector, Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap, @Nullable SaveLoad saveLoadProvider) {
         this.injector = Conditions.nonNull(injector, "extra injector must not be null");
         this.loaders = ImmutableClassToInstanceMap.<ModuleLoader>builder()
             .putAll(loaderMap)
             .build();
+        this.saveLoadProvider = saveLoadProvider;
     }
 
     /** Create a snapshot of the modules that are currently in the system when this method is called */
@@ -54,9 +56,11 @@ public class DucktapeManager extends AbstractModule implements Ducktape {
         logger.info("Loading module classes from the loaders");
         Set<Class<?>> classes = loadAll();
         logger.info("Setting up the injector");
-        // todo think? use child injector or our own injector, is we use a child injector sponge plugins will work, if not modules only have our bindings
-        this.injector = this.injector.createChildInjector(this, new ModulesInitModule(classes), new DucktapeModule(this.modules), new SettingsModule());
-        //this.injector = Guice.createInjector(this, new ModulesInitModule(classes), new DucktapeModule(this.modules), new SettingsModule());
+        List<Module> modules = Lists.newArrayList(this, new ModulesInitModule(classes), new DucktapeModule(this.modules));
+        if (this.saveLoadProvider != null) {
+            modules.add(new SettingsModule(this.saveLoadProvider));
+        }
+        this.injector = this.injector.createChildInjector(modules);
     }
 
     @Override
@@ -91,10 +95,17 @@ public class DucktapeManager extends AbstractModule implements Ducktape {
     public static class DucktapeManagerBuilder implements Builder<Ducktape> {
         protected final Set<ModuleLoader> loaders = new HashSet<>();
         protected Value<Injector> injectorValue = Value.empty();
+        protected SaveLoad saveLoadProvider;
 
         /** Add a module loader system */
         public DucktapeManagerBuilder addLoader(ModuleLoader moduleLoader) {
             this.loaders.add(moduleLoader);
+            return this;
+        }
+
+        /** Set the save load provider for configs support, if this is not set but modules use Settings<> it will throw errors */
+        public DucktapeManagerBuilder setSaveLoadProvider(@Nullable SaveLoad saveLoadProvider) {
+            this.saveLoadProvider = saveLoadProvider;
             return this;
         }
 
@@ -106,14 +117,14 @@ public class DucktapeManager extends AbstractModule implements Ducktape {
 
         /** Internal reuse able method that will map reduce the module loader map */
         protected Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMapReduce() {
-            return loaders.stream().map(loader -> ImmutableMap.<Class<? extends ModuleLoader>, ModuleLoader>of(loader.getClass(), loader))
+            return this.loaders.stream().map(loader -> ImmutableMap.<Class<? extends ModuleLoader>, ModuleLoader>of(loader.getClass(), loader))
                 .reduce((left, right) -> ImmutableMap.<Class<? extends ModuleLoader>, ModuleLoader>builder().putAll(left).putAll(right).build()).get();
         }
 
         @Override
         public Ducktape build() {
             Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap = loaderMapReduce();
-            return new DucktapeManager(injectorValue.getOrElse(Guice.createInjector()), loaderMap);
+            return new DucktapeManager(this.injectorValue.getOrElse(Guice.createInjector()), loaderMap, this.saveLoadProvider);
         }
     }
 }

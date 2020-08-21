@@ -9,6 +9,7 @@ import net.year4000.utilities.ducktape.modules.ModuleD;
 import net.year4000.utilities.ducktape.modules.ModuleA;
 import net.year4000.utilities.ducktape.modules.ModuleB;
 import net.year4000.utilities.ducktape.modules.ModuleC;
+import net.year4000.utilities.ducktape.settings.GsonSaveLoadProvider;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,6 +19,7 @@ public class DucktapeTest {
     public void test() {
         Ducktape ducktape = Ducktape.builder()
             .addLoader(new ClassModuleLoader(ModuleA.class, ModuleB.class, ModuleC.class, ModuleD.class))
+            .setSaveLoadProvider(new GsonSaveLoadProvider())
             .build();
         ducktape.init();
     }

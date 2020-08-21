@@ -11,6 +11,7 @@ import net.year4000.utilities.ducktape.*;
 import net.year4000.utilities.ducktape.loaders.ModuleLoader;
 import net.year4000.utilities.ducktape.module.Module;
 import net.year4000.utilities.ducktape.module.internal.ModuleInfo;
+import net.year4000.utilities.ducktape.settings.SaveLoad;
 import net.year4000.utilities.sponge.Utilities;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Event;
@@ -26,8 +27,8 @@ public class SpongeDucktapeManager extends DucktapeManager {
     public static final String MOD_PATH = "mods/";
     private final List<WrappedPluginContainer> modules = new ArrayList<>();
 
-    protected SpongeDucktapeManager(Injector injector, Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap) {
-        super(injector, loaderMap);
+    protected SpongeDucktapeManager(Injector injector, Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap, SaveLoad saveLoadProvider) {
+        super(injector, loaderMap, saveLoadProvider);
     }
 
     /** Load all classes from the selected path */
@@ -106,7 +107,7 @@ public class SpongeDucktapeManager extends DucktapeManager {
         @Override
         public Ducktape build() {
             Map<Class<? extends ModuleLoader>, ModuleLoader> loaderMap = loaderMapReduce();
-            return new SpongeDucktapeManager(injectorValue.getOrElse(Guice.createInjector()), loaderMap);
+            return new SpongeDucktapeManager(this.injectorValue.getOrElse(Guice.createInjector()), loaderMap, this.saveLoadProvider);
         }
     }
 }
