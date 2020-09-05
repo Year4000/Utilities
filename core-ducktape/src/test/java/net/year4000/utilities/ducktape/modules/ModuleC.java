@@ -12,7 +12,7 @@ import net.year4000.utilities.ducktape.settings.SettingsBase;
 
 @Module(id = "c")
 public class ModuleC {
-    @Inject private Settings<ModuleCSettings> settings;
+    //@Inject private Settings<ModuleCSettings> settings;
 
     public ModuleC() {
         System.out.println("ModuleC Constructor");
@@ -21,7 +21,7 @@ public class ModuleC {
     @Load
     public void loasdas() {
         System.out.println("ModuleC loader");
-        System.out.println(settings.instance().setting);
+        //System.out.println(settings.instance().setting);
     }
 
     @SettingsBase("c")
