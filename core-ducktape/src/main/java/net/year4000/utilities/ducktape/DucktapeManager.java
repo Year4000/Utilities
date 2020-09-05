@@ -1,10 +1,12 @@
 /*
- * Copyright 2019 Year4000. All Rights Reserved.
+ * Copyright 2020 Year4000. All Rights Reserved.
  */
+
 package net.year4000.utilities.ducktape;
 
 import com.google.common.collect.*;
 import com.google.inject.*;
+import com.google.inject.Module;
 import net.year4000.utilities.Builder;
 import net.year4000.utilities.Conditions;
 import net.year4000.utilities.annotations.Nullable;
