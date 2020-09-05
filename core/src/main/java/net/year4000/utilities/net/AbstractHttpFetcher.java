@@ -12,10 +12,6 @@ import net.year4000.utilities.value.Value;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.util.concurrent.ExecutorService;
@@ -251,13 +247,6 @@ public abstract class AbstractHttpFetcher<D> implements HttpFetcher<D> {
 
     /** Allow the data to be serialize by derived class */
     protected abstract String serialize(D object);
-
-    @Target(ElementType.TYPE)
-    @Retention(RetentionPolicy.RUNTIME)
-    protected @interface ContentType {
-        /** The content type that will be used when sending data to the server */
-        String value();
-    }
 
     /** A abstract builder that will help in creating {@link AbstractBuilder} */
     @SuppressWarnings("unchecked")

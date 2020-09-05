@@ -15,7 +15,7 @@ import java.lang.reflect.Type;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@AbstractHttpFetcher.ContentType("application/json; charset=utf8")
+@ContentType("application/json; charset=utf8")
 public class JsonHttpFetcher extends AbstractHttpFetcher<JsonObject> {
     private final Gson GSON;
 
