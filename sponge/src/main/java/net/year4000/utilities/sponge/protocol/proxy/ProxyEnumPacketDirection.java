@@ -24,7 +24,7 @@ public interface ProxyEnumPacketDirection {
 
     // enum
 
-    @Invoke
+    @Invoke(signature = "()[Lnet/minecraft/network/EnumPacketDirection;")
     @Static
     Object[] values();
 

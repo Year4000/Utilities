@@ -7,12 +7,12 @@ import com.google.inject.Inject;
 import net.year4000.utilities.ducktape.module.Load;
 import net.year4000.utilities.ducktape.module.Module;
 import net.year4000.utilities.ducktape.settings.Comment;
-import net.year4000.utilities.ducktape.settings.InjectSettings;
 import net.year4000.utilities.ducktape.settings.Settings;
+import net.year4000.utilities.ducktape.settings.SettingsBase;
 
 @Module(id = "c")
 public class ModuleC {
-    @Inject private Settings<ModuleCSettings> settings;
+    //@Inject private Settings<ModuleCSettings> settings;
 
     public ModuleC() {
         System.out.println("ModuleC Constructor");
@@ -21,10 +21,10 @@ public class ModuleC {
     @Load
     public void loasdas() {
         System.out.println("ModuleC loader");
-        System.out.println(settings.instance().setting);
+        //System.out.println(settings.instance().setting);
     }
 
-    @InjectSettings
+    @SettingsBase("c")
     public static class ModuleCSettings {
         public ModuleCSettings() {
             System.out.println("ModuleCSettings Constructor");

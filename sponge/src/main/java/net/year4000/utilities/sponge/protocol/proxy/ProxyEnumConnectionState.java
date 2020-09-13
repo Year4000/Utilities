@@ -44,7 +44,7 @@ public interface ProxyEnumConnectionState {
 
     // enum
 
-    @Invoke
+    @Invoke(signature = "()[Lnet/minecraft/network/EnumConnectionState;")
     @Static
     Object[] values();
 

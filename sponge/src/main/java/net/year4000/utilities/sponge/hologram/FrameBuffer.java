@@ -52,7 +52,7 @@ final class FrameBuffer implements Iterable<Text> {
 
     /** Create the buffer that will create each frame */
     static class Builder implements net.year4000.utilities.Builder<FrameBuffer> {
-        private static final Text.Builder BLOCK = Text.builder('\u2013');
+        private static final Text.Builder BLOCK = Text.builder('\u2588');
         private static final ImmutableBiMap<Color, TextColor> COLORS = ImmutableBiMap.<Color, TextColor>builder()
             .put(TextColors.AQUA.getColor(), TextColors.AQUA)
             .put(TextColors.BLACK.getColor(), TextColors.BLACK)

@@ -1,0 +1,16 @@
+/*
+ * Copyright 2019 Year4000. All Rights Reserved.
+ */
+plugins {
+    id 'java'
+}
+
+apply from: utilities.file('gradle/utilities.gradle')
+
+compileJava.options.encoding = 'UTF-8'
+
+dependencies {
+    compile utilities.project('core')
+    compile utilities.project('core-ducktape')
+    compile 'org.codehaus.groovy:groovy-all:2.4.6'
+}

@@ -70,6 +70,9 @@ class SpongeExtension {
 
     /** The port the debugger will bind on */
     int debugPort = 5005
+
+    /** The root project id */
+    String rootProject
 }
 
 /** Sponge starter runs the needed things to start a sponge instance */
@@ -131,7 +134,7 @@ class SpongeForgeClient extends DefaultTask {
             pluginJar.deleteOnExit()
         }
 
-        if (project == project.rootProject) { // only start the client when its the root
+        if (project.name.toLowerCase() == project.rootProject.name.toLowerCase() || project.name.toLowerCase() == project.spongestarter.rootProject) { // only start the client when its the root
             logger.lifecycle 'Setting up the client enverionment'
             MinecraftVersion version = makeMCVersion forge.get()
             ClassPaths classPaths = generateLibs version;

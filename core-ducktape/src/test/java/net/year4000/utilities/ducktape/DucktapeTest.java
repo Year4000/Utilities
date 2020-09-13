@@ -5,10 +5,7 @@ package net.year4000.utilities.ducktape;
 
 import net.year4000.utilities.ducktape.loaders.ClassModuleLoader;
 import net.year4000.utilities.ducktape.module.ModuleInfo;
-import net.year4000.utilities.ducktape.modules.ModuleD;
-import net.year4000.utilities.ducktape.modules.ModuleA;
-import net.year4000.utilities.ducktape.modules.ModuleB;
-import net.year4000.utilities.ducktape.modules.ModuleC;
+import net.year4000.utilities.ducktape.modules.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,8 +15,19 @@ public class DucktapeTest {
     public void test() {
         Ducktape ducktape = Ducktape.builder()
             .addLoader(new ClassModuleLoader(ModuleA.class, ModuleB.class, ModuleC.class, ModuleD.class))
+            //.setSaveLoadProvider(new GsonSaveLoadProvider())
             .build();
         ducktape.init();
+    }
+
+    @Test
+    public void errorText() {
+        Ducktape ducktape = Ducktape.builder()
+            .addLoader(new ClassModuleLoader(ModuleE.class, ModuleError.class))
+            .build();
+        ducktape.init();
+        Assert.assertArrayEquals(ducktape.getModules().stream().map(ModuleInfo::getPhase).toArray(),
+            new ModuleInfo.Phase[] {ModuleInfo.Phase.ENABLED, ModuleInfo.Phase.ERROR});
     }
 
     @Test
@@ -33,6 +41,7 @@ public class DucktapeTest {
             .addLoader(new ClassModuleLoader(ModuleB.class, ModuleD.class, ModuleA.class,  ModuleC.class))
             .build();
         randomLoader.init();
-        Assert.assertArrayEquals(sortedLoader.getModules().stream().map(ModuleInfo::getId).toArray(), randomLoader.getModules().stream().map(ModuleInfo::getId).toArray());
+        Assert.assertArrayEquals(sortedLoader.getModules().stream().map(ModuleInfo::getId).toArray(),
+            randomLoader.getModules().stream().map(ModuleInfo::getId).toArray());
     }
 }

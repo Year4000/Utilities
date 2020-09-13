@@ -16,15 +16,17 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.game.state.GameStartingServerEvent;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.game.state.*;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -39,6 +41,15 @@ import javax.imageio.ImageIO;
 @Plugin(id = "utilities-debug", name = "UtilitiesDebug", dependencies = {@Dependency(id ="utilities")})
 public class UtilitiesDebug {
     private static final List<Hologram> activeHolograms = Lists.newArrayList();
+
+    // This must be the first thing the system does to allow the module to exist when ducktape finds and locates it
+    @Listener(order = Order.PRE)
+    public void onConstruct(GameConstructionEvent event) throws IOException {
+        // extract the groovy module to test it
+        try (InputStream file = UtilitiesDebug.class.getResourceAsStream("/mods/ducktape.groovy")) {
+            Files.copy(file, Paths.get("mods/ducktape.groovy"), StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
 
     @Listener
     public void onInit(GameInitializationEvent event) {

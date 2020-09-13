@@ -3,70 +3,21 @@
  */
 package net.year4000.utilities.ducktape.module;
 
-import net.year4000.utilities.Conditions;
+import net.year4000.utilities.value.Value;
 
-public final class ModuleInfo implements Loader, Enabler {
-    private Phase phase = Phase.CONSTRUCTING;
-    private Class<?> moduleClass;
-    private Module annotation;
+public interface ModuleInfo extends Loader, Enabler {
 
-    public ModuleInfo(Class<?> moduleClass) {
-        this.moduleClass = Conditions.nonNull(moduleClass, "module class must not be empty");
-        Conditions.condition(moduleClass.isAnnotationPresent(Module.class), "the module class must have the @Module annotation");
-        this.annotation = moduleClass.getAnnotation(Module.class);
-    }
+    /** Get the module handle of the module */
+    Value<ModuleHandle> getHandle();
 
-    /** Get the current phase the module is on */
-    public Phase getPhase() {
-        return this.phase;
-    }
+    /** Get the id of this module */
+    String getId();
 
-    /** Get the module class */
-    public Class<?> getModuleClass() {
-        return this.moduleClass;
-    }
-
-    /** Get the id of the module */
-    public String getId() {
-        return this.annotation.id().toLowerCase();
-    }
-
-    /** Called when the module class is being constructed */
-    public void constructing() {
-        System.out.println("Constructing: " + this);
-    }
-
-    /** Called when the module is being loaded*/
-    @Override
-    public void load() {
-        System.out.println("Loading: " + this);
-        this.phase = Phase.LOADED;
-    }
-
-    /** Called when the module is being enabled */
-    @Override
-    public void enable() {
-        System.out.println("Enabling: " + this);
-        this.phase = Phase.ENABLED;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("ModuleInfo{id=%s, class=%s}", this.getId(), this.moduleClass);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getId().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof ModuleInfo && this.getId().equals(((ModuleInfo) other).getId());
-    }
+    /** Get the current phase of the module */
+    Phase getPhase();
 
     /** The current phase of this module */
-    public enum Phase {
+    enum Phase {
         /** This is a special phase when the classes are being loaded into the system to be constructed by Guice */
         LOADING,
         /** The default phase state as this is created when the mode is constructing */
@@ -74,7 +25,11 @@ public final class ModuleInfo implements Loader, Enabler {
         /** This is when the module has been loaded, settings have been populated and module specific stuff should be loaded here */
         LOADED,
         /** This is when the module has been enable, at this point all loading has been done and can do what they need */
-        ENABLED
+        ENABLED,
+        /** This is when the module has been disabled, at any point the module was disabled and will not load */
+        DISABLED,
+        /** This is when the module has been disabled, at any point the module was disabled and will not load */
+        ERROR,
         ;
 
         /** Return true when the phase is constructing */
@@ -90,6 +45,11 @@ public final class ModuleInfo implements Loader, Enabler {
         /** Return true with the phase is enabled */
         public boolean isEnabled() {
             return this == ENABLED;
+        }
+
+        /** Return true with the phase is disabled */
+        public boolean isDisabled() {
+            return this == DISABLED || this == ERROR;
         }
     }
 }

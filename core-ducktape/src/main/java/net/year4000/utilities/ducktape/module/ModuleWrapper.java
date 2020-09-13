@@ -4,6 +4,7 @@
 package net.year4000.utilities.ducktape.module;
 
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.ducktape.module.internal.ModuleInfo;
 import net.year4000.utilities.ducktape.module.internal.ModuleInvocationHandler;
 
 public class ModuleWrapper implements Loader, Enabler {
@@ -14,23 +15,35 @@ public class ModuleWrapper implements Loader, Enabler {
     public ModuleWrapper(ModuleInfo moduleInfo, Object instance) {
         this.moduleInfo = Conditions.nonNull(moduleInfo, "moduleInfo must exists");
         this.proxyInstance = ModuleInvocationHandler.createProxy(moduleInfo.getModuleClass(), Conditions.nonNull(instance, "instance must exists"));
+        this.moduleInfo.setHandle((ModuleHandle) this.proxyInstance);
     }
 
     /** Load the module and call the method with @Load */
     @Override
     public void load() {
-        this.moduleInfo.load();
-        if (this.proxyInstance instanceof Loader) {
-            ((Loader) this.proxyInstance).load();
+        try {
+            this.moduleInfo.load();
+            if (this.proxyInstance instanceof Loader) {
+                ((Loader) this.proxyInstance).load();
+            }
+        } catch (Exception error) {
+            this.moduleInfo.disableWithException(error);
         }
     }
 
     /** Enable the module and call the method with @Enable */
     @Override
     public void enable() {
-        this.moduleInfo.enable();
-        if (this.proxyInstance instanceof Enabler) {
-            ((Enabler) this.proxyInstance).enable();
+        if (this.moduleInfo.getPhase().isDisabled()) {
+            return; // dont try to enable the module if it failed to load
+        }
+        try {
+            this.moduleInfo.enable();
+            if (this.proxyInstance instanceof Enabler) {
+                ((Enabler) this.proxyInstance).enable();
+            }
+        } catch (Exception error) {
+            this.moduleInfo.disableWithException(error);
         }
     }
 
