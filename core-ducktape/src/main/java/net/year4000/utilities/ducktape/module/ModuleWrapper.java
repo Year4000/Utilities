@@ -21,18 +21,29 @@ public class ModuleWrapper implements Loader, Enabler {
     /** Load the module and call the method with @Load */
     @Override
     public void load() {
-        this.moduleInfo.load();
-        if (this.proxyInstance instanceof Loader) {
-            ((Loader) this.proxyInstance).load();
+        try {
+            this.moduleInfo.load();
+            if (this.proxyInstance instanceof Loader) {
+                ((Loader) this.proxyInstance).load();
+            }
+        } catch (Exception error) {
+            this.moduleInfo.disableWithException(error);
         }
     }
 
     /** Enable the module and call the method with @Enable */
     @Override
     public void enable() {
-        this.moduleInfo.enable();
-        if (this.proxyInstance instanceof Enabler) {
-            ((Enabler) this.proxyInstance).enable();
+        if (this.moduleInfo.getPhase().isDisabled()) {
+            return; // dont try to enable the module if it failed to load
+        }
+        try {
+            this.moduleInfo.enable();
+            if (this.proxyInstance instanceof Enabler) {
+                ((Enabler) this.proxyInstance).enable();
+            }
+        } catch (Exception error) {
+            this.moduleInfo.disableWithException(error);
         }
     }
 

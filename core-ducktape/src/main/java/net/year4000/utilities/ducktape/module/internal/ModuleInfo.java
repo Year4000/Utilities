@@ -4,6 +4,7 @@
 package net.year4000.utilities.ducktape.module.internal;
 
 import net.year4000.utilities.Conditions;
+import net.year4000.utilities.ErrorReporter;
 import net.year4000.utilities.annotations.Nullable;
 import net.year4000.utilities.ducktape.module.Module;
 import net.year4000.utilities.ducktape.module.ModuleHandle;
@@ -70,9 +71,22 @@ public final class ModuleInfo implements net.year4000.utilities.ducktape.module.
         this.phase = Phase.ENABLED;
     }
 
+    /** Called when the module is disabled */
+    public void disable() {
+        logger.info("Disabling: {}", this);
+        this.phase = Phase.DISABLED;
+    }
+
+    /** Called when the module is disabled with an error */
+    public void disableWithException(Exception error) {
+        logger.info("Disabling: {}", this);
+        this.phase = Phase.ERROR;
+        ErrorReporter.builder(error).buildAndReport().printStackTrace();
+    }
+
     @Override
     public String toString() {
-        return String.format("ModuleInfo{id=%s, class=%s}", this.getId(), this.moduleClass);
+        return String.format("ModuleInfo{id=%s, phase=%s, class=%s}", this.getId(), this.phase, this.moduleClass);
     }
 
     @Override

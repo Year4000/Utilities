@@ -25,7 +25,11 @@ public interface ModuleInfo extends Loader, Enabler {
         /** This is when the module has been loaded, settings have been populated and module specific stuff should be loaded here */
         LOADED,
         /** This is when the module has been enable, at this point all loading has been done and can do what they need */
-        ENABLED
+        ENABLED,
+        /** This is when the module has been disabled, at any point the module was disabled and will not load */
+        DISABLED,
+        /** This is when the module has been disabled, at any point the module was disabled and will not load */
+        ERROR,
         ;
 
         /** Return true when the phase is constructing */
@@ -41,6 +45,11 @@ public interface ModuleInfo extends Loader, Enabler {
         /** Return true with the phase is enabled */
         public boolean isEnabled() {
             return this == ENABLED;
+        }
+
+        /** Return true with the phase is disabled */
+        public boolean isDisabled() {
+            return this == DISABLED || this == ERROR;
         }
     }
 }
