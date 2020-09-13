@@ -26,8 +26,15 @@ public class GroovyModuleLoader extends AbstractPathLoader implements ModuleLoad
     /** Load any groovy script that ends with .groovy */
     protected Collection<Class<?>> load(Path directory) throws IOException {
         if (directory.toString().endsWith(".groovy")) {
-            URL[] urls = new URL[] {directory.toUri().toURL()};
-            GroovyClassLoader loader = AccessController.doPrivileged((PrivilegedAction<GroovyClassLoader>) () -> new GroovyClassLoader(new URLClassLoader(urls)));
+            URL[] urls = new URL[] { directory.toUri().toURL() };
+            GroovyClassLoader loader = AccessController.doPrivileged((PrivilegedAction<GroovyClassLoader>) () -> {
+                ClassLoader parentClassLoader = ModuleLoader.class.getClassLoader();
+                GroovyClassLoader classLoader = new GroovyClassLoader(new URLClassLoader(urls, parentClassLoader));
+                // add the urls to the classloader to use environment libs
+                classLoader.addURL(parentClassLoader.getResource("/"));
+                classLoader.addURL(urls[0]);
+                return classLoader;
+            });
             return Collections.singleton(loader.parseClass(directory.toFile()));
         }
         return Collections.emptySet();
